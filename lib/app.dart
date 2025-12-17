@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:frontend/screens/home/home_page.dart';
+import 'package:frontend/screens/home/home_page.dart'; 
 import 'package:google_fonts/google_fonts.dart';
 
 class App extends StatelessWidget {
@@ -9,7 +9,7 @@ class App extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Stem Women',
-      home: HomePage(),
+      home: HomePage(), 
       theme: _buildTheme(Brightness.light),
       debugShowCheckedModeBanner: false,
     );
@@ -17,9 +17,9 @@ class App extends StatelessWidget {
 
   ThemeData _buildTheme(Brightness brightness) {
     final baseTheme = ThemeData(brightness: brightness);
-
     return baseTheme.copyWith(
       textTheme: GoogleFonts.interTextTheme(baseTheme.textTheme),
     );
   }
+  
 }

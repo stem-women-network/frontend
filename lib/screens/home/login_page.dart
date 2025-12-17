@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:frontend/screens/home/signup_page.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -10,195 +9,168 @@ class LoginPage extends StatefulWidget {
 
 class _LoginPageState extends State<LoginPage> {
   final _formKey = GlobalKey<FormState>();
+  final Color brandColor = const Color(0xFF3E84A2); 
 
   @override
   Widget build(BuildContext context) {
-    final width = MediaQuery.of(context).size.width;
-    final height = MediaQuery.of(context).size.height;
-
     return Scaffold(
-      backgroundColor: const Color(0xFF0B6F8E),
+      backgroundColor: brandColor,
       body: Center(
-        child: SizedBox(
-          width: width / 1.5,
-          height: height / 1.5,
-          child: DecoratedBox(
-            decoration: BoxDecoration(
-              color: Color(0xFFFFFFFF),
-              borderRadius: BorderRadius.all(Radius.circular(15)),
-            ),
-            child: Center(
-              child: Container(
-                margin: EdgeInsetsGeometry.symmetric(
-                  vertical: 20,
-                  horizontal: 60,
-                ),
-                child: Form(
-                  key: _formKey,
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    mainAxisSize: MainAxisSize.max,
-                    spacing: 0.5,
-                    children: [
-                      Spacer(),
-                      Text(
-                        "STEM WOMEN NETWORK",
-                        style: TextStyle(
-                          color: Color(0xFF0B6F8E),
-                          fontSize: 20,
-                          height: 1,
-                          fontWeight: FontWeight.w600,
-                          letterSpacing: 0,
-                        ),
-                        textAlign: TextAlign.center,
-                      ),
-                      Spacer(),
-                      Text(
-                        "Bem vinda de volta!",
-                        style: TextStyle(fontWeight: FontWeight.bold),
-                      ),
-                      Spacer(),
-                      Text("Entre com sua conta para continuar"),
-                      Spacer(),
-                      Align(
-                        alignment: Alignment.centerLeft,
-                        child: Text(
-                          "E-mail",
-                          style: TextStyle(
-                            fontWeight: FontWeight.w500,
-                            letterSpacing: 0,
-                          ),
-                        ),
-                      ),
-                      TextFormField(
-                        cursorColor: Color(0xFF0B6F8E),
-                        decoration: const InputDecoration(
-                          hintText: "seuemail@stem.br",
-                          border: OutlineInputBorder(
-                            borderSide: BorderSide(color: Color(0xFFCBCBCB)),
-                          ),
-                          focusedBorder: OutlineInputBorder(
-                            borderSide: BorderSide(color: Color(0xFF0B6F8E)),
-                          ),
-                          prefixIconColor: Color(0xFF0B6F8E),
-                        ),
-                      ),
-                      Align(
-                        alignment: Alignment.centerLeft,
-                        child: Text(
-                          "Senha",
-                          style: TextStyle(
-                            fontWeight: FontWeight.w500,
-                            letterSpacing: 0,
-                          ),
-                        ),
-                      ),
-                      TextFormField(
-                        cursorColor: Color(0xFF0B6F8E),
-                        decoration: const InputDecoration(
-                          hintText: "*********",
-                          border: OutlineInputBorder(
-                            borderSide: BorderSide(color: Color(0xFFCBCBCB)),
-                          ),
-                          focusedBorder: OutlineInputBorder(
-                            borderSide: BorderSide(color: Color(0xFF0B6F8E)),
-                          ),
-                          focusColor: Color(0xFF0B6F8E),
-                        ),
-                      ),
-                      Align(
-                        alignment: Alignment.topRight,
-                        child: TextButton(
-                          style: ButtonStyle(
-                            overlayColor: WidgetStatePropertyAll(
-                              Color(0x00FFFFFF),
-                            ),
-                            textStyle: WidgetStateProperty.fromMap({
-                              WidgetState.hovered: TextStyle(
-                                color: Color(0xFF0B6F8E),
-                                decoration: TextDecoration.underline,
-                                decorationStyle: TextDecorationStyle.solid,
-                                decorationColor: Color(0xFF0B6F8E),
-                              ),
-                              WidgetState.any: TextStyle(
-                                color: Color(0xFF0B6F8E),
-                              ),
-                            }),
-                          ),
-                          onPressed: () => print("Esqueci a minha senha"),
-                          child: const Text(
-                            "Esqueci a minha senha",
-                            style: TextStyle(color: Color(0xFF0B6F8E)),
-                          ),
-                        ),
-                      ),
-                      Expanded(
-                        child: SizedBox.expand(
-                          child: FilledButton(
-                            onPressed: () {
-                              if (_formKey.currentState!.validate()) {
-                                ScaffoldMessenger.of(context).showSnackBar(
-                                  const SnackBar(content: Text('Processando')),
-                                );
-                              }
-                            },
-                            style: ButtonStyle(
-                              backgroundColor: WidgetStatePropertyAll(
-                                Color(0xFF1581A3),
-                              ),
-                              shape: WidgetStatePropertyAll(
-                                RoundedRectangleBorder(
-                                  borderRadius: BorderRadiusGeometry.circular(
-                                    7,
-                                  ),
-                                ),
-                              ),
-                            ),
-                            child: const Text('Entrar'),
-                          ),
-                        ),
-                      ),
-                      Spacer(),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Text("Não tem uma conta?"),
-                          TextButton(
-                            onPressed: () => Navigator.of(context).push(
-                              MaterialPageRoute(
-                                builder: (context) => const SignUpPage(),
-                              ),
-                            ),
-                            style: ButtonStyle(
-                              overlayColor: WidgetStatePropertyAll(
-                                Color(0x00FFFFFF),
-                              ),
-                              textStyle: WidgetStateProperty.fromMap({
-                                WidgetState.hovered: TextStyle(
-                                  color: Color(0xFF0B6F8E),
-                                  decoration: TextDecoration.underline,
-                                  decorationStyle: TextDecorationStyle.solid,
-                                  decorationColor: Color(0xFF0B6F8E),
-                                ),
-                                WidgetState.any: TextStyle(
-                                  color: Color(0xFF0B6F8E),
-                                ),
-                              }),
-                            ),
-                            child: Text(
-                              "Criar conta",
-                              style: TextStyle(color: Color(0xFF0B6F8E)),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ],
+        child: SingleChildScrollView(
+          padding: const EdgeInsets.all(24.0),
+          child: ConstrainedBox(
+            constraints: const BoxConstraints(maxWidth: 450),
+            child: Container(
+              padding: const EdgeInsets.symmetric(vertical: 40, horizontal: 35),
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(20),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withOpacity(0.15),
+                    blurRadius: 20,
+                    offset: const Offset(0, 10),
                   ),
+                ],
+              ),
+              child: Form(
+                key: _formKey,
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Text(
+                      "STEM WOMEN NETWORK",
+                      style: TextStyle(
+                        color: brandColor,
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                        letterSpacing: 0.5,
+                      ),
+                    ),
+                    const SizedBox(height: 25),
+                    const Text(
+                      "Bem-vinda de volta!",
+                      style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                    ),
+                    const SizedBox(height: 8),
+                    const Text(
+                      "Entre com sua conta para continuar",
+                      style: TextStyle(color: Colors.black54, fontSize: 14),
+                    ),
+                    const SizedBox(height: 35),
+                    
+                    // Campo E-mail
+                    _buildLabel("E-mail"),
+                    const SizedBox(height: 8),
+                    TextFormField(
+                      decoration: _inputDecoration("seuemail@stem.br"),
+                    ),
+                    const SizedBox(height: 20),
+                    
+                    // Campo Senha
+                    _buildLabel("Senha"),
+                    const SizedBox(height: 8),
+                    TextFormField(
+                      obscureText: true,
+                      decoration: _inputDecoration("*********"),
+                    ),
+                    
+                    // Esqueci minha senha
+                    Align(
+                      alignment: Alignment.centerRight,
+                      child: TextButton(
+                        onPressed: () {},
+                        style: TextButton.styleFrom(
+                          foregroundColor: brandColor,
+                          padding: EdgeInsets.zero,
+                          minimumSize: const Size(0, 30),
+                          tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                        ),
+                        child: const Text("Esqueci a minha senha"),
+                      ),
+                    ),
+                    const SizedBox(height: 35),
+
+                    // Botão Entrar
+                    SizedBox(
+                      width: double.infinity,
+                      height: 48,
+                      child: FilledButton(
+                        onPressed: () {
+                          if (_formKey.currentState!.validate()) {}
+                        },
+                        style: FilledButton.styleFrom(
+                          backgroundColor: brandColor,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                        ).copyWith(
+                          overlayColor: WidgetStateProperty.all(Colors.white10),
+                        ),
+                        child: const Text("Entrar", style: TextStyle(fontSize: 16)),
+                      ),
+                    ),
+                    const SizedBox(height: 20),
+
+                    // Link de Cadastro
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        const Text("Não tem uma conta? ", style: TextStyle(color: Colors.black87)),
+                        GestureDetector(
+                          onTap: () {
+                            // Navegar para SignUp
+                          },
+                          child: Text(
+                            "Criar conta",
+                            style: TextStyle(
+                              color: brandColor,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
                 ),
               ),
             ),
           ),
         ),
+      ),
+    );
+  }
+
+  Widget _buildLabel(String text) {
+    return Align(
+      alignment: Alignment.centerLeft,
+      child: Text(
+        text,
+        style: const TextStyle(
+          fontWeight: FontWeight.w600,
+          color: Colors.black87,
+          fontSize: 14,
+        ),
+      ),
+    );
+  }
+
+  InputDecoration _inputDecoration(String hint) {
+    return InputDecoration(
+      hintText: hint,
+      hintStyle: const TextStyle(color: Colors.black26),
+      contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+      border: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(8),
+        borderSide: const BorderSide(color: Colors.black12),
+      ),
+      enabledBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(8),
+        borderSide: const BorderSide(color: Colors.black12),
+      ),
+      focusedBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(8),
+        borderSide: BorderSide(color: brandColor, width: 1.5),
       ),
     );
   }
