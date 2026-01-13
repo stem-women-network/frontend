@@ -24,7 +24,9 @@ class MentoraCard extends StatelessWidget {
     return DefaultContainer(
       maxWidth: MediaQuery.sizeOf(context).width,
       children: [
-        Row(
+        Wrap(
+          alignment: WrapAlignment.center,
+          runAlignment: WrapAlignment.center,
           spacing: 20,
           children: [
             CircleAvatar(
@@ -32,72 +34,69 @@ class MentoraCard extends StatelessWidget {
               backgroundColor: Color(0xFFF3A850),
               radius: 50,
             ),
-            Column(
-              spacing: 5,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  style: TextStyle(fontWeight: FontWeight.w600),
-                  mentoraName,
-                ),
-                Row(
-                  children: [
-                    Text(cargoAtual),
-                    Text(" • "),
-                    Text(instituicaoName),
-                  ],
-                ),
-                Wrap(
-                  spacing: 5,
-                  children: areasAtuacao
-                      .map(
-                        (area) => DecoratedBox(
-                          decoration: BoxDecoration(
-                            color: const Color(0xFFEFEFEF),
-                            borderRadius: BorderRadiusGeometry.all(
-                              Radius.circular(5),
+            Expanded(
+              child: Column(
+                spacing: 5,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    style: TextStyle(fontWeight: FontWeight.w600),
+                    mentoraName,
+                  ),
+                  Wrap(
+                    children: [
+                      Text("$cargoAtual • $instituicaoName"),
+                    ],
+                  ),
+                  Wrap(
+                    spacing: 5,
+                    children: areasAtuacao
+                        .map(
+                          (area) => DecoratedBox(
+                            decoration: BoxDecoration(
+                              color: const Color(0xFFEFEFEF),
+                              borderRadius: BorderRadiusGeometry.all(
+                                Radius.circular(5),
+                              ),
+                            ),
+              
+                            child: Padding(
+                              padding: const EdgeInsets.symmetric(
+                                vertical: 3,
+                                horizontal: 8,
+                              ),
+                              child: Text(area),
                             ),
                           ),
-
-                          child: Padding(
-                            padding: const EdgeInsets.symmetric(
-                              vertical: 3,
-                              horizontal: 8,
-                            ),
-                            child: Text(area),
-                          ),
-                        ),
-                      )
-                      .toList(),
-                ),
-                Row(
-                  children: [
-                    Icon(
-                      Icons.calendar_month_rounded,
-                      size: 25,
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.only(left: 4),
-                      child: Text("Disponível: "),
-                    ),
-                    Text(
-                      disponibilidade
-                          .asMap()
-                          .map((index, item) {
-                            if (index == 0) {
-                              return MapEntry(index, item);
-                            } else if (index == disponibilidade.length - 1) {
-                              return MapEntry(index, " e $item");
-                            } else {
-                              return MapEntry(index, ", $item");
-                            }
-                          })
-                          .values
-                          .join(),
-                    ),
-                  ],
-                ),
-              ],
+                        )
+                        .toList(),
+                  ),
+                  Wrap(
+                    children: [
+                      Icon(
+                        Icons.calendar_month_rounded,
+                        size: 25,
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.only(left: 4),
+                        child: Text("Disponível: ${disponibilidade
+                            .asMap()
+                            .map((index, item) {
+                              if (index == 0) {
+                                return MapEntry(index, item);
+                              } else if (index == disponibilidade.length - 1) {
+                                return MapEntry(index, " e $item");
+                              } else {
+                                return MapEntry(index, ", $item");
+                              }
+                            })
+                            .values
+                            .join()}"),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
             ),
           ],
         ),
