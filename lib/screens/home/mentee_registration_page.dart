@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:frontend/screens/home/mentee_dashboard_page.dart';
 
 class MenteeRegistrationPage extends StatefulWidget {
   const MenteeRegistrationPage({super.key});
@@ -155,11 +156,20 @@ class _MenteeRegistrationPageState extends State<MenteeRegistrationPage> {
                                 if (_formKey.currentState!.validate()) {
                                   if (selectedDisponibilidade == null) {
                                     ScaffoldMessenger.of(context).showSnackBar(
-                                      const SnackBar(content: Text("Selecione sua disponibilidade!"))
+                                      const SnackBar(content: Text("Selecione sua disponibilidade!")),
                                     );
                                     return;
                                   }
-                                  // Lógica de cadastro aqui
+
+                                  // 1. Aqui você faria a lógica de salvar no banco de dados
+                                  
+                                  // 2. Navegação para o Dashboard
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) => const MenteeDashboardPage(),
+                                    ),
+                                  );
                                 }
                               } : null,
                               style: FilledButton.styleFrom(
