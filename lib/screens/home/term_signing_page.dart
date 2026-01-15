@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'dart:html' as html; 
 import 'package:file_picker/file_picker.dart';
-import 'mentee_dashboard_page.dart';
+import 'waiting_analysis_page.dart';
 
 class TermSigningPage extends StatefulWidget {
   const TermSigningPage({super.key});
@@ -118,7 +118,7 @@ class _TermSigningPageState extends State<TermSigningPage> {
                         subtitle: "O arquivo deve estar no formato PDF.",
                         buttonLabel: arquivoImportado ? "Trocar Arquivo" : "Selecionar Arquivo",
                         color: arquivoImportado ? Colors.green : brandColor,
-                        onPressed: _importarArquivo, // AGORA USA A FUNÇÃO REAL
+                        onPressed: _importarArquivo,
                       ),
 
                       if (arquivoImportado) ...[
@@ -137,7 +137,9 @@ class _TermSigningPageState extends State<TermSigningPage> {
                                 ? () {
                                     Navigator.push(
                                       context,
-                                      MaterialPageRoute(builder: (context) => const MenteeDashboardPage()),
+                                      MaterialPageRoute(
+                                        builder: (context) => WaitingAnalysisPage(), // REMOVIDO CONST E DUPLICATA
+                                      ),
                                     );
                                   }
                                 : null,
