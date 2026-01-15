@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:frontend/screens/home/mentee_dashboard_page.dart';
+import 'package:frontend/screens/home/term_signing_page.dart';
 
 class MenteeRegistrationPage extends StatefulWidget {
   const MenteeRegistrationPage({super.key});
@@ -164,12 +165,13 @@ class _MenteeRegistrationPageState extends State<MenteeRegistrationPage> {
                                   // 1. Aqui você faria a lógica de salvar no banco de dados
                                   
                                   // 2. Navegação para o Dashboard
-                                  Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                      builder: (context) => const MenteeDashboardPage(),
-                                    ),
-                                  );
+                                  // No seu botão de registro:
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => TermSigningPage(), // SEM o const aqui
+                                  ),
+                                );
                                 }
                               } : null,
                               style: FilledButton.styleFrom(
@@ -177,7 +179,7 @@ class _MenteeRegistrationPageState extends State<MenteeRegistrationPage> {
                                 disabledBackgroundColor: Colors.grey[200],
                                 shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
                               ),
-                              child: const Text("Criar conta", style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+                              child: const Text("Enviar Cadastro", style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
                             ),
                           ),
                         ),
