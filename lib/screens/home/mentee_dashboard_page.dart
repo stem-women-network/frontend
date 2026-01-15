@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'settings_page.dart';
 import 'progress_page.dart';
+import 'certificates_page.dart';
 
 class MenteeDashboardPage extends StatelessWidget {
   const MenteeDashboardPage({super.key});
@@ -15,6 +16,35 @@ class MenteeDashboardPage extends StatelessWidget {
   Widget build(BuildContext context) {
     bool isMobile = MediaQuery.of(context).size.width < 600;
 
+    var children = [
+                      _buildQuickAction(
+                        Icons.bar_chart,
+                        "Meu progresso",
+                        "Ver linha do tempo",
+                        laranja,
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(builder: (context) => const ProgressPage()),
+                          );
+                        },
+                      ),
+                      _buildQuickAction(
+    Icons.emoji_events, 
+    "Certificado", 
+    "Ver conquistas", 
+    coral, // ou a cor que você definiu
+    onTap: () {
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => const CertificatesPage()),
+      );
+    },
+  ),
+                      _buildQuickAction(Icons.calendar_today, "Eventos", "Ver próximos", petroleo),
+                      _buildQuickAction(Icons.menu_book, "Treinamento", "Materiais", laranja),
+                      _buildQuickAction(Icons.front_hand, "Primeiro Contato", "Registrar", coral),
+                    ];
     return Scaffold(
       backgroundColor: brandColor,
       body: SafeArea(
@@ -179,24 +209,7 @@ class MenteeDashboardPage extends StatelessWidget {
                     crossAxisSpacing: 20, // Espaçamento maior entre cards
                     mainAxisSpacing: 20,
                     childAspectRatio: isMobile ? 4.5 : 2.2, // Ajuste de proporção
-                    children: [
-                      _buildQuickAction(
-                        Icons.bar_chart,
-                        "Meu progresso",
-                        "Ver linha do tempo",
-                        laranja,
-                        onTap: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(builder: (context) => const ProgressPage()),
-                          );
-                        },
-                      ),
-                      _buildQuickAction(Icons.emoji_events, "Certificado", "Ver conquistas", coral),
-                      _buildQuickAction(Icons.calendar_today, "Eventos", "Ver próximos", petroleo),
-                      _buildQuickAction(Icons.menu_book, "Treinamento", "Materiais", laranja),
-                      _buildQuickAction(Icons.front_hand, "Primeiro Contato", "Registrar", coral),
-                    ],
+                    children: children,
                   ),
                   // Margem inferior extra para não cortar
                   const SizedBox(height: 40),

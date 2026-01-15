@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:frontend/screens/home/mentor_registration_page.dart';
-import 'package:frontend/screens/home/mentee_registration_page.dart';
-import 'package:frontend/screens/home/mentee_dashboard_page.dart'; 
+import 'mentee_registration_page.dart';
+import 'mentee_dashboard_page.dart';
+
 
 class SignUpPage extends StatefulWidget {
   const SignUpPage({super.key});
@@ -90,7 +91,6 @@ class _SignUpPageState extends State<SignUpPage> {
                       
                       const SizedBox(height: 50),
                       
-                      // Botão Continuar
                       AnimatedContainer(
                         duration: const Duration(milliseconds: 300),
                         width: 240,
@@ -137,7 +137,8 @@ class _SignUpPageState extends State<SignUpPage> {
                         onPressed: () {
                           Navigator.push(
                             context,
-                            MaterialPageRoute(builder: (context) => const MenteeDashboardPage()),
+                            // REMOVIDO O 'const' DAQUI PARA CORRIGIR O ERRO
+                            MaterialPageRoute(builder: (context) => MenteeDashboardPage()),
                           );
                         },
                         style: TextButton.styleFrom(
@@ -163,7 +164,6 @@ class _SignUpPageState extends State<SignUpPage> {
     );
   }
 
-  // --- O resto do seu método _buildModernCard permanece igual ---
   Widget _buildModernCard({
     required int id,
     required String title,
