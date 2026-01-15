@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 class CertificatesPage extends StatelessWidget {
   const CertificatesPage({super.key});
 
-  // Paleta de Cores Consistente
   final Color brandColor = const Color(0xFF3E84A2);
   final Color petroleo = const Color(0xFF0B6F8E);
   final Color laranja = const Color(0xFFFE9F43);
@@ -20,7 +19,6 @@ class CertificatesPage extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // --- BOTÃO VOLTAR ---
               GestureDetector(
                 onTap: () => Navigator.pop(context),
                 child: Container(
@@ -64,7 +62,6 @@ class CertificatesPage extends StatelessWidget {
               
               const SizedBox(height: 35),
 
-              // --- CARD 1: CERTIFICADO DE CONCLUSÃO ---
               Container(
                 width: double.infinity,
                 padding: const EdgeInsets.all(24),
@@ -115,7 +112,6 @@ class CertificatesPage extends StatelessWidget {
 
               const SizedBox(height: 24),
 
-              // --- CARD 2: BADGE LINKEDIN ---
               Container(
                 width: double.infinity,
                 padding: const EdgeInsets.all(24),
@@ -131,7 +127,6 @@ class CertificatesPage extends StatelessWidget {
                     Row(
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
-                        // Visual do Badge (Estilizado)
                         Container(
                           width: 100,
                           height: 100,
@@ -153,7 +148,6 @@ class CertificatesPage extends StatelessWidget {
                           ),
                         ),
                         const SizedBox(width: 20),
-                        // Descrição e Ação
                         Expanded(
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'settings_page.dart';
 import 'progress_page.dart';
 import 'certificates_page.dart';
+import 'events_page.dart';
 
 class MenteeDashboardPage extends StatelessWidget {
   const MenteeDashboardPage({super.key});
@@ -17,34 +18,50 @@ class MenteeDashboardPage extends StatelessWidget {
     bool isMobile = MediaQuery.of(context).size.width < 600;
 
     var children = [
-                      _buildQuickAction(
-                        Icons.bar_chart,
-                        "Meu progresso",
-                        "Ver linha do tempo",
-                        laranja,
-                        onTap: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(builder: (context) => const ProgressPage()),
-                          );
-                        },
-                      ),
-                      _buildQuickAction(
-    Icons.emoji_events, 
-    "Certificado", 
-    "Ver conquistas", 
-    coral, // ou a cor que você definiu
-    onTap: () {
-      Navigator.push(
-        context,
-        MaterialPageRoute(builder: (context) => const CertificatesPage()),
-      );
-    },
-  ),
-                      _buildQuickAction(Icons.calendar_today, "Eventos", "Ver próximos", petroleo),
-                      _buildQuickAction(Icons.menu_book, "Treinamento", "Materiais", laranja),
-                      _buildQuickAction(Icons.front_hand, "Primeiro Contato", "Registrar", coral),
-                    ];
+      _buildQuickAction(
+        Icons.bar_chart,
+        "Meu progresso",
+        "Ver linha do tempo",
+        laranja,
+        onTap: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => const ProgressPage()),
+          );
+        },
+      ),
+      _buildQuickAction(
+        Icons.emoji_events,
+        "Certificado",
+        "Ver conquistas",
+        coral,
+        onTap: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => const CertificatesPage()),
+          );
+        },
+      ),
+      _buildQuickAction(
+        Icons.calendar_today,
+        "Eventos",
+        "Ver próximos",
+        petroleo,
+        onTap: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => const EventsPage()),
+          );
+        },
+      ),
+      _buildQuickAction(Icons.menu_book, "Treinamento", "Materiais", laranja),
+      _buildQuickAction(
+        Icons.front_hand,
+        "Primeiro Contato",
+        "Registrar",
+        coral,
+      ),
+    ];
     return Scaffold(
       backgroundColor: brandColor,
       body: SafeArea(
@@ -89,16 +106,17 @@ class MenteeDashboardPage extends StatelessWidget {
                             icon: Icons.settings,
                             onTap: () => Navigator.push(
                               context,
-                              MaterialPageRoute(builder: (context) => const SettingsPage()),
+                              MaterialPageRoute(
+                                builder: (context) => const SettingsPage(),
+                              ),
                             ),
                           ),
                         ],
                       ),
                     ],
                   ),
-                  
-                  const SizedBox(height: 35), // Mais respiro vertical
 
+                  const SizedBox(height: 35), // Mais respiro vertical
                   // --- CARD PERFIL (Full Width) ---
                   Container(
                     width: double.infinity,
@@ -113,7 +131,10 @@ class MenteeDashboardPage extends StatelessWidget {
                             shape: BoxShape.circle,
                             color: Colors.white,
                             boxShadow: [
-                              BoxShadow(color: Colors.black.withOpacity(0.05), blurRadius: 10),
+                              BoxShadow(
+                                color: Colors.black.withOpacity(0.05),
+                                blurRadius: 10,
+                              ),
                             ],
                           ),
                           child: CircleAvatar(
@@ -128,12 +149,18 @@ class MenteeDashboardPage extends StatelessWidget {
                             children: [
                               const Text(
                                 "Carolina Oliveira",
-                                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                                style: TextStyle(
+                                  fontSize: 20,
+                                  fontWeight: FontWeight.bold,
+                                ),
                               ),
                               const SizedBox(height: 6),
                               const Text(
                                 "Ciência da Computação • 3º Semestre",
-                                style: TextStyle(color: Colors.black54, fontSize: 13),
+                                style: TextStyle(
+                                  color: Colors.black54,
+                                  fontSize: 13,
+                                ),
                               ),
                               const SizedBox(height: 15),
                               // Badges e Infos
@@ -141,18 +168,25 @@ class MenteeDashboardPage extends StatelessWidget {
                                 spacing: 10,
                                 runSpacing: 10,
                                 children: [
-                                  _buildBadge("Match encontrado", Colors.green.shade50, Colors.green.shade700),
-                                  _infoText(Icons.calendar_today, "Manhã e tarde"),
+                                  _buildBadge(
+                                    "Match encontrado",
+                                    Colors.green.shade50,
+                                    Colors.green.shade700,
+                                  ),
+                                  _infoText(
+                                    Icons.calendar_today,
+                                    "Manhã e tarde",
+                                  ),
                                   _infoText(Icons.people_outline, "2 mentoras"),
                                 ],
-                              )
+                              ),
                             ],
                           ),
                         ),
                       ],
                     ),
                   ),
-                  
+
                   const SizedBox(height: 25),
 
                   // --- MENTORA & ENCONTRO (Layout Flexível) ---
@@ -174,7 +208,7 @@ class MenteeDashboardPage extends StatelessWidget {
                             ],
                           ),
                   ),
-                  
+
                   const SizedBox(height: 25),
 
                   // --- HISTÓRICO DE ENCONTROS ---
@@ -185,19 +219,30 @@ class MenteeDashboardPage extends StatelessWidget {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        const Text("Histórico de encontros",
-                            style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18)),
+                        const Text(
+                          "Histórico de encontros",
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 18,
+                          ),
+                        ),
                         const SizedBox(height: 20),
-                        _buildHistoryItem("Introdução e objetivos", "15 Dez 2024 - 1h"),
+                        _buildHistoryItem(
+                          "Introdução e objetivos",
+                          "15 Dez 2024 - 1h",
+                        ),
                         const Padding(
                           padding: EdgeInsets.symmetric(vertical: 15),
                           child: Divider(height: 1),
                         ),
-                        _buildHistoryItem("Planejamento de carreiras", "22 Dez 2024 - 1h"),
+                        _buildHistoryItem(
+                          "Planejamento de carreiras",
+                          "22 Dez 2024 - 1h",
+                        ),
                       ],
                     ),
                   ),
-                  
+
                   const SizedBox(height: 25),
 
                   // --- GRID DE AÇÕES RÁPIDAS ---
@@ -208,7 +253,9 @@ class MenteeDashboardPage extends StatelessWidget {
                     crossAxisCount: isMobile ? 1 : 3,
                     crossAxisSpacing: 20, // Espaçamento maior entre cards
                     mainAxisSpacing: 20,
-                    childAspectRatio: isMobile ? 4.5 : 2.2, // Ajuste de proporção
+                    childAspectRatio: isMobile
+                        ? 4.5
+                        : 2.2, // Ajuste de proporção
                     children: children,
                   ),
                   // Margem inferior extra para não cortar
@@ -226,16 +273,16 @@ class MenteeDashboardPage extends StatelessWidget {
 
   // Decoração Unificada: Sombra suave e Borda arredondada (24)
   BoxDecoration _cardDecoration() => BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(24),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.06),
-            blurRadius: 20,
-            offset: const Offset(0, 8),
-          )
-        ],
-      );
+    color: Colors.white,
+    borderRadius: BorderRadius.circular(24),
+    boxShadow: [
+      BoxShadow(
+        color: Colors.black.withOpacity(0.06),
+        blurRadius: 20,
+        offset: const Offset(0, 8),
+      ),
+    ],
+  );
 
   Widget _buildMentoraCard() {
     return Container(
@@ -244,19 +291,34 @@ class MenteeDashboardPage extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Text("Minha mentora", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
+          const Text(
+            "Minha mentora",
+            style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+          ),
           const SizedBox(height: 20),
           Row(
             children: [
               CircleAvatar(
-                  radius: 24, backgroundColor: laranja.withOpacity(0.2), child: Icon(Icons.person, color: laranja)),
+                radius: 24,
+                backgroundColor: laranja.withOpacity(0.2),
+                child: Icon(Icons.person, color: laranja),
+              ),
               const SizedBox(width: 15),
               const Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text("Ana Paula Serra", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14)),
-                    Text("Dev Sênior", style: TextStyle(fontSize: 12, color: Colors.black54)),
+                    Text(
+                      "Ana Paula Serra",
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 14,
+                      ),
+                    ),
+                    Text(
+                      "Dev Sênior",
+                      style: TextStyle(fontSize: 12, color: Colors.black54),
+                    ),
                   ],
                 ),
               ),
@@ -275,7 +337,7 @@ class MenteeDashboardPage extends StatelessWidget {
               const SizedBox(width: 20),
               _textLink("Mensagem"),
             ],
-          )
+          ),
         ],
       ),
     );
@@ -288,14 +350,23 @@ class MenteeDashboardPage extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Text("Próximo encontro", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
+          const Text(
+            "Próximo encontro",
+            style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+          ),
           const SizedBox(height: 20),
           _infoRow(Icons.calendar_today, "28 Janeiro, 2025", isDark: true),
           const SizedBox(height: 10),
           _infoRow(Icons.access_time, "14:00 - 15:00", isDark: true),
           const SizedBox(height: 12),
-          const Text("Tópico: Revisão de Currículo",
-              style: TextStyle(fontSize: 13, color: Colors.black54, fontStyle: FontStyle.italic)),
+          const Text(
+            "Tópico: Revisão de Currículo",
+            style: TextStyle(
+              fontSize: 13,
+              color: Colors.black54,
+              fontStyle: FontStyle.italic,
+            ),
+          ),
           const Spacer(),
           const SizedBox(height: 15),
           SizedBox(
@@ -305,18 +376,29 @@ class MenteeDashboardPage extends StatelessWidget {
               style: FilledButton.styleFrom(
                 backgroundColor: petroleo,
                 padding: const EdgeInsets.symmetric(vertical: 12),
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12),
+                ),
                 elevation: 0,
               ),
-              child: const Text("Confirmar Presença", style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold)),
+              child: const Text(
+                "Confirmar Presença",
+                style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold),
+              ),
             ),
-          )
+          ),
         ],
       ),
     );
   }
 
-  Widget _buildQuickAction(IconData icon, String title, String sub, Color color, {VoidCallback? onTap}) {
+  Widget _buildQuickAction(
+    IconData icon,
+    String title,
+    String sub,
+    Color color, {
+    VoidCallback? onTap,
+  }) {
     return Material(
       color: Colors.white,
       borderRadius: BorderRadius.circular(24), // Borda consistente
@@ -328,14 +410,16 @@ class MenteeDashboardPage extends StatelessWidget {
           padding: const EdgeInsets.all(16),
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(24),
-            border: Border.all(color: Colors.grey.shade100), // Borda sutil para definição
+            border: Border.all(
+              color: Colors.grey.shade100,
+            ), // Borda sutil para definição
             boxShadow: [
-               BoxShadow(
+              BoxShadow(
                 color: Colors.black.withOpacity(0.03),
                 blurRadius: 10,
                 offset: const Offset(0, 4),
-              )
-            ]
+              ),
+            ],
           ),
           child: Row(
             children: [
@@ -353,9 +437,22 @@ class MenteeDashboardPage extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Text(title, style: const TextStyle(fontSize: 14, fontWeight: FontWeight.bold)),
+                    Text(
+                      title,
+                      style: const TextStyle(
+                        fontSize: 14,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
                     const SizedBox(height: 2),
-                    Text(sub, style: const TextStyle(fontSize: 11, color: Colors.black54), overflow: TextOverflow.ellipsis),
+                    Text(
+                      sub,
+                      style: const TextStyle(
+                        fontSize: 11,
+                        color: Colors.black54,
+                      ),
+                      overflow: TextOverflow.ellipsis,
+                    ),
                   ],
                 ),
               ),
@@ -371,12 +468,18 @@ class MenteeDashboardPage extends StatelessWidget {
   Widget _buildHeaderIcon(IconData icon) {
     return Container(
       padding: const EdgeInsets.all(12),
-      decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(14)),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(14),
+      ),
       child: Icon(icon, color: brandColor, size: 20),
     );
   }
-  
-  Widget _buildIconButton({required IconData icon, required VoidCallback onTap}) {
+
+  Widget _buildIconButton({
+    required IconData icon,
+    required VoidCallback onTap,
+  }) {
     return Material(
       color: Colors.white,
       borderRadius: BorderRadius.circular(14),
@@ -392,66 +495,107 @@ class MenteeDashboardPage extends StatelessWidget {
   }
 
   Widget _buildBadge(String text, Color bg, Color textCol) => Container(
-        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-        decoration: BoxDecoration(color: bg, borderRadius: BorderRadius.circular(8)),
-        child: Text(text, style: TextStyle(color: textCol, fontSize: 11, fontWeight: FontWeight.bold)),
-      );
+    padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+    decoration: BoxDecoration(
+      color: bg,
+      borderRadius: BorderRadius.circular(8),
+    ),
+    child: Text(
+      text,
+      style: TextStyle(
+        color: textCol,
+        fontSize: 11,
+        fontWeight: FontWeight.bold,
+      ),
+    ),
+  );
 
   Widget _buildTag(String text) => Container(
-        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-        decoration: BoxDecoration(
-            color: Colors.grey.shade50,
-            borderRadius: BorderRadius.circular(8),
-            border: Border.all(color: Colors.grey.shade200)),
-        child: Text(text, style: const TextStyle(fontSize: 11, color: Colors.black87, fontWeight: FontWeight.w500)),
-      );
+    padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+    decoration: BoxDecoration(
+      color: Colors.grey.shade50,
+      borderRadius: BorderRadius.circular(8),
+      border: Border.all(color: Colors.grey.shade200),
+    ),
+    child: Text(
+      text,
+      style: const TextStyle(
+        fontSize: 11,
+        color: Colors.black87,
+        fontWeight: FontWeight.w500,
+      ),
+    ),
+  );
 
   Widget _infoText(IconData icon, String text) => Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Icon(icon, size: 14, color: Colors.black45),
-          const SizedBox(width: 6),
-          Text(text, style: const TextStyle(fontSize: 12, color: Colors.black54)),
-        ],
-      );
+    mainAxisSize: MainAxisSize.min,
+    children: [
+      Icon(icon, size: 14, color: Colors.black45),
+      const SizedBox(width: 6),
+      Text(text, style: const TextStyle(fontSize: 12, color: Colors.black54)),
+    ],
+  );
 
   Widget _infoRow(IconData icon, String text, {bool isDark = false}) => Row(
-        children: [
-          Icon(icon, size: 16, color: isDark ? petroleo : Colors.black45),
-          const SizedBox(width: 8),
-          Text(text,
-              style: TextStyle(
-                  fontSize: 13,
-                  color: isDark ? Colors.black87 : Colors.black54,
-                  fontWeight: isDark ? FontWeight.w600 : FontWeight.normal)),
-        ],
-      );
+    children: [
+      Icon(icon, size: 16, color: isDark ? petroleo : Colors.black45),
+      const SizedBox(width: 8),
+      Text(
+        text,
+        style: TextStyle(
+          fontSize: 13,
+          color: isDark ? Colors.black87 : Colors.black54,
+          fontWeight: isDark ? FontWeight.w600 : FontWeight.normal,
+        ),
+      ),
+    ],
+  );
 
   Widget _textLink(String text) => InkWell(
-        onTap: () {},
-        child: Text(text,
-            style: TextStyle(
-                color: petroleo, fontSize: 12, decoration: TextDecoration.underline, fontWeight: FontWeight.w700)),
-      );
+    onTap: () {},
+    child: Text(
+      text,
+      style: TextStyle(
+        color: petroleo,
+        fontSize: 12,
+        decoration: TextDecoration.underline,
+        fontWeight: FontWeight.w700,
+      ),
+    ),
+  );
 
   Widget _buildHistoryItem(String title, String sub) => Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+    children: [
+      Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(title, style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 14)),
-              const SizedBox(height: 4),
-              Text(sub, style: const TextStyle(color: Colors.black45, fontSize: 12)),
-            ],
+          Text(
+            title,
+            style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 14),
           ),
-          Container(
-            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
-            decoration: BoxDecoration(
-                color: petroleo.withOpacity(0.05), borderRadius: BorderRadius.circular(8)),
-            child: Text("Ver detalhes",
-                style: TextStyle(color: petroleo, fontSize: 11, fontWeight: FontWeight.bold)),
+          const SizedBox(height: 4),
+          Text(
+            sub,
+            style: const TextStyle(color: Colors.black45, fontSize: 12),
           ),
         ],
-      );
+      ),
+      Container(
+        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+        decoration: BoxDecoration(
+          color: petroleo.withOpacity(0.05),
+          borderRadius: BorderRadius.circular(8),
+        ),
+        child: Text(
+          "Ver detalhes",
+          style: TextStyle(
+            color: petroleo,
+            fontSize: 11,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+      ),
+    ],
+  );
 }
