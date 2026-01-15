@@ -166,7 +166,6 @@ class _FirstContactPageState extends State<FirstContactPage> {
 
                     const SizedBox(height: 30),
 
-                    // --- CHECKBOX PROBLEMA ---
                     InkWell(
                       onTap: () => setState(() => _hasProblem = !_hasProblem),
                       borderRadius: BorderRadius.circular(8),
@@ -197,7 +196,7 @@ class _FirstContactPageState extends State<FirstContactPage> {
                         maxLines: 3,
                         decoration: _inputDecoration().copyWith(
                           hintText: "Descreva o problema brevemente...",
-                          fillColor: const Color(0xFFFFF8F8), // Fundo levemente avermelhado
+                          fillColor: const Color.fromARGB(255, 243, 243, 243), 
                         ),
                       ),
                     ],
