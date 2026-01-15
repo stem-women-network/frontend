@@ -1,18 +1,29 @@
+import 'dart:io';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 import 'settings_page.dart';
 import 'progress_page.dart';
 import 'certificates_page.dart';
 import 'events_page.dart';
 import 'first_contact_page.dart';
 import 'training_materials_page.dart';
+import 'profile_page.dart';
 
-class MenteeDashboardPage extends StatelessWidget {
+class MenteeDashboardPage extends StatefulWidget {
   const MenteeDashboardPage({super.key});
 
+  @override
+  State<MenteeDashboardPage> createState() => _MenteeDashboardPageState();
+}
+
+class _MenteeDashboardPageState extends State<MenteeDashboardPage> {
   final Color brandColor = const Color(0xFF3E84A2);
   final Color petroleo = const Color(0xFF0B6F8E);
   final Color coral = const Color(0xFFE4645B);
   final Color laranja = const Color(0xFFFE9F43);
+
+  XFile? _dashboardImage;
 
   void _showConfirmationDialog(BuildContext context) {
     showDialog(
@@ -67,16 +78,16 @@ class MenteeDashboardPage extends StatelessWidget {
         },
       ),
       _buildQuickAction(
-        Icons.menu_book, 
-        "Treinamento", 
-        "Materiais", 
-        laranja, 
+        Icons.menu_book,
+        "Treinamento",
+        "Materiais",
+        laranja,
         onTap: () {
           Navigator.push(
             context,
             MaterialPageRoute(builder: (context) => const TrainingMaterialsPage()),
           );
-        }
+        },
       ),
       _buildQuickAction(
         Icons.front_hand, 
@@ -122,9 +133,30 @@ class MenteeDashboardPage extends StatelessWidget {
                         children: [
                           _buildHeaderIcon(Icons.bar_chart),
                           const SizedBox(width: 12),
-                          _buildHeaderIcon(Icons.calendar_month),
+                          _buildIconButton(
+                            icon: Icons.calendar_month,
+                            onTap: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(builder: (context) => const EventsPage()),
+                              );
+                            },
+                          ),
                           const SizedBox(width: 12),
-                          _buildHeaderIcon(Icons.person),
+                          _buildIconButton(
+                            icon: Icons.person,
+                            onTap: () async {
+                              final result = await Navigator.push(
+                                context,
+                                MaterialPageRoute(builder: (context) => const ProfilePage()),
+                              );
+                              if (result != null && result is XFile) {
+                                setState(() {
+                                  _dashboardImage = result;
+                                });
+                              }
+                            },
+                          ),
                           const SizedBox(width: 12),
                           _buildIconButton(
                             icon: Icons.settings,
@@ -157,7 +189,15 @@ class MenteeDashboardPage extends StatelessWidget {
                               BoxShadow(color: Colors.black.withOpacity(0.05), blurRadius: 10),
                             ],
                           ),
-                          child: CircleAvatar(radius: 42, backgroundColor: coral),
+                          child: CircleAvatar(
+                            radius: 42, 
+                            backgroundColor: coral,
+                            backgroundImage: _dashboardImage != null 
+                                ? (kIsWeb 
+                                    ? NetworkImage(_dashboardImage!.path) 
+                                    : FileImage(File(_dashboardImage!.path)) as ImageProvider)
+                                : null,
+                          ),
                         ),
                         const SizedBox(width: 20),
                         Expanded(
