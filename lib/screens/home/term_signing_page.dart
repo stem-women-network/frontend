@@ -138,7 +138,7 @@ class _TermSigningPageState extends State<TermSigningPage> {
                                     Navigator.push(
                                       context,
                                       MaterialPageRoute(
-                                        builder: (context) => WaitingAnalysisPage(), // REMOVIDO CONST E DUPLICATA
+                                        builder: (context) => WaitingAnalysisPage(), 
                                       ),
                                     );
                                   }

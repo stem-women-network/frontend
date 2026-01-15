@@ -13,12 +13,10 @@ class _MenteeRegistrationPageState extends State<MenteeRegistrationPage> {
   final _formKey = GlobalKey<FormState>();
   final Color brandColor = const Color(0xFF3E84A2);
 
-  // Estados
   String? selectedDisponibilidade;
   String? comoSoube;
   bool aceitouTermos = false;
 
-  // Controllers para lógica de "Outros"
   final TextEditingController _outroComoSoubeController = TextEditingController();
 
   @override

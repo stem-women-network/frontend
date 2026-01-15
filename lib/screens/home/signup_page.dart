@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:frontend/screens/home/mentor_registration_page.dart';
 import 'package:frontend/screens/home/mentee_registration_page.dart';
-import 'package:frontend/screens/home/mentee_dashboard_page.dart'; // Import necessário para o Pular
+import 'package:frontend/screens/home/mentee_dashboard_page.dart'; 
 
 class SignUpPage extends StatefulWidget {
   const SignUpPage({super.key});
@@ -133,7 +133,6 @@ class _SignUpPageState extends State<SignUpPage> {
                       
                       const SizedBox(height: 15),
 
-                      // NOVO: Botão Pular
                       TextButton(
                         onPressed: () {
                           Navigator.push(
