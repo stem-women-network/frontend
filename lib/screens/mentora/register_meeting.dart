@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:frontend/widgets/default_container.dart';
 
-//TODO: Arrumar layout e adicionar validações
+//TODO: adicionar validações
 class RegisterMeeting extends StatefulWidget {
   const RegisterMeeting({super.key});
   @override
@@ -54,21 +54,29 @@ class RegisterMeetingState extends State<RegisterMeeting> {
                       children: [
                         Text(
                           "Registrar Encontro",
-                          style: TextStyle(fontWeight: FontWeight.bold),
+                          textScaler: TextScaler.linear(1.5),
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                          ),
                         ),
                         Text("Documente os detalhes da sessão de mentoria"),
                         Form(
                           key: _formKey,
                           child: Column(
-                            spacing: 5,
+                            spacing: 20,
                             children: [
-                              Text("Informações do encontro"),
+                              Container(
+                                padding: EdgeInsetsGeometry.only(top:20),
+                                alignment: Alignment.centerLeft,
+                                child: Text("Informações do encontro",style: TextStyle(fontWeight: FontWeight.w700),)),
                               Wrap(
+                                runSpacing: 10,
                                 children: [
                                   Column(
                                     children: [
                                       _buildLabel("Data do encontro"),
                                       TextFormField(
+                                        cursorColor: brandColor,
                                         onSaved: (value) {
                                           var dateList = value!
                                               .split("/")
@@ -90,6 +98,7 @@ class RegisterMeetingState extends State<RegisterMeeting> {
                                     children: [
                                       _buildLabel("Horário"),
                                       TextFormField(
+                                        cursorColor: brandColor,
                                         onSaved: (value) => _horario = value,
                                         decoration: _inputDecoration("--:--"),
                                       ),
@@ -99,6 +108,7 @@ class RegisterMeetingState extends State<RegisterMeeting> {
                                     children: [
                                       _buildLabel("Duração (em minutos)"),
                                       TextFormField(
+                                        cursorColor: brandColor,
                                         onSaved: (value) =>
                                             _duracao = int.parse(value!),
                                         decoration: _inputDecoration("60"),
@@ -112,6 +122,18 @@ class RegisterMeetingState extends State<RegisterMeeting> {
                                   _buildLabel("Mentorada"),
                                   DropdownMenuFormField(
                                     onSaved: (value) => _mentorada = value,
+                                    width: double.infinity,
+                                    menuStyle: MenuStyle(
+                                      backgroundColor: WidgetStatePropertyAll(Colors.white),
+                                      surfaceTintColor: WidgetStatePropertyAll(Colors.white),
+                                    ),
+                                    inputDecorationTheme:
+                                    InputDecorationThemeData(
+                                      enabledBorder: OutlineInputBorder(borderSide: BorderSide(color:Color(0xFFCBCBCB))),
+                                      focusedBorder: OutlineInputBorder(borderSide: BorderSide(color:brandColor)),
+                                    focusColor: brandColor,
+                                    hoverColor: brandColor,
+                                  ),
                                     dropdownMenuEntries: [
                                       DropdownMenuEntry(
                                         label: "Mentorada",
@@ -125,6 +147,7 @@ class RegisterMeetingState extends State<RegisterMeeting> {
                                 children: [
                                   _buildLabel("Tema do encontro"),
                                   TextFormField(
+                                    cursorColor: brandColor,
                                     onSaved: (value) => _temaEncontro = value,
                                     decoration: _inputDecoration(
                                       "Ex: Revisão de currículo, Planejamento de carreira",
@@ -136,7 +159,8 @@ class RegisterMeetingState extends State<RegisterMeeting> {
                                 children: [
                                   _buildLabel("Tópicos"),
                                   TextFormField(
-                                    onSaved : (value) => _topicos = value,
+                                    cursorColor: brandColor,
+                                    onSaved: (value) => _topicos = value,
                                     maxLines: 3,
                                     decoration: _inputDecoration(
                                       "Descreva os principais tópicos abordados durante a sessão",
@@ -146,32 +170,46 @@ class RegisterMeetingState extends State<RegisterMeeting> {
                               ),
                               Column(
                                 children: [
-                                  _buildLabel(
-                                    "Avaliação de progresso de mentorada",
+                                  Align(
+                                    alignment: AlignmentGeometry.centerLeft,
+                                    child: Text(
+                                      "Avaliação de progresso de mentorada",
+                                      style: TextStyle(
+                                        fontWeight: FontWeight.w700
+                                      ),
+                                    ),
                                   ),
-                                  RadioGroup<int>(
-                                    groupValue: _avaliacao,
-                                    onChanged: (value) => setState(() {
-                                      _avaliacao = value;
-                                    }),
-                                    child: Row(
-                                      spacing: 8,
-                                      children: List.generate(5, (i) => i + 1)
-                                          .map(
-                                            (value) =>
-                                                CustomRadio(value: value),
-                                          )
-                                          .toList(),
+                                  Container(
+                                    alignment: AlignmentGeometry.centerLeft,
+                                    padding: const EdgeInsets.only(top: 5),
+                                    child: RadioGroup<int>(
+                                      groupValue: _avaliacao,
+                                      onChanged: (value) => setState(() {
+                                        _avaliacao = value;
+                                      }),
+                                      child: Wrap(
+                                        spacing: 8,
+                                        children: List.generate(5, (i) => i + 1)
+                                            .map(
+                                              (value) =>
+                                                  CustomRadio(value: value),
+                                            )
+                                            .toList(),
+                                      ),
                                     ),
                                   ),
                                 ],
                               ),
+                              Align(
+                                alignment: AlignmentGeometry.centerLeft,
+                                child: Text("1 = Necessita mais suporte · 5 = Excelente progresso")),
                               Column(
                                 children: [
                                   _buildLabel(
                                     "Observações e próximos passos (só mentor)",
                                   ),
                                   TextFormField(
+                                    cursorColor: brandColor,
                                     maxLines: 5,
                                     onSaved: (value) => _observacoes = value,
                                     decoration: _inputDecoration(
@@ -182,13 +220,18 @@ class RegisterMeetingState extends State<RegisterMeeting> {
                               ),
                               Column(
                                 children: [
-                                  Text("Agendar Próximo Encontro"),
+                                  Container(
+                                    padding: EdgeInsetsGeometry.only(top:5, bottom: 10),
+                                    alignment: Alignment.centerLeft,
+                                    child: Text("Agendar Próximo Encontro")),
                                   Wrap(
+                                    runSpacing: 10,
                                     children: [
                                       Column(
                                         children: [
                                           _buildLabel("Data sugerida"),
                                           TextFormField(
+                                            cursorColor: brandColor,
                                             onSaved: (value) {
                                               var dateList = value!
                                                   .split("/")
@@ -210,7 +253,9 @@ class RegisterMeetingState extends State<RegisterMeeting> {
                                         children: [
                                           _buildLabel("Horário"),
                                           TextFormField(
-                                            onSaved: (value) => _horarioSugerido = value,
+                                            cursorColor: brandColor,
+                                            onSaved: (value) =>
+                                                _horarioSugerido = value,
                                             decoration: _inputDecoration(
                                               "--:--",
                                             ),
@@ -219,29 +264,71 @@ class RegisterMeetingState extends State<RegisterMeeting> {
                                       ),
                                     ],
                                   ),
-                                  Row(
-                                    mainAxisAlignment: MainAxisAlignment.end,
-                                    children: [
-                                      FloatingActionButton(onPressed: () => ()),
-                                      FloatingActionButton(
-                                        onPressed: () {
-                                          if (_formKey.currentState!
-                                              .validate() && _avaliacao != null) {
-                                            _formKey.currentState!.save();
-                                            print(_dataEncontro);
-                                            print(_horario);
-                                            print(_duracao);
-                                            print(_mentorada);
-                                            print(_temaEncontro);
-                                            print(_topicos);
-                                            print(_avaliacao);
-                                            print(_observacoes);
-                                            print(_dataSugerida);
-                                            print(_horarioSugerido);
-                                          }
-                                        },
-                                      ),
-                                    ],
+                                  Padding(
+                                    padding: const EdgeInsets.only(top: 20),
+                                    child: Wrap(
+                                      spacing: 5,
+                                      runSpacing: 5,
+                                      children: [
+                                        FilledButton(
+                                          onPressed: () {
+                                            _formKey.currentState?.reset();
+                                            setState(() => _avaliacao = null);
+                                          },
+                                          style: FilledButton.styleFrom(
+                                            backgroundColor: Colors.white,
+                                            shape: RoundedRectangleBorder(
+                                              borderRadius:
+                                                  BorderRadius.circular(8),
+                                            ),
+                                            side: BorderSide(color: brandColor),
+                                          ),
+                                          child: Text(
+                                            "Limpar registro",
+                                            style: TextStyle(
+                                              fontSize: 16,
+                                              color: brandColor,
+                                            ),
+                                          ),
+                                        ),
+                                        FilledButton(
+                                          onPressed: () {
+                                            if (_formKey.currentState!
+                                                    .validate() &&
+                                                _avaliacao != null) {
+                                              _formKey.currentState!.save();
+                                              print(_dataEncontro);
+                                              print(_horario);
+                                              print(_duracao);
+                                              print(_mentorada);
+                                              print(_temaEncontro);
+                                              print(_topicos);
+                                              print(_avaliacao);
+                                              print(_observacoes);
+                                              print(_dataSugerida);
+                                              print(_horarioSugerido);
+                                            }
+                                          },
+                                          style:
+                                              FilledButton.styleFrom(
+                                                backgroundColor: brandColor,
+                                                shape: RoundedRectangleBorder(
+                                                  borderRadius:
+                                                      BorderRadius.circular(8),
+                                                ),
+                                              ).copyWith(
+                                                overlayColor:
+                                                    WidgetStateProperty.all(
+                                                      Colors.white10,
+                                                    ),
+                                              ),
+                                          child: const Text(
+                                            "Salvar  registro",
+                                            style: TextStyle(fontSize: 16),
+                                          ),
+                                        ),
+                                      ],
+                                    ),
                                   ),
                                 ],
                               ),
@@ -317,8 +404,8 @@ class _CustomRadioState extends State<CustomRadio> {
           onTap: () =>
               RadioGroup.maybeOf<int>(context)?.onChanged(widget.value),
           child: Container(
-            width: 30,
-            height: 30,
+            width: 50,
+            height: 50,
             decoration: BoxDecoration(
               shape: BoxShape.rectangle,
               borderRadius: BorderRadiusGeometry.all(Radius.circular(5)),
