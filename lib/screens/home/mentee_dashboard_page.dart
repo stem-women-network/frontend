@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:frontend/screens/home/chat_page.dart';
 import 'package:image_picker/image_picker.dart';
 import 'settings_page.dart';
 import 'progress_page.dart';
@@ -322,7 +323,29 @@ class _MenteeDashboardPageState extends State<MenteeDashboardPage> {
           Wrap(spacing: 8, children: [_buildTag("Desenvolvimento"), _buildTag("Data Science")]),
           const Spacer(),
           const SizedBox(height: 15),
-          Row(children: [_textLink("Ver perfil"), const SizedBox(width: 20), _textLink("Mensagem")]),
+          Row(
+            children: [
+              _textLink("Ver perfil"),
+              const SizedBox(width: 20),
+              InkWell(
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => ChatPage()),
+                  );
+                },
+                child: Text(
+                  "Mensagem",
+                  style: TextStyle(
+                    color: petroleo,
+                    fontSize: 12,
+                    decoration: TextDecoration.underline,
+                    fontWeight: FontWeight.w700,
+                  ),
+                ),
+              ),
+            ],
+          ),
         ],
       ),
     );
@@ -659,3 +682,4 @@ class _MeetingControlModalState extends State<MeetingControlModal> {
     );
   }
 }
+
