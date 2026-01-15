@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:frontend/screens/home/mentor_registration_page.dart';
 import 'package:frontend/screens/home/mentee_registration_page.dart';
+import 'package:frontend/screens/home/mentee_dashboard_page.dart'; // Import necessário para o Pular
 
 class SignUpPage extends StatefulWidget {
   const SignUpPage({super.key});
@@ -89,6 +90,7 @@ class _SignUpPageState extends State<SignUpPage> {
                       
                       const SizedBox(height: 50),
                       
+                      // Botão Continuar
                       AnimatedContainer(
                         duration: const Duration(milliseconds: 300),
                         width: 240,
@@ -98,20 +100,14 @@ class _SignUpPageState extends State<SignUpPage> {
                             ? null 
                             : () {
                                 if (selectedOption == 1) {
-                                  // Navega para Cadastro de Mentora
                                   Navigator.push(
                                     context,
-                                    MaterialPageRoute(
-                                      builder: (context) => const MentorRegistrationPage(),
-                                    ),
+                                    MaterialPageRoute(builder: (context) => MentorRegistrationPage()),
                                   );
                                 } else if (selectedOption == 2) {
-                                  // Navega para Cadastro de Mentorada
                                   Navigator.push(
                                     context,
-                                    MaterialPageRoute(
-                                      builder: (context) => const MenteeRegistrationPage(),
-                                    ),
+                                    MaterialPageRoute(builder: (context) => MenteeRegistrationPage()),
                                   );
                                 }
                               },
@@ -134,6 +130,29 @@ class _SignUpPageState extends State<SignUpPage> {
                           ),
                         ),
                       ),
+                      
+                      const SizedBox(height: 15),
+
+                      // NOVO: Botão Pular
+                      TextButton(
+                        onPressed: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(builder: (context) => const MenteeDashboardPage()),
+                          );
+                        },
+                        style: TextButton.styleFrom(
+                          foregroundColor: brandColor,
+                        ),
+                        child: const Text(
+                          "Pular dashboard mentee",
+                          style: TextStyle(
+                            fontSize: 15,
+                            fontWeight: FontWeight.w600,
+                            decoration: TextDecoration.underline,
+                          ),
+                        ),
+                      ),
                     ],
                   ),
                 ),
@@ -145,6 +164,7 @@ class _SignUpPageState extends State<SignUpPage> {
     );
   }
 
+  // --- O resto do seu método _buildModernCard permanece igual ---
   Widget _buildModernCard({
     required int id,
     required String title,
@@ -153,7 +173,6 @@ class _SignUpPageState extends State<SignUpPage> {
     required IconData icon,
   }) {
     bool isSelected = selectedOption == id;
-
     return GestureDetector(
       onTap: () => setState(() => selectedOption = id),
       child: AnimatedScale(
