@@ -28,20 +28,19 @@ class _EventsPageState extends State<EventsPage> {
     }
   }
 
-  // --- MODAL DO INGRESSO (Atualizado) ---
   void _showTicketDialog({
     required String title,
     required String date,
     required String time,
     required String location,
-    required VoidCallback onCancel, // Recebe a função de cancelar
+    required VoidCallback onCancel, 
   }) {
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
       backgroundColor: Colors.transparent,
       builder: (context) => Container(
-        height: MediaQuery.of(context).size.height * 0.80, // Um pouco mais alto
+        height: MediaQuery.of(context).size.height * 0.80, 
         decoration: const BoxDecoration(
           color: Colors.white,
           borderRadius: BorderRadius.vertical(top: Radius.circular(30)),
@@ -66,7 +65,6 @@ class _EventsPageState extends State<EventsPage> {
             
             const SizedBox(height: 30),
 
-            // --- ÁREA DO QR CODE ---
             Expanded(
               child: Container(
                 width: double.infinity,
@@ -80,12 +78,10 @@ class _EventsPageState extends State<EventsPage> {
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    // Simulando QR Code (Em app real, use o pacote 'qr_flutter')
                     Icon(Icons.qr_code_2, color: petroleo, size: 200),
                     
                     const SizedBox(height: 10),
                     
-                    // Token simulado
                     Container(
                       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
                       decoration: BoxDecoration(color: Colors.grey.shade100, borderRadius: BorderRadius.circular(4)),
@@ -94,7 +90,6 @@ class _EventsPageState extends State<EventsPage> {
 
                     const SizedBox(height: 20),
                     
-                    // Texto Explicativo (Solicitado)
                     Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 20),
                       child: Text(
@@ -129,9 +124,8 @@ class _EventsPageState extends State<EventsPage> {
                 Expanded(
                   child: OutlinedButton.icon(
                     onPressed: () {
-                      // Lógica de Cancelar
-                      Navigator.pop(context); // Fecha o modal
-                      onCancel(); // Executa a função de cancelar passada por parâmetro
+                      Navigator.pop(context); 
+                      onCancel(); 
                       ScaffoldMessenger.of(context).showSnackBar(
                         const SnackBar(
                           content: Text("Presença cancelada com sucesso."),
@@ -208,7 +202,6 @@ class _EventsPageState extends State<EventsPage> {
 
             const SizedBox(height: 20),
 
-            // --- CARD 2 ---
             _buildCleanEventCard(
               title: "Workshop: Mentoria",
               date: "15 Mar • 14:00",
@@ -237,7 +230,6 @@ class _EventsPageState extends State<EventsPage> {
     );
   }
 
-  // --- CARD PRINCIPAL (Mantido igual, apenas para compor a tela) ---
   Widget _buildCleanEventCard({
     required String title,
     required String date,

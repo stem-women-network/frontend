@@ -3,6 +3,7 @@ import 'settings_page.dart';
 import 'progress_page.dart';
 import 'certificates_page.dart';
 import 'events_page.dart';
+import 'first_contact_page.dart';
 
 class MenteeDashboardPage extends StatelessWidget {
   const MenteeDashboardPage({super.key});
@@ -56,10 +57,16 @@ class MenteeDashboardPage extends StatelessWidget {
       ),
       _buildQuickAction(Icons.menu_book, "Treinamento", "Materiais", laranja),
       _buildQuickAction(
-        Icons.front_hand,
-        "Primeiro Contato",
-        "Registrar",
-        coral,
+        Icons.front_hand, 
+        "Primeiro Contato", 
+        "Registrar", 
+        coral, 
+        onTap: () {
+          Navigator.push(
+            context, 
+            MaterialPageRoute(builder: (context) => FirstContactPage())
+          );
+        }
       ),
     ];
     return Scaffold(
