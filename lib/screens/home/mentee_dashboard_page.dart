@@ -1,15 +1,19 @@
 import 'dart:io';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:frontend/screens/home/chat_page.dart';
 import 'package:image_picker/image_picker.dart';
-import 'settings_page.dart';
+
+// --- SEUS IMPORTS REAIS ---
+// Certifique-se de que esses arquivos estão na mesma pasta
 import 'progress_page.dart';
 import 'certificates_page.dart';
 import 'events_page.dart';
-import 'first_contact_page.dart';
 import 'training_materials_page.dart';
+import 'first_contact_page.dart';
+import 'chat_page.dart';
+import 'settings_page.dart';
 import 'profile_page.dart';
+// import 'survey_page.dart'; // Descomente se já tiver criado este arquivo separado
 
 class MenteeDashboardPage extends StatefulWidget {
   const MenteeDashboardPage({super.key});
@@ -26,6 +30,7 @@ class _MenteeDashboardPageState extends State<MenteeDashboardPage> {
 
   XFile? _dashboardImage;
 
+  // Modal de Confirmação de Encontro (Estilo Bonito "Double Check")
   void _showConfirmationDialog(BuildContext context) {
     showDialog(
       context: context,
@@ -33,6 +38,18 @@ class _MenteeDashboardPageState extends State<MenteeDashboardPage> {
         backgroundColor: Colors.transparent,
         insetPadding: const EdgeInsets.all(20),
         child: const MeetingControlModal(),
+      ),
+    );
+  }
+
+  // Modal de Ouvidoria
+  void _showSupportDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (context) => Dialog(
+        backgroundColor: Colors.transparent,
+        insetPadding: const EdgeInsets.all(20),
+        child: const SupportDialog(),
       ),
     );
   }
@@ -102,7 +119,15 @@ class _MenteeDashboardPageState extends State<MenteeDashboardPage> {
           );
         }
       ),
+      _buildQuickAction(
+        Icons.support_agent, 
+        "Ouvidoria", 
+        "Fale com a organização", 
+        brandColor, 
+        onTap: () => _showSupportDialog(context),
+      ),
     ];
+
     return Scaffold(
       backgroundColor: brandColor,
       body: SafeArea(
@@ -115,6 +140,7 @@ class _MenteeDashboardPageState extends State<MenteeDashboardPage> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
+                  // --- HEADER ---
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     crossAxisAlignment: CrossAxisAlignment.center,
@@ -175,6 +201,7 @@ class _MenteeDashboardPageState extends State<MenteeDashboardPage> {
 
                   const SizedBox(height: 35),
                   
+                  // --- CARD PERFIL ---
                   Container(
                     width: double.infinity,
                     padding: const EdgeInsets.all(25),
@@ -227,6 +254,7 @@ class _MenteeDashboardPageState extends State<MenteeDashboardPage> {
 
                   const SizedBox(height: 25),
 
+                  // --- CARTÕES DE MENTORA E ENCONTRO ---
                   IntrinsicHeight(
                     child: isMobile
                         ? Column(
@@ -248,6 +276,7 @@ class _MenteeDashboardPageState extends State<MenteeDashboardPage> {
 
                   const SizedBox(height: 25),
 
+                  // --- HISTÓRICO ---
                   Container(
                     width: double.infinity,
                     padding: const EdgeInsets.all(25),
@@ -266,6 +295,7 @@ class _MenteeDashboardPageState extends State<MenteeDashboardPage> {
 
                   const SizedBox(height: 25),
 
+                  // --- GRID DE BOTÕES ---
                   GridView.count(
                     shrinkWrap: true,
                     physics: const NeverScrollableScrollPhysics(),
@@ -284,6 +314,8 @@ class _MenteeDashboardPageState extends State<MenteeDashboardPage> {
       ),
     );
   }
+
+  // --- HELPERS E WIDGETS ---
 
   BoxDecoration _cardDecoration() => BoxDecoration(
     color: Colors.white,
@@ -331,7 +363,7 @@ class _MenteeDashboardPageState extends State<MenteeDashboardPage> {
                 onTap: () {
                   Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (context) => ChatPage()),
+                    MaterialPageRoute(builder: (context) => const ChatPage()),
                   );
                 },
                 child: Text(
@@ -525,6 +557,9 @@ class _MenteeDashboardPageState extends State<MenteeDashboardPage> {
   );
 }
 
+// =========================================================
+// MODAL DE CONFIRMAÇÃO DE ENCONTRO (Restaurado Estilo Bonito)
+// =========================================================
 class MeetingControlModal extends StatefulWidget {
   const MeetingControlModal({super.key});
 
@@ -683,3 +718,105 @@ class _MeetingControlModalState extends State<MeetingControlModal> {
   }
 }
 
+// ==========================================
+// MODAL DE SUPORTE (OUVIDORIA)
+// ==========================================
+class SupportDialog extends StatefulWidget {
+  const SupportDialog({super.key});
+
+  @override
+  State<SupportDialog> createState() => _SupportDialogState();
+}
+
+class _SupportDialogState extends State<SupportDialog> {
+  final Color petroleo = const Color(0xFF0B6F8E);
+  final Color inputGrey = const Color.fromARGB(255, 217, 217, 217);
+  final TextEditingController _msgController = TextEditingController();
+  String? _selectedReason;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: double.infinity,
+      constraints: const BoxConstraints(maxWidth: 400),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(24),
+      ),
+      padding: const EdgeInsets.all(24),
+      child: SingleChildScrollView(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Center(
+              child: Column(
+                children: [
+                  Container(
+                    padding: const EdgeInsets.all(12),
+                    decoration: BoxDecoration(color: petroleo.withOpacity(0.1), shape: BoxShape.circle),
+                    child: Icon(Icons.support_agent, color: petroleo, size: 30),
+                  ),
+                  const SizedBox(height: 15),
+                  Text("Ouvidoria & Suporte", style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: petroleo)),
+                  const SizedBox(height: 5),
+                  const Text("Como podemos ajudar você hoje?", style: TextStyle(color: Colors.grey, fontSize: 13)),
+                ],
+              ),
+            ),
+            const SizedBox(height: 30),
+            const Text("Motivo do contato", style: TextStyle(fontWeight: FontWeight.w600, fontSize: 14)),
+            const SizedBox(height: 8),
+            DropdownButtonFormField<String>(
+              value: _selectedReason,
+              items: ["Troca de Mentor", "Suporte Técnico", "Denúncia", "Outros"]
+                  .map((e) => DropdownMenuItem(value: e, child: Text(e))).toList(),
+              onChanged: (v) => setState(() => _selectedReason = v),
+              decoration: _inputDecoration(),
+            ),
+            const SizedBox(height: 20),
+            const Text("Sua mensagem", style: TextStyle(fontWeight: FontWeight.w600, fontSize: 14)),
+            const SizedBox(height: 8),
+            TextField(
+              controller: _msgController,
+              maxLines: 4,
+              decoration: _inputDecoration().copyWith(hintText: "Descreva sua solicitação..."),
+            ),
+            const SizedBox(height: 30),
+            SizedBox(
+              width: double.infinity,
+              height: 50,
+              child: FilledButton(
+                onPressed: () {
+                  Navigator.pop(context);
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(content: const Text("Mensagem enviada com sucesso!"), backgroundColor: petroleo),
+                  );
+                },
+                style: FilledButton.styleFrom(
+                  backgroundColor: petroleo,
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                ),
+                child: const Text("Enviar Solicitação", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  InputDecoration _inputDecoration() {
+    return InputDecoration(
+      filled: true,
+      fillColor: inputGrey,
+      contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+      border: OutlineInputBorder(borderRadius: BorderRadius.circular(12), borderSide: BorderSide.none),
+      enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(12), borderSide: BorderSide.none),
+      focusedBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(12),
+        borderSide: BorderSide(color: petroleo, width: 1.5),
+      ),
+    );
+  }
+}
