@@ -39,6 +39,7 @@ dependencies:
   google_fonts: ^6.3.3
   url_launcher: ^6.3.2
   image_picker: ^1.0.7  # Adicione esta linha
+  intl: ^0.20.2
 
 dev_dependencies:
   flutter_test:

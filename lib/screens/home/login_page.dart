@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'coordinator/coordinator_dashboard_page.dart';
 import 'administrativo/admin_dashboard_page.dart';
 import 'signup_page.dart';
+import '../mentora/dashboard.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -144,7 +145,10 @@ class _LoginPageState extends State<LoginPage> {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        const Text("Não tem uma conta? ", style: TextStyle(color: Colors.black87)),
+                        const Text(
+                          "Não tem uma conta? ",
+                          style: TextStyle(color: Colors.black87),
+                        ),
                         GestureDetector(
                           onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => const SignUpPage())),
                           child: Text("Criar conta", style: TextStyle(color: brandColor, fontWeight: FontWeight.bold)),
