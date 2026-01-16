@@ -1,5 +1,9 @@
 import 'package:flutter/material.dart';
 
+// --- IMPORT CORRIGIDO PARA SUA ESTRUTURA ATUAL ---
+// O arquivo está dentro de home/coordinator, então o caminho é direto:
+import 'coordinator/coordinator_dashboard_page.dart';
+
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
 
@@ -59,7 +63,6 @@ class _LoginPageState extends State<LoginPage> {
                     ),
                     const SizedBox(height: 35),
                     
-                    // Campo E-mail
                     _buildLabel("E-mail"),
                     const SizedBox(height: 8),
                     TextFormField(
@@ -67,7 +70,6 @@ class _LoginPageState extends State<LoginPage> {
                     ),
                     const SizedBox(height: 20),
                     
-                    // Campo Senha
                     _buildLabel("Senha"),
                     const SizedBox(height: 8),
                     TextFormField(
@@ -75,7 +77,6 @@ class _LoginPageState extends State<LoginPage> {
                       decoration: _inputDecoration("*********"),
                     ),
                     
-                    // Esqueci minha senha
                     Align(
                       alignment: Alignment.centerRight,
                       child: TextButton(
@@ -91,7 +92,6 @@ class _LoginPageState extends State<LoginPage> {
                     ),
                     const SizedBox(height: 35),
 
-                    // Botão Entrar
                     SizedBox(
                       width: double.infinity,
                       height: 48,
@@ -112,7 +112,6 @@ class _LoginPageState extends State<LoginPage> {
                     ),
                     const SizedBox(height: 20),
 
-                    // Link de Cadastro
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
@@ -130,6 +129,21 @@ class _LoginPageState extends State<LoginPage> {
                           ),
                         ),
                       ],
+                    ),
+
+                    const SizedBox(height: 20),
+
+                    // --- BOTÃO DE COORDENADOR (APAGAR DEPOIS) ---
+                    TextButton.icon(
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          // Import corrigido, agora deve funcionar
+                          MaterialPageRoute(builder: (context) => const CoordinatorDashboardPage()),
+                        );
+                      },
+                      icon: const Icon(Icons.admin_panel_settings, color: Colors.red),
+                      label: const Text("Acesso Rápido Coordenador", style: TextStyle(color: Colors.red)),
                     ),
                   ],
                 ),
