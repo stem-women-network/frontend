@@ -7,8 +7,12 @@ class MentoradaInfo extends StatelessWidget {
   final String mentoradaName;
   final String curso;
   final int? semestre;
+  final String? instituicao;
+  final String? objetivo;
+  final List<String>? disponibilidade;
   final int? progresso;
   final DateTime? proximoEncontro;
+  final Color? backgroundColor;
 
   const MentoradaInfo({
     super.key,
@@ -16,8 +20,12 @@ class MentoradaInfo extends StatelessWidget {
     required this.mentoradaName,
     required this.curso,
     this.semestre,
+    this.instituicao,
+    this.objetivo,
+    this.disponibilidade,
     this.progresso,
     this.proximoEncontro,
+    this.backgroundColor,
   });
 
   @override
@@ -26,7 +34,7 @@ class MentoradaInfo extends StatelessWidget {
       width: double.infinity,
       padding: EdgeInsetsGeometry.symmetric(vertical: 10, horizontal: 10),
       decoration: BoxDecoration(
-        color: Color(0xFFF9FAFB),
+        color: backgroundColor ?? Color(0xFFF9FAFB),
         borderRadius: BorderRadius.all(Radius.circular(5)),
       ),
       child: Wrap(
@@ -55,26 +63,60 @@ class MentoradaInfo extends StatelessWidget {
                   Wrap(
                     children: [
                       Text(
-                        "$curso${semestre != null ? ' • $semestre semestre' : ''}",
+                        "$curso${semestre != null ? ' • $semestre semestre' : ''}${instituicao != null ? ' • $instituicao' : ''}",
                       ),
                     ],
                   ),
+                  if (objetivo != null)
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          "Objetivo:",
+                          style: TextStyle(
+                            color: Color(0xFF4A5464),
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        Text(objetivo!),
+                      ],
+                    ),
+                  if (disponibilidade != null)
+                    Wrap(
+                      crossAxisAlignment: WrapCrossAlignment.center,
+                      spacing: 5,
+                      children: [
+                        Icon(Icons.calendar_month_rounded, size: 25),
+                        Text("Disponível:"),
+                        ...disponibilidade!.map(
+                          (value) => Container(
+                            padding: EdgeInsetsGeometry.symmetric(vertical: 3, horizontal: 5),
+                            decoration: BoxDecoration(
+                              color: Color(0xFFEFEFEF),
+                              borderRadius: BorderRadiusGeometry.all(Radius.circular(5))
+                            ),
+                            child: Text(value)
+                          )
+                        ),
+                      ],
+                    ),
                 ],
               ),
-              ],),
-              if (progresso != null)
-                ProgressBar(progresso: progresso, proximoEncontro: proximoEncontro)
-              else
-                FilledButton(
-                  onPressed: () => print("Ver perfil"),
-                  style: FilledButton.styleFrom(
-                    backgroundColor: brandColor,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                  ).copyWith(overlayColor: WidgetStateProperty.all(Colors.white10)),
-                  child: Text("Ver perfil"),
+            ],
+          ),
+          if (progresso != null)
+            ProgressBar(progresso: progresso, proximoEncontro: proximoEncontro)
+          else
+            FilledButton(
+              onPressed: () => print("Ver perfil"),
+              style: FilledButton.styleFrom(
+                backgroundColor: brandColor,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(8),
                 ),
+              ).copyWith(overlayColor: WidgetStateProperty.all(Colors.white10)),
+              child: Text("Ver perfil"),
+            ),
         ],
       ),
     );
@@ -82,7 +124,11 @@ class MentoradaInfo extends StatelessWidget {
 }
 
 class ProgressBar extends StatelessWidget {
-  const ProgressBar({super.key, required this.progresso, required this.proximoEncontro});
+  const ProgressBar({
+    super.key,
+    required this.progresso,
+    required this.proximoEncontro,
+  });
 
   final int? progresso;
   final DateTime? proximoEncontro;
@@ -116,15 +162,20 @@ class ProgressBar extends StatelessWidget {
             crossAxisAlignment: WrapCrossAlignment.center,
             runAlignment: WrapAlignment.spaceAround,
             children: [
-              Text("Próximo encontro: ${proximoEncontro!.day}/${proximoEncontro!.month}/${proximoEncontro!.year}"),
+              Text(
+                "Próximo encontro: ${proximoEncontro!.day}/${proximoEncontro!.month}/${proximoEncontro!.year}",
+              ),
               FilledButton(
                 onPressed: () => print("Ver perfil"),
-                style: FilledButton.styleFrom(
-                  backgroundColor: brandColor,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                ).copyWith(overlayColor: WidgetStateProperty.all(Colors.white10)),
+                style:
+                    FilledButton.styleFrom(
+                      backgroundColor: brandColor,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                    ).copyWith(
+                      overlayColor: WidgetStateProperty.all(Colors.white10),
+                    ),
                 child: Text("Ver perfil"),
               ),
             ],
