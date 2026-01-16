@@ -172,6 +172,12 @@ class _LoginPageState extends State<LoginPage> {
                       icon: const Icon(Icons.security, color: Colors.indigo),
                       label: const Text("Acesso Rápido Administrativo", style: TextStyle(color: Colors.indigo)),
                     ),
+                    // ACESSO RÁPIDO MENTORA
+                    TextButton.icon(
+                      onPressed: () => Navigator.push(context, MaterialPageRoute(builder: (context) => const MentoraDashboard())),
+                      icon: const Icon(Icons.person, color: Colors.green),
+                      label: const Text("Acesso Rápido Mentora", style: TextStyle(color: Colors.green)),
+                    ),
                   ],
                 ),
               ),
