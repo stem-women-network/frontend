@@ -4,7 +4,9 @@ import 'reports_page.dart';
 import 'new_event_page.dart';
 import 'manage_events_page.dart';
 import 'student_list_page.dart';
-import 'active_matches_page.dart'; // Import da página de matches
+import 'active_matches_page.dart';
+import 'coordinator_settings_page.dart';
+import 'coordinator_profile_page.dart';
 
 class CoordinatorDashboardPage extends StatefulWidget {
   const CoordinatorDashboardPage({super.key});
@@ -14,6 +16,7 @@ class CoordinatorDashboardPage extends StatefulWidget {
 }
 
 class _CoordinatorDashboardPageState extends State<CoordinatorDashboardPage> {
+  // Cores do Tema
   final Color brandColor = const Color(0xFF3E84A2);
   final Color petroleo = const Color(0xFF0B6F8E);
   final Color laranja = const Color(0xFFFE9F43);
@@ -36,30 +39,50 @@ class _CoordinatorDashboardPageState extends State<CoordinatorDashboardPage> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
+                  // --- HEADER COM ESPAÇAMENTO IDENTICO AO ENVIADO ---
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       const Expanded(
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
-                              "STEM Women Network",
-                              style: TextStyle(color: Colors.white, fontSize: 22, fontWeight: FontWeight.bold),
-                            ),
-                            SizedBox(height: 4),
-                            Text(
                               "Painel do Coordenador - IMT",
-                              style: TextStyle(color: Colors.white70, fontSize: 14),
+                              style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 22,
+                                  fontWeight: FontWeight.bold),
+                            ),
+                            SizedBox(height: 6),
+                            Text(
+                              "Gerencie o programa STEM Women Network na sua universidade",
+                              style: TextStyle(
+                                  color: Colors.white70,
+                                  fontSize: 14,
+                                  height: 1.4),
                             ),
                           ],
                         ),
                       ),
                       Row(
                         children: [
-                          _buildHeaderIcon(Icons.notifications_none),
-                          const SizedBox(width: 12),
-                          _buildHeaderIcon(Icons.settings),
+                          _buildHeaderIcon(Icons.bar_chart, onTap: () {
+                            Navigator.push(context, MaterialPageRoute(builder: (context) => const ReportsPage()));
+                          }),
+                          const SizedBox(width: 10),
+                          _buildHeaderIcon(Icons.calendar_month, onTap: () {
+                            Navigator.push(context, MaterialPageRoute(builder: (context) => const ManageEventsPage()));
+                          }),
+                          const SizedBox(width: 10),
+                          _buildHeaderIcon(Icons.person, onTap: () {
+                            Navigator.push(context, MaterialPageRoute(builder: (context) => const CoordinatorProfilePage()));
+                          }),
+                          const SizedBox(width: 10),
+                          _buildHeaderIcon(Icons.settings, onTap: () {
+                            Navigator.push(context, MaterialPageRoute(builder: (context) => const CoordinatorSettingsPage()));
+                          }),
                         ],
                       ),
                     ],
@@ -67,6 +90,7 @@ class _CoordinatorDashboardPageState extends State<CoordinatorDashboardPage> {
 
                   const SizedBox(height: 35),
 
+                  // --- CARD DE PERFIL CENTRAL ---
                   Container(
                     width: double.infinity,
                     padding: const EdgeInsets.all(25),
@@ -87,13 +111,13 @@ class _CoordinatorDashboardPageState extends State<CoordinatorDashboardPage> {
                           ),
                         ),
                         const SizedBox(width: 20),
-                        Expanded(
+                        const Expanded(
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              const Text("Prof. Carlos Mendes", style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
-                              const SizedBox(height: 6),
-                              const Text("Coordenador • Instituto Mauá de Tecnologia", style: TextStyle(color: Colors.black54, fontSize: 13)),
+                              Text("Prof. Carlos Mendes", style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
+                              SizedBox(height: 6),
+                              Text("Coordenador • Mauá", style: TextStyle(color: Colors.black54, fontSize: 13)),
                             ],
                           ),
                         ),
@@ -103,7 +127,7 @@ class _CoordinatorDashboardPageState extends State<CoordinatorDashboardPage> {
 
                   const SizedBox(height: 25),
 
-                  // --- STATS COM LINKS ---
+                  // --- CARDS DE ESTATÍSTICAS (STAT CARDS) ---
                   Row(
                     children: [
                       Expanded(
@@ -134,6 +158,7 @@ class _CoordinatorDashboardPageState extends State<CoordinatorDashboardPage> {
                   const Text("Gestão da Universidade", style: TextStyle(color: Colors.white, fontSize: 18, fontWeight: FontWeight.bold)),
                   const SizedBox(height: 15),
 
+                  // --- GRID DE AÇÕES RÁPIDAS (QUICK ACTIONS) ---
                   GridView.count(
                     shrinkWrap: true,
                     physics: const NeverScrollableScrollPhysics(),
@@ -142,42 +167,24 @@ class _CoordinatorDashboardPageState extends State<CoordinatorDashboardPage> {
                     mainAxisSpacing: 20,
                     childAspectRatio: 3.5,
                     children: [
-                      _buildQuickAction(
-                        Icons.event_available, 
-                        "Meus Eventos", 
-                        "Ver QR Code e Presenças", 
-                        petroleo, 
-                        onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => const ManageEventsPage())),
-                      ),
-                      
-                      _buildQuickAction(
-                        Icons.groups, 
-                        "Gerenciar Alunas", 
-                        "Lista de inscritas", 
-                        laranja, 
-                        onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => const ManageStudentsPage())),
-                      ),
-                      
-                      _buildQuickAction(
-                        Icons.add_box, 
-                        "Novo Evento", 
-                        "Criar para universidade", 
-                        coral, 
-                        onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => const NewEventPage())),
-                      ),
-                      
-                      _buildQuickAction(
-                        Icons.analytics, 
-                        "Relatórios", 
-                        "Taxa de adesão", 
-                        brandColor, 
-                        onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => const ReportsPage())),
-                      ),
+                      _buildQuickAction(Icons.event_available, "Meus Eventos", "QR Code e Presenças", petroleo, onTap: () {
+                        Navigator.push(context, MaterialPageRoute(builder: (context) => const ManageEventsPage()));
+                      }),
+                      _buildQuickAction(Icons.groups, "Gerenciar Alunas", "Lista de inscritas", laranja, onTap: () {
+                        Navigator.push(context, MaterialPageRoute(builder: (context) => const ManageStudentsPage()));
+                      }),
+                      _buildQuickAction(Icons.add_box, "Novo Evento", "Criar para universidade", coral, onTap: () {
+                        Navigator.push(context, MaterialPageRoute(builder: (context) => const NewEventPage()));
+                      }),
+                      _buildQuickAction(Icons.analytics, "Relatórios", "Taxa de adesão", brandColor, onTap: () {
+                        Navigator.push(context, MaterialPageRoute(builder: (context) => const ReportsPage()));
+                      }),
                     ],
                   ),
 
                   const SizedBox(height: 30),
 
+                  // --- LISTA DE EVENTOS ---
                   Container(
                     width: double.infinity,
                     padding: const EdgeInsets.all(25),
@@ -190,22 +197,18 @@ class _CoordinatorDashboardPageState extends State<CoordinatorDashboardPage> {
                           children: [
                             const Text("Eventos da Universidade", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18)),
                             TextButton(
-                              onPressed: () => Navigator.push(context, MaterialPageRoute(builder: (context) => const ManageEventsPage())), 
-                              child: const Text("Ver todos")
+                              onPressed: () => Navigator.push(context, MaterialPageRoute(builder: (context) => const ManageEventsPage())),
+                              child: const Text("Ver todos"),
                             ),
                           ],
                         ),
                         const SizedBox(height: 20),
-                        
                         _buildEventItem("Workshop: Carreira em Dados", "15 Fev • Auditório A", true),
                         const Padding(padding: EdgeInsets.symmetric(vertical: 15), child: Divider(height: 1)),
-                        _buildEventItem("Roda de Conversa: Mulheres em Tech", "20 Fev • Sala 302", true),
-                        const Padding(padding: EdgeInsets.symmetric(vertical: 15), child: Divider(height: 1)),
-                        _buildEventItem("Palestra Internacional (Online)", "10 Mar • Zoom", false),
+                        _buildEventItem("Roda de Conversa: Tech", "20 Fev • Sala 302", true),
                       ],
                     ),
                   ),
-                  
                   const SizedBox(height: 40),
                 ],
               ),
@@ -216,17 +219,32 @@ class _CoordinatorDashboardPageState extends State<CoordinatorDashboardPage> {
     );
   }
 
-  BoxDecoration _cardDecoration() => BoxDecoration(
-    color: Colors.white,
-    borderRadius: BorderRadius.circular(24),
-    boxShadow: [BoxShadow(color: Colors.black.withOpacity(0.06), blurRadius: 20, offset: const Offset(0, 8))],
-  );
+  // --- WIDGETS AUXILIARES DE ESTILO ---
 
-  Widget _buildHeaderIcon(IconData icon) {
-    return Container(
-      padding: const EdgeInsets.all(12),
-      decoration: BoxDecoration(color: Colors.white.withOpacity(0.2), borderRadius: BorderRadius.circular(14)),
-      child: Icon(icon, color: Colors.white, size: 20),
+  BoxDecoration _cardDecoration() => BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(24),
+        boxShadow: [BoxShadow(color: Colors.black.withOpacity(0.06), blurRadius: 20, offset: const Offset(0, 8))],
+      );
+
+  Widget _buildHeaderIcon(IconData icon, {required VoidCallback onTap}) {
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        width: 45,
+        height: 45,
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(15),
+          boxShadow: [
+            BoxShadow(
+                color: Colors.black.withOpacity(0.05),
+                blurRadius: 8,
+                offset: const Offset(0, 2)),
+          ],
+        ),
+        child: Icon(icon, color: brandColor, size: 22),
+      ),
     );
   }
 
