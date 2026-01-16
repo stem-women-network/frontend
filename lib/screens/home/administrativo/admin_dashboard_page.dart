@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:frontend/screens/home/administrativo/recent_activities_page.dart';
+import 'university_list_page.dart';
 
 // Importação fictícia da página de histórico
 // import 'recent_activities_page.dart'; 
@@ -42,7 +43,15 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
                   // --- MÉTRICAS DE IMPACTO GLOBAL ---
                   Row(
                     children: [
-                      Expanded(child: _buildStatCard("Universidades", "12", Icons.account_balance, petroleo)),
+                      Expanded(
+                        child: GestureDetector(
+                          onTap: () => Navigator.push(
+                            context, 
+                            MaterialPageRoute(builder: (context) => const UniversityListPage())
+                          ),
+                          child: _buildStatCard("Universidades", "12", Icons.account_balance, petroleo),
+                        ),
+                      ),
                       const SizedBox(width: 15),
                       Expanded(child: _buildStatCard("Mentoras", "154", Icons.groups, laranja)),
                       const SizedBox(width: 15),
