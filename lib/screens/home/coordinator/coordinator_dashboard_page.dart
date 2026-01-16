@@ -1,4 +1,8 @@
 import 'package:flutter/material.dart';
+import 'manage_students_page.dart';
+import 'reports_page.dart';
+import 'new_event_page.dart';
+import 'manage_events_page.dart'; // Importação corrigida com ponto e vírgula
 
 class CoordinatorDashboardPage extends StatefulWidget {
   const CoordinatorDashboardPage({super.key});
@@ -8,7 +12,6 @@ class CoordinatorDashboardPage extends StatefulWidget {
 }
 
 class _CoordinatorDashboardPageState extends State<CoordinatorDashboardPage> {
-  // Paleta de Cores (Padrão do App)
   final Color brandColor = const Color(0xFF3E84A2);
   final Color petroleo = const Color(0xFF0B6F8E);
   final Color laranja = const Color(0xFFFE9F43);
@@ -20,7 +23,7 @@ class _CoordinatorDashboardPageState extends State<CoordinatorDashboardPage> {
     bool isMobile = MediaQuery.of(context).size.width < 600;
 
     return Scaffold(
-      backgroundColor: brandColor, // Fundo Azul Oficial
+      backgroundColor: brandColor,
       body: SafeArea(
         bottom: false,
         child: SingleChildScrollView(
@@ -63,7 +66,7 @@ class _CoordinatorDashboardPageState extends State<CoordinatorDashboardPage> {
 
                   const SizedBox(height: 35),
 
-                  // --- CARD DE PERFIL (COORDENADOR) ---
+                  // --- PERFIL ---
                   Container(
                     width: double.infinity,
                     padding: const EdgeInsets.all(25),
@@ -100,8 +103,7 @@ class _CoordinatorDashboardPageState extends State<CoordinatorDashboardPage> {
 
                   const SizedBox(height: 25),
 
-                  // --- ESTATÍSTICAS DA UNIVERSIDADE ---
-                  // Focado em Alunas e Matches (Sem mentores)
+                  // --- STATS ---
                   Row(
                     children: [
                       Expanded(child: _buildStatCard("Alunas Inscritas", "47", Icons.school, laranja)),
@@ -114,28 +116,76 @@ class _CoordinatorDashboardPageState extends State<CoordinatorDashboardPage> {
 
                   const SizedBox(height: 30),
 
-                  // --- AÇÕES RÁPIDAS (GRID) ---
                   const Text("Gestão da Universidade", style: TextStyle(color: Colors.white, fontSize: 18, fontWeight: FontWeight.bold)),
                   const SizedBox(height: 15),
 
+                  // --- GRID DE AÇÕES ---
                   GridView.count(
                     shrinkWrap: true,
                     physics: const NeverScrollableScrollPhysics(),
-                    crossAxisCount: isMobile ? 1 : 2, // 2 colunas para ficar mais organizado
+                    crossAxisCount: isMobile ? 1 : 2,
                     crossAxisSpacing: 20,
                     mainAxisSpacing: 20,
-                    childAspectRatio: 3.5, // Botões mais largos e baixos
+                    childAspectRatio: 3.5,
                     children: [
-                      _buildQuickAction(Icons.person_search, "Verificar Matches", "Status das alunas", petroleo, onTap: () {}),
-                      _buildQuickAction(Icons.groups, "Gerenciar Alunas", "Lista de inscritas", laranja, onTap: () {}),
-                      _buildQuickAction(Icons.add_box, "Novo Evento", "Criar para universidade", coral, onTap: () {}),
-                      _buildQuickAction(Icons.analytics, "Relatórios", "Taxa de adesão", brandColor, onTap: () {}),
+                      // VINCULADO À GESTÃO DE EVENTOS (QR CODE E PRESENÇA)
+                      _buildQuickAction(
+                        Icons.event_available, 
+                        "Meus Eventos", 
+                        "Ver QR Code e Presenças", 
+                        petroleo, 
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(builder: (context) => const ManageEventsPage()),
+                          );
+                        }
+                      ),
+                      
+                      _buildQuickAction(
+                        Icons.groups, 
+                        "Gerenciar Alunas", 
+                        "Lista de inscritas", 
+                        laranja, 
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(builder: (context) => const ManageStudentsPage()),
+                          );
+                        }
+                      ),
+                      
+                      _buildQuickAction(
+                        Icons.add_box, 
+                        "Novo Evento", 
+                        "Criar para universidade", 
+                        coral, 
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(builder: (context) => const NewEventPage()),
+                          );
+                        }
+                      ),
+                      
+                      _buildQuickAction(
+                        Icons.analytics, 
+                        "Relatórios", 
+                        "Taxa de adesão", 
+                        brandColor, 
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(builder: (context) => const ReportsPage()),
+                          );
+                        }
+                      ),
                     ],
                   ),
 
                   const SizedBox(height: 30),
 
-                  // --- PRÓXIMOS EVENTOS DA UNIVERSIDADE ---
+                  // --- LISTA DE EVENTOS RECENTES ---
                   Container(
                     width: double.infinity,
                     padding: const EdgeInsets.all(25),
@@ -147,7 +197,15 @@ class _CoordinatorDashboardPageState extends State<CoordinatorDashboardPage> {
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             const Text("Eventos da Universidade", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18)),
-                            TextButton(onPressed: () {}, child: const Text("Ver todos")),
+                            TextButton(
+                              onPressed: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(builder: (context) => const ManageEventsPage()),
+                                );
+                              }, 
+                              child: const Text("Ver todos")
+                            ),
                           ],
                         ),
                         const SizedBox(height: 20),
@@ -170,8 +228,6 @@ class _CoordinatorDashboardPageState extends State<CoordinatorDashboardPage> {
       ),
     );
   }
-
-  // --- WIDGETS AUXILIARES (Mesmo Design System) ---
 
   BoxDecoration _cardDecoration() => BoxDecoration(
     color: Colors.white,
