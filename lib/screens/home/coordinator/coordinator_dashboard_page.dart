@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 import 'manage_students_page.dart';
 import 'reports_page.dart';
 import 'new_event_page.dart';
-import 'manage_events_page.dart'; // Importação corrigida com ponto e vírgula
+import 'manage_events_page.dart';
+import 'student_list_page.dart';
+import 'active_matches_page.dart'; // Import da página de matches
 
 class CoordinatorDashboardPage extends StatefulWidget {
   const CoordinatorDashboardPage({super.key});
@@ -34,7 +36,6 @@ class _CoordinatorDashboardPageState extends State<CoordinatorDashboardPage> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  // --- HEADER ---
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
@@ -66,7 +67,6 @@ class _CoordinatorDashboardPageState extends State<CoordinatorDashboardPage> {
 
                   const SizedBox(height: 35),
 
-                  // --- PERFIL ---
                   Container(
                     width: double.infinity,
                     padding: const EdgeInsets.all(25),
@@ -103,14 +103,29 @@ class _CoordinatorDashboardPageState extends State<CoordinatorDashboardPage> {
 
                   const SizedBox(height: 25),
 
-                  // --- STATS ---
+                  // --- STATS COM LINKS ---
                   Row(
                     children: [
-                      Expanded(child: _buildStatCard("Alunas Inscritas", "47", Icons.school, laranja)),
+                      Expanded(
+                        child: GestureDetector(
+                          onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => const StudentListPage())),
+                          child: _buildStatCard("Alunas Inscritas", "47", Icons.school, laranja),
+                        ),
+                      ),
                       const SizedBox(width: 15),
-                      Expanded(child: _buildStatCard("Matches Ativos", "32", Icons.handshake, verde)),
+                      Expanded(
+                        child: GestureDetector(
+                          onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => const ActiveMatchesPage())),
+                          child: _buildStatCard("Matches Ativos", "32", Icons.handshake, verde),
+                        ),
+                      ),
                       const SizedBox(width: 15),
-                      Expanded(child: _buildStatCard("Eventos Criados", "5", Icons.event_note, coral)),
+                      Expanded(
+                        child: GestureDetector(
+                          onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => const ManageEventsPage())),
+                          child: _buildStatCard("Eventos Criados", "5", Icons.event_note, coral),
+                        ),
+                      ),
                     ],
                   ),
 
@@ -119,7 +134,6 @@ class _CoordinatorDashboardPageState extends State<CoordinatorDashboardPage> {
                   const Text("Gestão da Universidade", style: TextStyle(color: Colors.white, fontSize: 18, fontWeight: FontWeight.bold)),
                   const SizedBox(height: 15),
 
-                  // --- GRID DE AÇÕES ---
                   GridView.count(
                     shrinkWrap: true,
                     physics: const NeverScrollableScrollPhysics(),
@@ -128,18 +142,12 @@ class _CoordinatorDashboardPageState extends State<CoordinatorDashboardPage> {
                     mainAxisSpacing: 20,
                     childAspectRatio: 3.5,
                     children: [
-                      // VINCULADO À GESTÃO DE EVENTOS (QR CODE E PRESENÇA)
                       _buildQuickAction(
                         Icons.event_available, 
                         "Meus Eventos", 
                         "Ver QR Code e Presenças", 
                         petroleo, 
-                        onTap: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(builder: (context) => const ManageEventsPage()),
-                          );
-                        }
+                        onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => const ManageEventsPage())),
                       ),
                       
                       _buildQuickAction(
@@ -147,12 +155,7 @@ class _CoordinatorDashboardPageState extends State<CoordinatorDashboardPage> {
                         "Gerenciar Alunas", 
                         "Lista de inscritas", 
                         laranja, 
-                        onTap: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(builder: (context) => const ManageStudentsPage()),
-                          );
-                        }
+                        onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => const ManageStudentsPage())),
                       ),
                       
                       _buildQuickAction(
@@ -160,12 +163,7 @@ class _CoordinatorDashboardPageState extends State<CoordinatorDashboardPage> {
                         "Novo Evento", 
                         "Criar para universidade", 
                         coral, 
-                        onTap: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(builder: (context) => const NewEventPage()),
-                          );
-                        }
+                        onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => const NewEventPage())),
                       ),
                       
                       _buildQuickAction(
@@ -173,19 +171,13 @@ class _CoordinatorDashboardPageState extends State<CoordinatorDashboardPage> {
                         "Relatórios", 
                         "Taxa de adesão", 
                         brandColor, 
-                        onTap: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(builder: (context) => const ReportsPage()),
-                          );
-                        }
+                        onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => const ReportsPage())),
                       ),
                     ],
                   ),
 
                   const SizedBox(height: 30),
 
-                  // --- LISTA DE EVENTOS RECENTES ---
                   Container(
                     width: double.infinity,
                     padding: const EdgeInsets.all(25),
@@ -198,12 +190,7 @@ class _CoordinatorDashboardPageState extends State<CoordinatorDashboardPage> {
                           children: [
                             const Text("Eventos da Universidade", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18)),
                             TextButton(
-                              onPressed: () {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(builder: (context) => const ManageEventsPage()),
-                                );
-                              }, 
+                              onPressed: () => Navigator.push(context, MaterialPageRoute(builder: (context) => const ManageEventsPage())), 
                               child: const Text("Ver todos")
                             ),
                           ],
@@ -299,35 +286,38 @@ class _CoordinatorDashboardPageState extends State<CoordinatorDashboardPage> {
   }
 
   Widget _buildEventItem(String title, String info, bool isActive) {
-    return Row(
-      children: [
-        Container(
-          width: 50,
-          height: 50,
-          decoration: BoxDecoration(
-            color: isActive ? laranja.withOpacity(0.1) : Colors.grey.shade100,
-            borderRadius: BorderRadius.circular(12),
-          ),
-          child: Icon(Icons.calendar_today, color: isActive ? laranja : Colors.grey, size: 22),
-        ),
-        const SizedBox(width: 15),
-        Expanded(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(title, style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14, color: isActive ? Colors.black87 : Colors.grey)),
-              const SizedBox(height: 4),
-              Text(info, style: const TextStyle(fontSize: 12, color: Colors.black54)),
-            ],
-          ),
-        ),
-        if (isActive)
+    return InkWell(
+      onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => const ManageEventsPage())),
+      child: Row(
+        children: [
           Container(
-            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
-            decoration: BoxDecoration(color: Colors.green.shade50, borderRadius: BorderRadius.circular(8)),
-            child: Text("Ativo", style: TextStyle(fontSize: 11, fontWeight: FontWeight.bold, color: Colors.green.shade700)),
+            width: 50,
+            height: 50,
+            decoration: BoxDecoration(
+              color: isActive ? laranja.withOpacity(0.1) : Colors.grey.shade100,
+              borderRadius: BorderRadius.circular(12),
+            ),
+            child: Icon(Icons.calendar_today, color: isActive ? laranja : Colors.grey, size: 22),
           ),
-      ],
+          const SizedBox(width: 15),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(title, style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14, color: isActive ? Colors.black87 : Colors.grey)),
+                const SizedBox(height: 4),
+                Text(info, style: const TextStyle(fontSize: 12, color: Colors.black54)),
+              ],
+            ),
+          ),
+          if (isActive)
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+              decoration: BoxDecoration(color: Colors.green.shade50, borderRadius: BorderRadius.circular(8)),
+              child: Text("Ativo", style: TextStyle(fontSize: 11, fontWeight: FontWeight.bold, color: Colors.green.shade700)),
+            ),
+        ],
+      ),
     );
   }
 }
