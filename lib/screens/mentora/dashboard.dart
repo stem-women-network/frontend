@@ -193,7 +193,13 @@ class MentoraDashboard extends StatelessWidget {
                     Container(
                       child: DefaultContainer(
                         children: [
-                          Text("Próximos Encontros"),
+                          Container(
+                            padding: EdgeInsetsGeometry.only(bottom:10),
+                            alignment: Alignment.centerLeft,
+                            child: Text("Próximos Encontros",
+                              textScaler: TextScaler.linear(1.3),
+                              style: TextStyle(fontWeight: FontWeight.bold),),
+                          ),
                           Container(
                             decoration: BoxDecoration(
                               color: Color(0xFFF9FAFB),
@@ -210,23 +216,26 @@ class MentoraDashboard extends StatelessWidget {
                             topico: "Revisão de currículo",
                             dataEncontro: DateTime(2026, 01, 28, 14),
                           ),
-                          FilledButton(
-                            style: FilledButton.styleFrom(
-                              backgroundColor: Colors.white,
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(8),
+                          Container(
+                            padding: EdgeInsetsGeometry.only(top:10),
+                            child: FilledButton(
+                              style: FilledButton.styleFrom(
+                                backgroundColor: Colors.white,
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(8),
+                                ),
+                                side: BorderSide(color: brandColor),
                               ),
-                              side: BorderSide(color: brandColor),
-                            ),
-                            onPressed: () => Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => RegisterMeeting(),
+                              onPressed: () => Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => RegisterMeeting(),
+                                ),
                               ),
-                            ),
-                            child: Text(
-                              "Registrar Encontro",
-                              style: TextStyle(color: brandColor),
+                              child: Text(
+                                "Registrar Encontro",
+                                style: TextStyle(color: brandColor),
+                              ),
                             ),
                           ),
                         ],

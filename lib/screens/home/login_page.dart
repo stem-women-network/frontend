@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../mentora/dashboard.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -9,7 +10,7 @@ class LoginPage extends StatefulWidget {
 
 class _LoginPageState extends State<LoginPage> {
   final _formKey = GlobalKey<FormState>();
-  final Color brandColor = const Color(0xFF3E84A2); 
+  final Color brandColor = const Color(0xFF3E84A2);
 
   @override
   Widget build(BuildContext context) {
@@ -50,7 +51,10 @@ class _LoginPageState extends State<LoginPage> {
                     const SizedBox(height: 25),
                     const Text(
                       "Bem-vinda de volta!",
-                      style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 16,
+                      ),
                     ),
                     const SizedBox(height: 8),
                     const Text(
@@ -58,7 +62,7 @@ class _LoginPageState extends State<LoginPage> {
                       style: TextStyle(color: Colors.black54, fontSize: 14),
                     ),
                     const SizedBox(height: 35),
-                    
+
                     // Campo E-mail
                     _buildLabel("E-mail"),
                     const SizedBox(height: 8),
@@ -66,7 +70,7 @@ class _LoginPageState extends State<LoginPage> {
                       decoration: _inputDecoration("seuemail@stem.br"),
                     ),
                     const SizedBox(height: 20),
-                    
+
                     // Campo Senha
                     _buildLabel("Senha"),
                     const SizedBox(height: 8),
@@ -74,7 +78,7 @@ class _LoginPageState extends State<LoginPage> {
                       obscureText: true,
                       decoration: _inputDecoration("*********"),
                     ),
-                    
+
                     // Esqueci minha senha
                     Align(
                       alignment: Alignment.centerRight,
@@ -99,24 +103,35 @@ class _LoginPageState extends State<LoginPage> {
                         onPressed: () {
                           if (_formKey.currentState!.validate()) {}
                         },
-                        style: FilledButton.styleFrom(
-                          backgroundColor: brandColor,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(8),
-                          ),
-                        ).copyWith(
-                          overlayColor: WidgetStateProperty.all(Colors.white10),
+                        style:
+                            FilledButton.styleFrom(
+                              backgroundColor: brandColor,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(8),
+                              ),
+                            ).copyWith(
+                              overlayColor: WidgetStateProperty.all(
+                                Colors.white10,
+                              ),
+                            ),
+                        child: const Text(
+                          "Entrar",
+                          style: TextStyle(fontSize: 16),
                         ),
-                        child: const Text("Entrar", style: TextStyle(fontSize: 16)),
                       ),
                     ),
                     const SizedBox(height: 20),
 
+                    // Botão temporário de entrar
+                    _entrarComoMentora(),
                     // Link de Cadastro
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        const Text("Não tem uma conta? ", style: TextStyle(color: Colors.black87)),
+                        const Text(
+                          "Não tem uma conta? ",
+                          style: TextStyle(color: Colors.black87),
+                        ),
                         GestureDetector(
                           onTap: () {
                             // Navegar para SignUp
@@ -137,6 +152,27 @@ class _LoginPageState extends State<LoginPage> {
             ),
           ),
         ),
+      ),
+    );
+  }
+
+  Widget _entrarComoMentora() {
+    return SizedBox(
+      width: double.infinity,
+      height: 48,
+      child: FilledButton(
+        onPressed: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => const MentoraDashboard()),
+ 
+          );
+        },
+        style: FilledButton.styleFrom(
+          backgroundColor: Color(0xFF00FF00),
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+        ).copyWith(overlayColor: WidgetStateProperty.all(Colors.white10)),
+        child: const Text("Entrar mentora", style: TextStyle(fontSize: 16)),
       ),
     );
   }
