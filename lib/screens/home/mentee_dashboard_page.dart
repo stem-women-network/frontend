@@ -2,9 +2,6 @@ import 'dart:io';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
-
-// --- SEUS IMPORTS REAIS ---
-// Certifique-se de que esses arquivos estão na mesma pasta
 import 'progress_page.dart';
 import 'certificates_page.dart';
 import 'events_page.dart';
@@ -13,7 +10,6 @@ import 'first_contact_page.dart';
 import 'chat_page.dart';
 import 'settings_page.dart';
 import 'profile_page.dart';
-// import 'survey_page.dart'; // Descomente se já tiver criado este arquivo separado
 
 class MenteeDashboardPage extends StatefulWidget {
   const MenteeDashboardPage({super.key});
@@ -30,7 +26,6 @@ class _MenteeDashboardPageState extends State<MenteeDashboardPage> {
 
   XFile? _dashboardImage;
 
-  // Modal de Confirmação de Encontro (Estilo Bonito "Double Check")
   void _showConfirmationDialog(BuildContext context) {
     showDialog(
       context: context,
@@ -42,7 +37,6 @@ class _MenteeDashboardPageState extends State<MenteeDashboardPage> {
     );
   }
 
-  // Modal de Ouvidoria
   void _showSupportDialog(BuildContext context) {
     showDialog(
       context: context,
@@ -140,7 +134,6 @@ class _MenteeDashboardPageState extends State<MenteeDashboardPage> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  // --- HEADER ---
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     crossAxisAlignment: CrossAxisAlignment.center,
@@ -201,7 +194,6 @@ class _MenteeDashboardPageState extends State<MenteeDashboardPage> {
 
                   const SizedBox(height: 35),
                   
-                  // --- CARD PERFIL ---
                   Container(
                     width: double.infinity,
                     padding: const EdgeInsets.all(25),
@@ -254,7 +246,6 @@ class _MenteeDashboardPageState extends State<MenteeDashboardPage> {
 
                   const SizedBox(height: 25),
 
-                  // --- CARTÕES DE MENTORA E ENCONTRO ---
                   IntrinsicHeight(
                     child: isMobile
                         ? Column(
@@ -276,7 +267,6 @@ class _MenteeDashboardPageState extends State<MenteeDashboardPage> {
 
                   const SizedBox(height: 25),
 
-                  // --- HISTÓRICO ---
                   Container(
                     width: double.infinity,
                     padding: const EdgeInsets.all(25),
@@ -295,7 +285,6 @@ class _MenteeDashboardPageState extends State<MenteeDashboardPage> {
 
                   const SizedBox(height: 25),
 
-                  // --- GRID DE BOTÕES ---
                   GridView.count(
                     shrinkWrap: true,
                     physics: const NeverScrollableScrollPhysics(),
@@ -314,8 +303,6 @@ class _MenteeDashboardPageState extends State<MenteeDashboardPage> {
       ),
     );
   }
-
-  // --- HELPERS E WIDGETS ---
 
   BoxDecoration _cardDecoration() => BoxDecoration(
     color: Colors.white,
