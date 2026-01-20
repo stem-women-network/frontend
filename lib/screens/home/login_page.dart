@@ -3,6 +3,7 @@ import 'coordinator/coordinator_dashboard_page.dart';
 import 'administrativo/admin_dashboard_page.dart';
 import 'signup_page.dart';
 import '../mentora/dashboard.dart';
+import '../mentora/dashboard.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
