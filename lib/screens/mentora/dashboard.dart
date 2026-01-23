@@ -5,6 +5,8 @@ import 'package:frontend/screens/mentora/register_meeting.dart';
 import 'package:frontend/screens/mentora/send_materials_page.dart';
 import 'package:frontend/screens/home/chat_page.dart';
 import 'package:frontend/screens/home/settings_page.dart';
+import 'package:frontend/screens/mentora/mentee_history_page.dart';
+import 'package:frontend/screens/mentora/mentor_training_page.dart';
 
 class MentoraDashboard extends StatefulWidget {
   const MentoraDashboard({super.key});
@@ -311,8 +313,20 @@ class _MentoraDashboardState extends State<MentoraDashboard> {
         _buildWideActionBtn(Icons.calendar_month, "Eventos", "Ver próximos", petroleo),
         _buildWideActionBtn(Icons.bar_chart, "Meu Progresso", "Ver linha do tempo", laranja),
         _buildWideActionBtn(Icons.front_hand, "Primeiro Contato", "Registrar", verdeSucesso),
-        _buildWideActionBtn(Icons.history, "Histórico", "Mentorias passadas", petroleo),
-        _buildWideActionBtn(Icons.folder_shared, "Arquivos", "Materiais de apoio", laranja),
+        _buildWideActionBtn(
+          Icons.history, 
+          "Histórico", 
+          "Mentorias passadas", 
+          petroleo,
+          onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => const MenteeHistoryPage())),
+        ),
+        _buildWideActionBtn(
+          Icons.folder_shared, 
+          "Treinamento", 
+          "Materiais de apoio", 
+          laranja,
+          onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => MentorTrainingPage())),
+        ),
         _buildWideActionBtn(Icons.support_agent, "Ouvidoria", "Fale com a organização", brandColor, onTap: _showSupportDialog),
       ],
     );
@@ -324,10 +338,9 @@ class _MentoraDashboardState extends State<MentoraDashboard> {
       borderRadius: BorderRadius.circular(20),
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 15),
-        decoration: _cardDecoration(), // Mesma decoração dos outros cards (branco, sombra)
+        decoration: _cardDecoration(), 
         child: Row(
           children: [
-            // Ícone com fundo colorido quadrado
             Container(
               height: 50, width: 50,
               decoration: BoxDecoration(
