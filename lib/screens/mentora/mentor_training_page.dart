@@ -1,15 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-class TrainingMaterialsPage extends StatelessWidget {
-  const TrainingMaterialsPage({super.key});
+class MentorTrainingPage extends StatelessWidget {
+  const MentorTrainingPage({super.key});
 
   final Color brandColor = const Color(0xFF3E84A2);
   final Color petroleo = const Color(0xFF0B6F8E);
   final Color coral = const Color(0xFFE4645B);
   final Color laranja = const Color(0xFFFE9F43);
-  
-  final Color backgroundGrey = const Color(0xFFF8F9FA); 
+  final Color backgroundGrey = const Color(0xFFF8F9FA);
 
   Future<void> _launchLink(String url) async {
     final Uri uri = Uri.parse(url);
@@ -27,7 +26,7 @@ class TrainingMaterialsPage extends StatelessWidget {
           icon: const Icon(Icons.arrow_back_ios, color: Colors.white),
           onPressed: () => Navigator.pop(context),
         ),
-        title: const Text("Materiais da Mentoria", style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
+        title: const Text("Capacitação da Mentora", style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
         centerTitle: true,
         backgroundColor: Colors.transparent,
         elevation: 0,
@@ -43,7 +42,6 @@ class TrainingMaterialsPage extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // --- MENSAGEM DA MENTORA (Estilo Laranja) ---
               Container(
                 padding: const EdgeInsets.all(20),
                 decoration: BoxDecoration(
@@ -55,17 +53,17 @@ class TrainingMaterialsPage extends StatelessWidget {
                   children: [
                     CircleAvatar(
                       backgroundColor: Colors.white,
-                      child: Icon(Icons.tips_and_updates, color: laranja),
+                      child: Icon(Icons.school, color: laranja),
                     ),
                     const SizedBox(width: 15),
                     Expanded(
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text("Curadoria da Mentora", style: TextStyle(fontWeight: FontWeight.bold, color: laranja, fontSize: 14)),
+                          Text("Destaque da Coordenação", style: TextStyle(fontWeight: FontWeight.bold, color: laranja, fontSize: 14)),
                           const SizedBox(height: 4),
                           const Text(
-                            "Separei estes materiais para te ajudar no nosso próximo tópico sobre Liderança.",
+                            "Conteúdos essenciais para apoiar sua jornada de desenvolvimento como mentora.",
                             style: TextStyle(fontSize: 12, color: Colors.black87),
                           ),
                         ],
@@ -77,7 +75,7 @@ class TrainingMaterialsPage extends StatelessWidget {
 
               const SizedBox(height: 30),
 
-              _buildSectionTitle("Vídeos Recomendados", Icons.play_circle_fill),
+              _buildSectionTitle("Vídeos de Treinamento", Icons.play_circle_fill),
               const SizedBox(height: 15),
               
               SingleChildScrollView(
@@ -85,23 +83,23 @@ class TrainingMaterialsPage extends StatelessWidget {
                 child: Row(
                   children: [
                     _buildVideoCard(
-                      title: "Mulheres na Liderança Tech",
-                      duration: "15 min",
-                      color: petroleo, // Cor do projeto
+                      title: "Boas práticas de Mentoria",
+                      duration: "25 min",
+                      color: petroleo,
                       onTap: () => _launchLink("https://youtube.com"),
                     ),
                     const SizedBox(width: 15),
                     _buildVideoCard(
-                      title: "Como pedir aumento?",
-                      duration: "8 min",
-                      color: coral, 
+                      title: "Comunicação Não-Violenta",
+                      duration: "18 min",
+                      color: coral,
                       onTap: () => _launchLink("https://youtube.com"),
                     ),
                     const SizedBox(width: 15),
                      _buildVideoCard(
-                      title: "Síndrome do Impostor",
-                      duration: "20 min",
-                      color: brandColor, 
+                      title: "Guia da Plataforma",
+                      duration: "10 min",
+                      color: brandColor,
                       onTap: () => _launchLink("https://youtube.com"),
                     ),
                   ],
@@ -110,37 +108,36 @@ class TrainingMaterialsPage extends StatelessWidget {
 
               const SizedBox(height: 30),
 
-              _buildSectionTitle("Arquivos de Apoio", Icons.folder),
+              _buildSectionTitle("Manuais e Guias", Icons.folder),
               const SizedBox(height: 15),
               
               _buildFileTile(
-                title: "Guia de Carreira em TI.pdf",
-                size: "2.4 MB",
+                title: "Manual da Mentora 2026.pdf",
+                size: "3.1 MB",
                 icon: Icons.picture_as_pdf,
-                iconColor: coral, 
+                iconColor: coral,
               ),
               const SizedBox(height: 10),
               _buildFileTile(
-                title: "Template de Currículo.docx",
-                size: "500 KB",
+                title: "Código de Conduta.pdf",
+                size: "1.2 MB",
                 icon: Icons.description,
-                iconColor: petroleo, 
+                iconColor: petroleo,
               ),
 
               const SizedBox(height: 30),
 
-
-              _buildSectionTitle("Links Importantes", Icons.link),
+              _buildSectionTitle("Comunidade", Icons.link),
               const SizedBox(height: 15),
               
               _buildLinkTile(
-                title: "Vagas afirmativas no LinkedIn",
-                url: "linkedin.com/feed/...",
+                title: "Grupo de Mentoras no Slack",
+                url: "slack.com/stem-women...",
               ),
               const SizedBox(height: 10),
               _buildLinkTile(
-                title: "Artigo: O futuro do Java",
-                url: "medium.com/java-futures",
+                title: "Agenda de Workshops",
+                url: "notion.so/agenda-2026",
               ),
               
               const SizedBox(height: 40),
@@ -150,7 +147,6 @@ class TrainingMaterialsPage extends StatelessWidget {
       ),
     );
   }
-
 
   Widget _buildSectionTitle(String title, IconData icon) {
     return Row(
@@ -175,11 +171,10 @@ class TrainingMaterialsPage extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Thumbnail colorida com a paleta
             Container(
               height: 100,
               decoration: BoxDecoration(
-                color: color.withOpacity(0.2), // Fundo suave da cor escolhida
+                color: color.withOpacity(0.2),
                 borderRadius: const BorderRadius.vertical(top: Radius.circular(16)),
               ),
               child: Center(
@@ -232,7 +227,6 @@ class TrainingMaterialsPage extends StatelessWidget {
               ],
             ),
           ),
-          // Botão de download discreto
           IconButton(
             icon: Icon(Icons.download_rounded, color: petroleo),
             onPressed: () {},

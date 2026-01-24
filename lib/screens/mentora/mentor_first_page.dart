@@ -1,25 +1,44 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart'; // Para copiar o código
 
-class FirstContactPage extends StatefulWidget {
-  const FirstContactPage({super.key});
+class MentorFirstContactPage extends StatefulWidget {
+  const MentorFirstContactPage({super.key});
 
   @override
-  State<FirstContactPage> createState() => _FirstContactPageState();
+  State<MentorFirstContactPage> createState() => _MentorFirstContactPageState();
 }
 
-class _FirstContactPageState extends State<FirstContactPage> {
+class _MentorFirstContactPageState extends State<MentorFirstContactPage> {
   final Color brandColor = const Color(0xFF3E84A2);
   final Color petroleo = const Color(0xFF0B6F8E);
   final Color backgroundGrey = const Color(0xFFF8F9FA);
   final Color errorColor = const Color(0xFFE57373);
-  final Color laranja = const Color(0xFFFE9F43);
+  final Color verdeSucesso = const Color(0xFF2E7D32);
 
   int _contactStatus = 0; 
   
-  final String _generatedCode = "774123"; 
-  
+  final TextEditingController _codeController = TextEditingController();
   final TextEditingController _helpMessageController = TextEditingController();
+
+  @override
+  void dispose() {
+    _codeController.dispose();
+    _helpMessageController.dispose();
+    super.dispose();
+  }
+
+  void _validarVinculo() {
+    if (_codeController.text.length < 6) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text("O código deve ter 6 dígitos.")),
+      );
+      return;
+    }
+    
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: const Text("Vínculo oficializado com sucesso!"), backgroundColor: verdeSucesso),
+    );
+    Navigator.pop(context);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -30,7 +49,7 @@ class _FirstContactPageState extends State<FirstContactPage> {
         child: Center(
           child: SingleChildScrollView(
             padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 30.0),
-            child: ConstrainedBox( 
+            child: ConstrainedBox(
               constraints: const BoxConstraints(maxWidth: 500), 
               child: Column(
                 children: [
@@ -76,7 +95,7 @@ class _FirstContactPageState extends State<FirstContactPage> {
                                 style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold, color: petroleo)
                               ),
                               const SizedBox(height: 8),
-                              const Text("Valide o início da mentoria", 
+                              const Text("Oficialize o vínculo com sua mentorada", 
                                 style: TextStyle(fontSize: 14, color: Colors.grey)
                               ),
                             ],
@@ -84,7 +103,7 @@ class _FirstContactPageState extends State<FirstContactPage> {
                         ),
                         const SizedBox(height: 35),
 
-                        const Text("Você já recebeu contato da mentora?", 
+                        const Text("Você já conseguiu falar com a mentorada?", 
                           style: TextStyle(fontSize: 15, fontWeight: FontWeight.w600)
                         ),
                         const SizedBox(height: 15),
@@ -92,17 +111,17 @@ class _FirstContactPageState extends State<FirstContactPage> {
                           children: [
                             Expanded(
                               child: _buildOptionBtn(
-                                label: "Sim, recebi",
+                                label: "Sim, consegui",
                                 isActive: _contactStatus == 1,
                                 icon: Icons.check_circle_outline,
-                                activeColor: Colors.green,
+                                activeColor: verdeSucesso,
                                 onTap: () => setState(() => _contactStatus = 1),
                               ),
                             ),
                             const SizedBox(width: 15),
                             Expanded(
                               child: _buildOptionBtn(
-                                label: "Não recebi",
+                                label: "Não consegui",
                                 isActive: _contactStatus == 2,
                                 icon: Icons.error_outline,
                                 activeColor: errorColor,
@@ -117,25 +136,24 @@ class _FirstContactPageState extends State<FirstContactPage> {
                         AnimatedCrossFade(
                           firstChild: Container(),
                           secondChild: _contactStatus == 1 
-                            ? 
-                              Column(
+                            ? Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   Container(
                                     padding: const EdgeInsets.all(16),
                                     decoration: BoxDecoration(
-                                      color: Colors.blue.shade50,
+                                      color: Colors.green.shade50,
                                       borderRadius: BorderRadius.circular(12),
-                                      border: Border.all(color: Colors.blue.shade100),
+                                      border: Border.all(color: Colors.green.shade100),
                                     ),
                                     child: Row(
                                       crossAxisAlignment: CrossAxisAlignment.start,
                                       children: [
-                                        Icon(Icons.info_outline, color: petroleo, size: 20),
+                                        Icon(Icons.vpn_key_outlined, color: verdeSucesso, size: 20),
                                         const SizedBox(width: 12),
                                         const Expanded(
                                           child: Text(
-                                            "Ótimo! Informe o código abaixo para sua mentora. Ela precisará digitá-lo no sistema dela para oficializar o vínculo.",
+                                            "Perfeito! Peça o código de 6 dígitos que aparece no aplicativo da sua mentorada e digite abaixo para confirmar o início das atividades.",
                                             style: TextStyle(fontSize: 13, height: 1.4, color: Colors.black87),
                                           ),
                                         ),
@@ -144,68 +162,38 @@ class _FirstContactPageState extends State<FirstContactPage> {
                                   ),
                                   const SizedBox(height: 25),
                                   
-                                  Center(
-                                    child: Container(
-                                      width: double.infinity,
-                                      padding: const EdgeInsets.symmetric(vertical: 25),
-                                      decoration: BoxDecoration(
-                                        color: backgroundGrey,
-                                        borderRadius: BorderRadius.circular(16),
-                                        border: Border.all(color: Colors.grey.shade300),
-                                      ),
-                                      child: Column(
-                                        children: [
-                                          Text(
-                                            _generatedCode, 
-                                            style: TextStyle(
-                                              fontSize: 32, 
-                                              fontWeight: FontWeight.w900, 
-                                              color: petroleo,
-                                              letterSpacing: 6
-                                            ),
-                                          ),
-                                          const SizedBox(height: 8),
-                                          const Text("SEU CÓDIGO DE VINCULAÇÃO", 
-                                            style: TextStyle(fontSize: 10, fontWeight: FontWeight.bold, color: Colors.grey)
-                                          ),
-                                        ],
-                                      ),
+                                  const Text("Código da Mentorada", style: TextStyle(fontWeight: FontWeight.w600, fontSize: 14)),
+                                  const SizedBox(height: 8),
+                                  TextField(
+                                    controller: _codeController,
+                                    keyboardType: TextInputType.number,
+                                    maxLength: 6,
+                                    textAlign: TextAlign.center,
+                                    style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold, letterSpacing: 8),
+                                    decoration: _inputDecoration().copyWith(
+                                      counterText: "",
+                                      hintText: "000000",
+                                      hintStyle: TextStyle(color: Colors.grey.shade300),
                                     ),
                                   ),
                                   
-                                  const SizedBox(height: 20),
+                                  const SizedBox(height: 25),
                                   
                                   SizedBox(
                                     width: double.infinity,
                                     height: 50,
-                                    child: OutlinedButton.icon(
-                                      onPressed: () {
-                                        Clipboard.setData(ClipboardData(text: _generatedCode));
-                                        ScaffoldMessenger.of(context).showSnackBar(
-                                          SnackBar(content: const Text("Código copiado! Envie para sua mentora."), backgroundColor: petroleo),
-                                        );
-                                      },
-                                      style: OutlinedButton.styleFrom(
-                                        side: BorderSide(color: petroleo),
+                                    child: FilledButton(
+                                      onPressed: _validarVinculo,
+                                      style: FilledButton.styleFrom(
+                                        backgroundColor: petroleo,
                                         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
                                       ),
-                                      icon: Icon(Icons.copy, color: petroleo),
-                                      label: Text("Copiar Código", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16, color: petroleo)),
-                                    ),
-                                  ),
-                                  
-                                  const SizedBox(height: 15),
-                                  
-                                  const Center(
-                                    child: Text(
-                                      "Aguardando a mentora validar...",
-                                      style: TextStyle(fontSize: 12, color: Colors.orange, fontWeight: FontWeight.bold),
+                                      child: const Text("Confirmar Vínculo", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
                                     ),
                                   ),
                                 ],
                               )
-                            : 
-                              Column(
+                            : Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   Container(
@@ -221,7 +209,7 @@ class _FirstContactPageState extends State<FirstContactPage> {
                                         const SizedBox(width: 12),
                                         const Expanded(
                                           child: Text(
-                                            "Se você tentou contatar a mentora e não teve retorno, nós podemos ajudar.",
+                                            "Caso você tenha tentado contato por canais oficiais e não obteve resposta, reporte o problema à coordenação.",
                                             style: TextStyle(fontSize: 13, height: 1.4, color: Colors.black87),
                                           ),
                                         ),
@@ -229,13 +217,13 @@ class _FirstContactPageState extends State<FirstContactPage> {
                                     ),
                                   ),
                                   const SizedBox(height: 20),
-                                  const Text("Descreva a situação (opcional)", style: TextStyle(fontWeight: FontWeight.w600, fontSize: 14)),
+                                  const Text("Descreva a dificuldade (opcional)", style: TextStyle(fontWeight: FontWeight.w600, fontSize: 14)),
                                   const SizedBox(height: 8),
                                   TextField(
                                     controller: _helpMessageController,
                                     maxLines: 3,
                                     decoration: _inputDecoration().copyWith(
-                                      hintText: "Ex: Enviei email há 3 dias e não obtive resposta...",
+                                      hintText: "Ex: Tentei contato via WhatsApp e e-mail sem sucesso...",
                                     ),
                                   ),
                                   const SizedBox(height: 30),
@@ -246,14 +234,14 @@ class _FirstContactPageState extends State<FirstContactPage> {
                                       onPressed: () {
                                         Navigator.pop(context);
                                         ScaffoldMessenger.of(context).showSnackBar(
-                                          SnackBar(content: const Text("Solicitação enviada. A equipe entrará em contato."), backgroundColor: errorColor),
+                                          SnackBar(content: const Text("A coordenação foi notificada."), backgroundColor: errorColor),
                                         );
                                       },
                                       style: FilledButton.styleFrom(
                                         backgroundColor: errorColor,
                                         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
                                       ),
-                                      child: const Text("Pedir Ajuda à Organização", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
+                                      child: const Text("Reportar à Organização", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
                                     ),
                                   ),
                                 ],
@@ -273,7 +261,6 @@ class _FirstContactPageState extends State<FirstContactPage> {
       ),
     );
   }
-
 
   Widget _buildOptionBtn({
     required String label, 
