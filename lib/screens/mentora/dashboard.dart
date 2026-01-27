@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:frontend/widgets/mentorada_info.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:frontend/screens/mentora/matching.dart';
 import 'package:frontend/screens/mentora/register_meeting.dart';
@@ -189,26 +190,23 @@ class _MentoraDashboardState extends State<MentoraDashboard> {
       child: Column(
         children: [
           Row(
-            children: [
-              CircleAvatar(radius: 32, backgroundColor: laranja.withOpacity(0.1), child: Icon(Icons.person, color: laranja, size: 30)),
-              const SizedBox(width: 16),
+            children: [             
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const Text("Carolina Oliveira", style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.black87)),
-                    const Text("Ciência da Computação • 3º Semestre", style: TextStyle(color: Colors.black54, fontSize: 13)),
-                    const SizedBox(height: 6),
-                    Row(children: [Icon(Icons.check_circle, size: 14, color: verdeSucesso), const SizedBox(width: 4), Text("Mentoria Ativa", style: TextStyle(color: verdeSucesso, fontSize: 11, fontWeight: FontWeight.bold))]),
+                    MentoradaInfo(
+                      mentoradaName: "Carolina Oliveira",
+                      curso: "Ciência da Computação",
+                      semestre: 3,
+                      mentoriaAtiva: false,
+                      progresso: 60,
+                    ),
                   ],
                 ),
               ),
             ],
           ),
-          const SizedBox(height: 24),
-          Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [const Text("Progresso do Ciclo", style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold, color: Colors.black54)), Text("60%", style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold, color: petroleo))]),
-          const SizedBox(height: 8),
-          ClipRRect(borderRadius: BorderRadius.circular(10), child: LinearProgressIndicator(value: 0.6, backgroundColor: inputGrey, color: petroleo, minHeight: 8)),
           const SizedBox(height: 24),
           const Divider(height: 1),
           const SizedBox(height: 10),

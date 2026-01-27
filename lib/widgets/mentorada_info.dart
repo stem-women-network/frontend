@@ -1,10 +1,15 @@
 import 'package:flutter/material.dart';
 
 final Color brandColor = const Color(0xFF3E84A2);
+final Color laranja = const Color(0xFFFE9F43);
+final Color petroleo = const Color(0xFF0B6F8E);
+final Color inputGrey = const Color.fromARGB(255, 240, 240, 240);
+final Color verdeSucesso = const Color(0xFF2E7D32);
 
 class MentoradaInfo extends StatelessWidget {
   final Image? mentoradaImage;
   final String mentoradaName;
+  final bool? mentoriaAtiva;
   final String curso;
   final int? semestre;
   final String? instituicao;
@@ -19,6 +24,7 @@ class MentoradaInfo extends StatelessWidget {
     this.mentoradaImage,
     required this.mentoradaName,
     required this.curso,
+    this.mentoriaAtiva,
     this.semestre,
     this.instituicao,
     this.objetivo,
@@ -32,11 +38,6 @@ class MentoradaInfo extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       width: double.infinity,
-      padding: EdgeInsetsGeometry.symmetric(vertical: 10, horizontal: 10),
-      decoration: BoxDecoration(
-        color: backgroundColor ?? Color(0xFFF9FAFB),
-        borderRadius: BorderRadius.all(Radius.circular(5)),
-      ),
       child: Wrap(
         alignment: WrapAlignment.spaceBetween,
         crossAxisAlignment: WrapCrossAlignment.center,
@@ -49,8 +50,9 @@ class MentoradaInfo extends StatelessWidget {
             children: [
               CircleAvatar(
                 foregroundImage: mentoradaImage?.image,
-                backgroundColor: Color(0xFFE4645B),
-                radius: 40,
+                backgroundColor: laranja.withOpacity(0.1),
+                radius: 32,
+                child: Icon(Icons.person, color: laranja, size: 30),
               ),
               Column(
                 spacing: 5,
@@ -67,6 +69,7 @@ class MentoradaInfo extends StatelessWidget {
                       ),
                     ],
                   ),
+
                   if (objetivo != null)
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -90,13 +93,18 @@ class MentoradaInfo extends StatelessWidget {
                         Text("Disponível:"),
                         ...disponibilidade!.map(
                           (value) => Container(
-                            padding: EdgeInsetsGeometry.symmetric(vertical: 3, horizontal: 5),
+                            padding: EdgeInsetsGeometry.symmetric(
+                              vertical: 3,
+                              horizontal: 5,
+                            ),
                             decoration: BoxDecoration(
                               color: Color(0xFFEFEFEF),
-                              borderRadius: BorderRadiusGeometry.all(Radius.circular(5))
+                              borderRadius: BorderRadiusGeometry.all(
+                                Radius.circular(5),
+                              ),
                             ),
-                            child: Text(value)
-                          )
+                            child: Text(value),
+                          ),
                         ),
                       ],
                     ),
@@ -104,18 +112,46 @@ class MentoradaInfo extends StatelessWidget {
               ),
             ],
           ),
+          Padding(
+            padding: const EdgeInsets.only(top: 6),
+            child: Row(
+              children: [
+                if (mentoriaAtiva != null) ...[
+                  if (mentoriaAtiva!) ...[
+                    Icon(Icons.check_circle, size: 14, color: verdeSucesso),
+                    const SizedBox(width: 4),
+                    Text(
+                      "Mentoria Ativa",
+                      style: TextStyle(
+                        color: verdeSucesso,
+                        fontSize: 11,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ] else ...[
+                    Icon(
+                      Icons.error_rounded,
+                      size: 14,
+                      color: Color(0xFFFF0000),
+                    ),
+                    const SizedBox(width: 4),
+                    Text(
+                      "Mentoria Não Ativa",
+                      style: TextStyle(
+                        color: Color(0xFFFF0000),
+                        fontSize: 11,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ],
+                ],
+              ],
+            ),
+          ),
           if (progresso != null)
-            ProgressBar(progresso: progresso, proximoEncontro: proximoEncontro)
-          else
-            FilledButton(
-              onPressed: () => print("Ver perfil"),
-              style: FilledButton.styleFrom(
-                backgroundColor: brandColor,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(8),
-                ),
-              ).copyWith(overlayColor: WidgetStateProperty.all(Colors.white10)),
-              child: Text("Ver perfil"),
+            Padding(
+              padding: const EdgeInsets.only(top: 24),
+              child: ProgressBar(progresso: progresso),
             ),
         ],
       ),
@@ -124,14 +160,9 @@ class MentoradaInfo extends StatelessWidget {
 }
 
 class ProgressBar extends StatelessWidget {
-  const ProgressBar({
-    super.key,
-    required this.progresso,
-    required this.proximoEncontro,
-  });
+  const ProgressBar({super.key, required this.progresso});
 
   final int? progresso;
-  final DateTime? proximoEncontro;
 
   @override
   Widget build(BuildContext context) {
@@ -145,39 +176,34 @@ class ProgressBar extends StatelessWidget {
             alignment: WrapAlignment.spaceBetween,
             runAlignment: WrapAlignment.start,
             children: [
-              Text("Progresso", textAlign: TextAlign.left),
-              Text("$progresso%", textAlign: TextAlign.right),
-              LinearProgressIndicator(
-                value: progresso! / 100,
-                color: Color(0xFFFCB544),
-              ),
-            ],
-          ),
-        ),
-        Container(
-          padding: EdgeInsetsGeometry.only(top: 10),
-          width: double.infinity,
-          child: Wrap(
-            alignment: WrapAlignment.spaceBetween,
-            crossAxisAlignment: WrapCrossAlignment.center,
-            runAlignment: WrapAlignment.spaceAround,
-            children: [
               Text(
-                "Próximo encontro: ${proximoEncontro!.day}/${proximoEncontro!.month}/${proximoEncontro!.year}",
+                "Progresso do Ciclo",
+                textAlign: TextAlign.left,
+                style: TextStyle(
+                  fontSize: 12,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.black54,
+                ),
               ),
-              FilledButton(
-                onPressed: () => print("Ver perfil"),
-                style:
-                    FilledButton.styleFrom(
-                      backgroundColor: brandColor,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(8),
-                      ),
-                    ).copyWith(
-                      overlayColor: WidgetStateProperty.all(Colors.white10),
-                    ),
-                child: Text("Ver perfil"),
+              Text(
+                "$progresso%",
+                textAlign: TextAlign.right,
+                style: TextStyle(
+                  fontSize: 12,
+                  fontWeight: FontWeight.bold,
+                  color: petroleo,
+                ),
               ),
+              ClipRRect(
+                borderRadius: BorderRadius.circular(10),
+                child: LinearProgressIndicator(
+                  backgroundColor: inputGrey,
+                  color: petroleo,
+                  minHeight: 8,
+                  value: progresso! / 100,
+                ),
+              ),
+              const SizedBox(height: 24),
             ],
           ),
         ),
