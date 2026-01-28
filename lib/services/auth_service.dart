@@ -75,7 +75,7 @@ class AuthService {
     String? linkedin,
     required String formacao,
     required String cargoAtual,
-    required String areasAtuacao,
+    required List<String> areasAtuacao,
     required String comoFicouSabendo,
   }) async {
     final url = Uri.parse('$_baseUrl/auth/signup-mentor');
@@ -86,7 +86,7 @@ class AuthService {
         headers: <String, String>{
           'Content-Type': 'application/json; charset=UTF-8',
         },
-        body: jsonEncode(<String, String?>{
+        body: jsonEncode(<String, Object?>{
           "email": email,
           "senha": password,
           "nome_completo": name,
