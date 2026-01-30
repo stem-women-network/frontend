@@ -6,10 +6,10 @@ final Color petroleo = const Color(0xFF0B6F8E);
 final Color inputGrey = const Color.fromARGB(255, 240, 240, 240);
 final Color verdeSucesso = const Color(0xFF2E7D32);
 
-class MentoradaInfo extends StatelessWidget {
+class MenteeInfo extends StatelessWidget {
   final Image? mentoradaImage;
   final String mentoradaName;
-  final bool? mentoriaAtiva;
+  final String? estadoMentoria;
   final String curso;
   final int? semestre;
   final String? instituicao;
@@ -19,12 +19,12 @@ class MentoradaInfo extends StatelessWidget {
   final DateTime? proximoEncontro;
   final Color? backgroundColor;
 
-  const MentoradaInfo({
+  const MenteeInfo({
     super.key,
     this.mentoradaImage,
     required this.mentoradaName,
     required this.curso,
-    this.mentoriaAtiva,
+    this.estadoMentoria,
     this.semestre,
     this.instituicao,
     this.objetivo,
@@ -65,7 +65,7 @@ class MentoradaInfo extends StatelessWidget {
                   Wrap(
                     children: [
                       Text(
-                        "$curso${semestre != null ? ' • $semestre semestre' : ''}${instituicao != null ? ' • $instituicao' : ''}",
+                        "$curso${semestre != null ? ' • $semestre° semestre' : ''}${instituicao != null ? ' • $instituicao' : ''}",
                       ),
                     ],
                   ),
@@ -116,34 +116,28 @@ class MentoradaInfo extends StatelessWidget {
             padding: const EdgeInsets.only(top: 6),
             child: Row(
               children: [
-                if (mentoriaAtiva != null) ...[
-                  if (mentoriaAtiva!) ...[
-                    Icon(Icons.check_circle, size: 14, color: verdeSucesso),
-                    const SizedBox(width: 4),
-                    Text(
-                      "Mentoria Ativa",
-                      style: TextStyle(
-                        color: verdeSucesso,
-                        fontSize: 11,
-                        fontWeight: FontWeight.bold,
-                      ),
+                if (estadoMentoria == "ativa") ...[
+                  Icon(Icons.check_circle, size: 14, color: verdeSucesso),
+                  const SizedBox(width: 4),
+                  Text(
+                    "Mentoria Ativa",
+                    style: TextStyle(
+                      color: verdeSucesso,
+                      fontSize: 11,
+                      fontWeight: FontWeight.bold,
                     ),
-                  ] else ...[
-                    Icon(
-                      Icons.error_rounded,
-                      size: 14,
+                  ),
+                ] else ...[
+                  Icon(Icons.error_rounded, size: 14, color: Color(0xFFFF0000)),
+                  const SizedBox(width: 4),
+                  Text(
+                    "Mentoria Não Ativa",
+                    style: TextStyle(
                       color: Color(0xFFFF0000),
+                      fontSize: 11,
+                      fontWeight: FontWeight.bold,
                     ),
-                    const SizedBox(width: 4),
-                    Text(
-                      "Mentoria Não Ativa",
-                      style: TextStyle(
-                        color: Color(0xFFFF0000),
-                        fontSize: 11,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                  ],
+                  ),
                 ],
               ],
             ),

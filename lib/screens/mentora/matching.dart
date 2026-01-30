@@ -48,7 +48,7 @@ class Matching extends StatelessWidget {
                   Expanded(
                     child: DefaultContainer(
                       children: [
-                        MentoradaInfo(
+                        MenteeInfo(
                           mentoradaName: "Carolina Oliveira",
                           curso: "Ciência da Computação",
                           semestre: 2,
@@ -68,7 +68,7 @@ class Matching extends StatelessWidget {
                   Expanded(
                     child: DefaultContainer(
                       children: [
-                        MentoradaInfo(
+                        MenteeInfo(
                           mentoradaName: "Carolina Oliveira",
                           curso: "Ciência da Computação",
                           semestre: 2,
@@ -88,7 +88,7 @@ class Matching extends StatelessWidget {
                   Expanded(
                     child: DefaultContainer(
                       children: [
-                        MentoradaInfo(
+                        MenteeInfo(
                           mentoradaName: "Carolina Oliveira",
                           curso: "Ciência da Computação",
                           semestre: 2,
