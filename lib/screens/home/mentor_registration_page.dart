@@ -17,8 +17,10 @@ class _MentorRegistrationPageState extends State<MentorRegistrationPage> {
   final Color textDark = const Color(0xFF2D3436);
 
   int _currentStep = 1;
+  bool _senhaVisivel = false;
 
   final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _senhaController = TextEditingController();
   final TextEditingController _nomeController = TextEditingController();
   final TextEditingController _whatsAppController = TextEditingController();
   final TextEditingController _linkedinController = TextEditingController();
@@ -92,6 +94,30 @@ class _MentorRegistrationPageState extends State<MentorRegistrationPage> {
     "Empreendedorismo", "Mentoria de Carreira"
   ];
 
+  @override
+  void dispose() {
+    _emailController.dispose();
+    _senhaController.dispose();
+    _nomeController.dispose();
+    _whatsAppController.dispose();
+    _linkedinController.dispose();
+    _dataNascController.dispose();
+    _cidadeController.dispose();
+    _outroFormacaoController.dispose();
+    _outroComoSoubeController.dispose();
+    _outroCompromissoController.dispose();
+    _empresaController.dispose();
+    _cargoController.dispose();
+    _areaOutroController.dispose();
+    _ajudaController.dispose();
+    _experienciasCompartilharController.dispose();
+    _bioController.dispose();
+    _historiaController.dispose();
+    _comentariosFinaisController.dispose();
+    _estadoController.dispose();
+    super.dispose();
+  }
+
   String _removeAcentos(String str) {
     var comAcento = 'ÀÁÂÃÄÅàáâãäåÒÓÔÕÕÖØòóôõöøÈÉÊËèéêëðÇçÐÌÍÎÏìíîïÙÚÛÜùúûüÑñŠšŸÿýŽž';
     var semAcento = 'AAAAAAaaaaaaOOOOOOOooooooEEEEeeeeeCcDIIIIiiiiUUUUuuuuNnSsYyyZz';
@@ -106,7 +132,7 @@ class _MentorRegistrationPageState extends State<MentorRegistrationPage> {
       context: context,
       initialDate: DateTime(2000),
       firstDate: DateTime(1940),
-      lastDate: DateTime.now(),
+      lastDate: DateTime(2026),
       builder: (context, child) => Theme(
         data: Theme.of(context).copyWith(
           colorScheme: ColorScheme.light(primary: brandColor, onPrimary: Colors.white, surface: Colors.white, onSurface: textDark),
@@ -264,7 +290,6 @@ class _MentorRegistrationPageState extends State<MentorRegistrationPage> {
                 isNumber: true,
                 validator: (val) {
                   if (val == null || val.isEmpty) return "Obrigatório";
-                  // Aceita de 10 (fixo) a 13 (celular com código 55) dígitos
                   if (val.length < 10 || val.length > 13) return "Número inválido";
                   return null;
                 }
@@ -306,6 +331,19 @@ class _MentorRegistrationPageState extends State<MentorRegistrationPage> {
       children: [
         _buildSectionTitle("Detalhes Profissionais"),
         _buildField("Confirme seu E-mail *", "Corrija se necessário", controller: _emailController, readOnly: false),
+        const SizedBox(height: 20),
+        _buildField(
+          "Crie uma Senha *", 
+          "Mínimo 6 caracteres", 
+          controller: _senhaController, 
+          isRequired: true, 
+          obscure: true,
+          validator: (val) {
+            if (val == null || val.isEmpty) return "Obrigatório";
+            if (val.length < 6) return "A senha deve ter pelo menos 6 caracteres";
+            return null;
+          }
+        ),
         const SizedBox(height: 20),
         Row(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -441,17 +479,25 @@ class _MentorRegistrationPageState extends State<MentorRegistrationPage> {
     ],
   );
 
-  Widget _buildField(String label, String hint, {TextEditingController? controller, int maxLines = 1, bool isRequired = false, bool readOnly = false, bool isNumber = false, String? Function(String?)? validator}) => Column(
+  Widget _buildField(String label, String hint, {TextEditingController? controller, int maxLines = 1, bool isRequired = false, bool readOnly = false, bool isNumber = false, bool obscure = false, String? Function(String?)? validator}) => Column(
     crossAxisAlignment: CrossAxisAlignment.start,
     children: [
       Text(label, style: TextStyle(fontWeight: FontWeight.w600, fontSize: 14, color: textDark)),
       const SizedBox(height: 8),
       TextFormField(
         controller: controller, maxLines: maxLines, readOnly: readOnly,
+        obscureText: obscure ? !_senhaVisivel : false,
         keyboardType: isNumber ? TextInputType.number : TextInputType.text,
         inputFormatters: isNumber ? [FilteringTextInputFormatter.digitsOnly] : [],
         style: TextStyle(fontSize: 15, color: textDark),
-        decoration: _inputDecoration(hint),
+        decoration: _inputDecoration(hint).copyWith(
+          suffixIcon: obscure 
+            ? IconButton(
+                icon: Icon(_senhaVisivel ? Icons.visibility : Icons.visibility_off, color: brandColor),
+                onPressed: () => setState(() => _senhaVisivel = !_senhaVisivel),
+              )
+            : null,
+        ),
         validator: validator ?? (isRequired ? (v) => (v == null || v.isEmpty) ? "Obrigatório" : null : null),
       ),
     ],
