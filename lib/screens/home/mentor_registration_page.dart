@@ -27,34 +27,26 @@ class _MentorRegistrationPageState extends State<MentorRegistrationPage> {
   final TextEditingController _dataNascController = TextEditingController();
   final TextEditingController _cidadeController = TextEditingController();
   final TextEditingController _outroFormacaoController = TextEditingController();
-  final TextEditingController _outroComoSoubeController = TextEditingController();
-  final TextEditingController _outroCompromissoController = TextEditingController();
   final TextEditingController _empresaController = TextEditingController();
   final TextEditingController _cargoController = TextEditingController();
-  final TextEditingController _areaOutroController = TextEditingController();
   final TextEditingController _ajudaController = TextEditingController();
-  final TextEditingController _experienciasCompartilharController = TextEditingController();
   final TextEditingController _bioController = TextEditingController();
-  final TextEditingController _historiaController = TextEditingController();
-  final TextEditingController _comentariosFinaisController = TextEditingController();
-  final TextEditingController _estadoController = TextEditingController();
 
   String? _genero;
   String? _formacaoAcademica;
   String? _compromissoQuinzenal;
-  String? _comoSoube;
   String? _estado;
   String? _raca;
   String? _areaAtuacao;
-  String? _formacaoMentoria;
   String? _foiMentor;
   String? _foiMentorado;
-  String? _permitePromover;
   String? _compromisso14Sessoes;
+  String? _perfilInteresse;
 
+  List<String> _focosEnsinoSelecionados = [];
   List<String> _idiomasSelecionados = [];
-  List<String> _competenciasSelecionadas = [];
   List<String> _hobbiesSelecionados = [];
+  List<String> _competenciasExpertise = [];
 
   final List<String> _emailDomains = ["@gmail.com", "@outlook.com", "@hotmail.com", "@icloud.com"];
   
@@ -86,12 +78,12 @@ class _MentorRegistrationPageState extends State<MentorRegistrationPage> {
     "Yoga/Meditação", "Board Games", "Pets", "DIY (Faça você mesmo)"
   ];
 
-  final List<String> _opcoesCompetencias = [
-    "Conhecimento STEM", "Pensamento crítico", "Comunicação", "Liderança", 
-    "Networking", "Gestão de Projetos", "Inteligência Emocional", 
-    "Resolução de Conflitos", "Oratória", "Branding Pessoal", 
-    "Metodologias Ágeis", "Análise de Dados", "Inovação", 
-    "Empreendedorismo", "Mentoria de Carreira"
+  final List<String> _opcoesExpertise = [
+    "Transição de Carreira", "Primeiro Emprego ou Estágio", "Preparação para Entrevistas",
+    "Autoconfiança e Insegurança", "Plano de Carreira Prático", "Conhecimento STEM",
+    "Habilidades Práticas (Dia a Dia)", "Comunicação Clara e Eficaz", "Networking e Visão de Mercado",
+    "Liderança e Gestão", "Inteligência Emocional", "Análise de Dados e Inovação",
+    "Empreendedorismo", "Mentoria de Carreira", "Uso de Tecnologias Educacionais"
   ];
 
   @override
@@ -104,17 +96,10 @@ class _MentorRegistrationPageState extends State<MentorRegistrationPage> {
     _dataNascController.dispose();
     _cidadeController.dispose();
     _outroFormacaoController.dispose();
-    _outroComoSoubeController.dispose();
-    _outroCompromissoController.dispose();
     _empresaController.dispose();
     _cargoController.dispose();
-    _areaOutroController.dispose();
     _ajudaController.dispose();
-    _experienciasCompartilharController.dispose();
     _bioController.dispose();
-    _historiaController.dispose();
-    _comentariosFinaisController.dispose();
-    _estadoController.dispose();
     super.dispose();
   }
 
@@ -130,12 +115,12 @@ class _MentorRegistrationPageState extends State<MentorRegistrationPage> {
   Future<void> _selectDate(BuildContext context) async {
     final DateTime? picked = await showDatePicker(
       context: context,
-      initialDate: DateTime(2000),
+      initialDate: DateTime(1990),
       firstDate: DateTime(1940),
-      lastDate: DateTime(2026),
+      lastDate: DateTime.now(),
       builder: (context, child) => Theme(
         data: Theme.of(context).copyWith(
-          colorScheme: ColorScheme.light(primary: brandColor, onPrimary: Colors.white, surface: Colors.white, onSurface: textDark),
+          colorScheme: ColorScheme.light(primary: brandColor, onSurface: textDark),
         ),
         child: child!,
       ),
@@ -149,20 +134,26 @@ class _MentorRegistrationPageState extends State<MentorRegistrationPage> {
 
   void _validarETriagem() {
     if (!_formKey.currentState!.validate()) return;
-    List<String> areasSTEM = ["TI ou Computação e Dados", "Engenharia", "Ciências (Física, Química, Outras)", "Matemáticas"];
-    bool isSTEM = areasSTEM.contains(_formacaoAcademica) || 
-                  (_outroFormacaoController.text.toLowerCase().contains("eng")) ||
-                  (_outroFormacaoController.text.toLowerCase().contains("ti"));
-
-    if (isSTEM) {
-      setState(() => _currentStep = 2);
-    } else {
-      _mostrarDialogoBackup();
-    }
+    setState(() => _currentStep = 2);
   }
 
   void _irParaTermos() {
     if (!_formKey.currentState!.validate()) return;
+    
+    if (_competenciasExpertise.length < 2 || _hobbiesSelecionados.length < 2 || _idiomasSelecionados.length < 2 || _focosEnsinoSelecionados.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text("Selecione os focos de mentoria e ao menos 2 competências e hobbies."))
+      );
+      return;
+    }
+
+    if (_compromisso14Sessoes != "Sim") {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text("Você precisa confirmar o compromisso com as 14 sessões."))
+      );
+      return;
+    }
+
     Navigator.push(
       context,
       MaterialPageRoute(builder: (context) => const TermSigningPage()),
@@ -195,21 +186,6 @@ class _MentorRegistrationPageState extends State<MentorRegistrationPage> {
     );
   }
 
-  void _mostrarDialogoBackup() {
-    showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-        backgroundColor: Colors.white,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-        title: Text("Inscrição Recebida", style: TextStyle(color: brandColor, fontWeight: FontWeight.bold)),
-        content: const Text("Obrigado pelo seu interesse! No momento, seu perfil ficará em nossa base de reserva para futuras oportunidades."),
-        actions: [
-          TextButton(onPressed: () => Navigator.pop(context), child: Text("ENTENDIDO", style: TextStyle(color: brandColor, fontWeight: FontWeight.bold))),
-        ],
-      ),
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -217,46 +193,45 @@ class _MentorRegistrationPageState extends State<MentorRegistrationPage> {
       body: Stack(
         children: [
           Positioned(
-            top: 50, left: 20,
+            top: 40, left: 20,
             child: IconButton(
               icon: const Icon(Icons.arrow_back_ios, color: Colors.white),
-              onPressed: () => Navigator.pop(context),
+              onPressed: () => _currentStep == 2 ? setState(() => _currentStep = 1) : Navigator.pop(context),
             ),
           ),
           Positioned(
             top: 60, left: 0, right: 0,
             child: Column(
               children: [
-                const Text("STEM Women Network", style: TextStyle(color: Colors.white70, fontSize: 16, letterSpacing: 1.2)),
+                const Text("STEM Women Network", style: TextStyle(color: Colors.white70, fontSize: 16)),
                 const SizedBox(height: 8),
-                Text(_currentStep == 1 ? "Inscrição de Mentoria" : "Detalhes do Perfil", style: const TextStyle(fontSize: 28, fontWeight: FontWeight.w900, color: Colors.white)),
+                Text(_currentStep == 1 ? "Inscrição de Mentoria" : "Matching e Perfil", style: const TextStyle(fontSize: 28, fontWeight: FontWeight.w900, color: Colors.white)),
               ],
             ),
           ),
-          Padding(
-            padding: const EdgeInsets.only(top: 140),
-            child: Center(
+          Center(
+            child: SingleChildScrollView(
+              padding: const EdgeInsets.symmetric(vertical: 80, horizontal: 20),
               child: ConstrainedBox(
-                constraints: const BoxConstraints(maxWidth: 700),
-                child: SingleChildScrollView(
-                  padding: const EdgeInsets.fromLTRB(20, 0, 20, 40),
-                  child: Container(
-                    padding: const EdgeInsets.all(40),
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(20),
-                      boxShadow: [BoxShadow(color: Colors.black.withOpacity(0.15), blurRadius: 30, offset: const Offset(0, 10))],
-                    ),
-                    child: Form(
-                      key: _formKey,
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          _currentStep == 1 ? _buildForm1() : _buildForm2(),
-                          const SizedBox(height: 40),
-                          _buildSubmitButton(),
-                        ],
-                      ),
+                constraints: const BoxConstraints(maxWidth: 850),
+                child: Container(
+                  padding: const EdgeInsets.all(40),
+                  margin: const EdgeInsets.only(top: 100),
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(25),
+                    boxShadow: [BoxShadow(color: Colors.black.withOpacity(0.15), blurRadius: 30)],
+                  ),
+                  child: Form(
+                    key: _formKey,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        _buildSectionTitle(_currentStep == 1 ? "Informações Iniciais" : "Matching e Experiência"),
+                        _currentStep == 1 ? _buildForm1() : _buildForm2(),
+                        const SizedBox(height: 40),
+                        _buildSubmitButton(),
+                      ],
                     ),
                   ),
                 ),
@@ -272,55 +247,28 @@ class _MentorRegistrationPageState extends State<MentorRegistrationPage> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        _buildSectionTitle("Informações de Contato"),
         _buildField("E-mail *", "seu@email.com", controller: _emailController, isRequired: true),
         _buildEmailSuggestions(),
         const SizedBox(height: 20),
         _buildField("Nome Completo *", "Digite seu nome", controller: _nomeController, isRequired: true),
         const SizedBox(height: 20),
-        Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Expanded(
-              child: _buildField(
-                "WhatsApp *", 
-                "DDD + Número", 
-                controller: _whatsAppController, 
-                isRequired: true,
-                isNumber: true,
-                validator: (val) {
-                  if (val == null || val.isEmpty) return "Obrigatório";
-                  if (val.length < 10 || val.length > 13) return "Número inválido";
-                  return null;
-                }
-              )
-            ),
-            const SizedBox(width: 20),
-            Expanded(child: _buildField("LinkedIn *", "URL do perfil", controller: _linkedinController, isRequired: true)),
-          ],
-        ),
-        const SizedBox(height: 30),
-        _buildSectionTitle("Perfil e Localização"),
-        Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Expanded(child: _buildClickableField("Nascimento *", "DD/MM/AAAA", _dataNascController, () => _selectDate(context))),
-            const SizedBox(width: 20),
-            Expanded(child: _buildAutocompleteCity()),
-          ],
-        ),
+        _buildRow([
+          _buildField("WhatsApp *", "DDD + Número", controller: _whatsAppController, isRequired: true, isNumber: true),
+          _buildField("LinkedIn", "URL do perfil", controller: _linkedinController, isRequired: false),
+        ]),
         const SizedBox(height: 20),
-        _buildDropdown("Gênero *", ["Masculino", "Feminino", "Não Binário", "Prefiro não dizer"], (v) => setState(() => _genero = v)),
+        _buildRow([
+          _buildClickableField("Nascimento *", "DD/MM/AAAA", _dataNascController, () => _selectDate(context)),
+          _buildAutocompleteCity(),
+        ]),
         const SizedBox(height: 20),
-        _buildDropdown("Formação Acadêmica *", [
-          "TI ou Computação e Dados", "Engenharia", "Ciências (Física, Química, Outras)",
-          "Matemáticas", "Arquitetura", "Negócios ou Administração", "Comunicação ou Marketing", "Outros"
-        ], (v) => setState(() => _formacaoAcademica = v)),
+        _buildRow([
+          _buildDropdown("Gênero *", ["Masculino", "Feminino", "Não Binário", "Outro"], (v) => setState(() => _genero = v)),
+          _buildDropdown("Formação Acadêmica *", ["TI ou Computação", "Engenharia", "Ciências", "Matemáticas", "Outros"], (v) => setState(() => _formacaoAcademica = v)),
+        ]),
         if (_formacaoAcademica == "Outros") Padding(padding: const EdgeInsets.only(top: 15), child: _buildField("Especifique sua formação", "Qual área?", controller: _outroFormacaoController)),
         const SizedBox(height: 20),
-        _buildChoiceBox("Você pode se comprometer com sessões quinzenais?", ["Sim", "Não", "Talvez"], _compromissoQuinzenal, (v) => setState(() => _compromissoQuinzenal = v)),
-        const SizedBox(height: 20),
-        _buildDropdown("Como soube do programa? *", ["Recomendação", "Empresa parceira", "Universidade", "Google/Bing", "LinkedIn", "Mídias Sociais", "Eventos", "Outros"], (v) => setState(() => _comoSoube = v)),
+        _buildChoiceBox("Comprometimento quinzenal?", ["Sim", "Não", "Talvez"], _compromissoQuinzenal, (v) => setState(() => _compromissoQuinzenal = v)),
       ],
     );
   }
@@ -329,118 +277,71 @@ class _MentorRegistrationPageState extends State<MentorRegistrationPage> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        _buildSectionTitle("Detalhes Profissionais"),
-        _buildField("Confirme seu E-mail *", "Corrija se necessário", controller: _emailController, readOnly: false),
+        _buildSectionTitle("Segurança"),
+        _buildField("Confirme seu E-mail *", "seu@email.com", isRequired: true, validator: (v) => v != _emailController.text ? "E-mails não conferem" : null),
         const SizedBox(height: 20),
-        _buildField(
-          "Crie uma Senha *", 
-          "Mínimo 6 caracteres", 
-          controller: _senhaController, 
-          isRequired: true, 
-          obscure: true,
-          validator: (val) {
-            if (val == null || val.isEmpty) return "Obrigatório";
-            if (val.length < 6) return "A senha deve ter pelo menos 6 caracteres";
-            return null;
-          }
-        ),
+        _buildField("Crie uma Senha *", "Mínimo 6 caracteres", controller: _senhaController, isRequired: true, obscure: true),
+        const SizedBox(height: 35),
+        _buildSectionTitle("Experiência Profissional"),
+        _buildRow([
+          _buildAutocompleteState(),
+          _buildDropdown("Raça/Etnia *", ["Amarela", "Negra", "Asiática", "Latina", "Branca", "Outra"], (v) => _raca = v),
+        ]),
         const SizedBox(height: 20),
-        Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Expanded(child: _buildAutocompleteState()),
-            const SizedBox(width: 20),
-            Expanded(child: _buildDropdown("Raça/Etnia *", ["Africano", "Negro", "Asiático", "Latino", "Branco", "Outro", "Prefiro não responder"], (v) => _raca = v)),
-          ],
-        ),
+        _buildRow([
+          _buildField("Empresa *", "Nome", controller: _empresaController, isRequired: true),
+          _buildField("Cargo *", "Ex: Tech Lead", controller: _cargoController, isRequired: true),
+        ]),
         const SizedBox(height: 20),
-        const Text("Idiomas *", style: TextStyle(fontWeight: FontWeight.w600, fontSize: 14)),
-        _buildMultiSelect(["Português", "Espanhol", "Inglês"], _idiomasSelecionados),
-        const SizedBox(height: 30),
-        _buildSectionTitle("Experiência Atual"),
-        Row(
-          children: [
-            Expanded(child: _buildField("Empresa *", "Nome da empresa", controller: _empresaController, isRequired: true)),
-            const SizedBox(width: 20),
-            Expanded(child: _buildField("Cargo *", "Ex: Tech Lead", controller: _cargoController, isRequired: true)),
-          ],
-        ),
-        const SizedBox(height: 20),
-        _buildDropdown("Área de Atuação *", ["Desenvolvimento", "Arquitetura", "Business Partner", "TI", "Engenharia", "Dados", "Vendas ou Negócios", "Outros"], (v) => setState(() => _areaAtuacao = v)),
-        const SizedBox(height: 20),
-        _buildChoiceBox("Possui formação em mentoria ou coach?", ["Sim", "Não"], _formacaoMentoria, (v) => setState(() => _formacaoMentoria = v)),
-        const SizedBox(height: 20),
-        _buildField("Como podes ajudar? *", "Descreva aqui", controller: _ajudaController, maxLines: 3, isRequired: true),
-        const SizedBox(height: 20),
-        const Text("Principais Competências *", style: TextStyle(fontWeight: FontWeight.w600, fontSize: 14)),
-        _buildMultiSelect(_opcoesCompetencias, _competenciasSelecionadas),
-        const SizedBox(height: 20),
-        const Text("Seus Hobbies (Máx 4) *", style: TextStyle(fontWeight: FontWeight.w600, fontSize: 14)),
-        const SizedBox(height: 10),
-        _buildMultiSelect(_opcoesHobbies, _hobbiesSelecionados, maxSelection: 4),
+        _buildDropdown("Área de Atuação *", ["TI e Dados", "Engenharia", "Ciências", "Arquitetura", "Outros"], (v) => setState(() => _areaAtuacao = v)),
         const SizedBox(height: 20),
         _buildChoiceBox("Já foi mentor antes?", ["Sim", "Não"], _foiMentor, (v) => setState(() => _foiMentor = v)),
+        const SizedBox(height: 10),
+        _buildChoiceBox("Já foi mentorado antes?", ["Sim", "Não"], _foiMentorado, (v) => setState(() => _foiMentorado = v)),
+        const SizedBox(height: 35),
+        _buildSectionTitle("Matching Inteligente"),
+        _buildChoiceBox("Qual perfil deseja ajudar? *", ["Transição de carreira", "1º estágio/emprego", "Já na área", "Estudantes"], _perfilInteresse, (v) => setState(() => _perfilInteresse = v)),
+        const SizedBox(height: 25),
+        const Text("Foco da mentoria (Múltiplo) *", style: TextStyle(fontWeight: FontWeight.w600, fontSize: 14)),
+        _buildMultiSelect(["Hard Skills", "Soft Skills", "Networking"], _focosEnsinoSelecionados),
+        const SizedBox(height: 25),
+        const Text("Idiomas (Mínimo 2) *", style: TextStyle(fontWeight: FontWeight.w600, fontSize: 14)),
+        _buildMultiSelect(["Português", "Espanhol", "Inglês"], _idiomasSelecionados),
+        const SizedBox(height: 25),
+        const Text("Expertise (Mín 2, Máx 4) *", style: TextStyle(fontWeight: FontWeight.w600, fontSize: 14)),
+        _buildMultiSelect(_opcoesExpertise, _competenciasExpertise, maxSelection: 4),
+        const SizedBox(height: 25),
+        const Text("Hobbies (Mínimo 2) *", style: TextStyle(fontWeight: FontWeight.w600, fontSize: 14)),
+        _buildMultiSelect(_opcoesHobbies, _hobbiesSelecionados),
+        const SizedBox(height: 35),
+        _buildSectionTitle("Finalização"),
+        _buildField("Como você pode ajudar? *", "Descreva aqui", controller: _ajudaController, maxLines: 3, isRequired: true),
         const SizedBox(height: 20),
-        _buildChoiceBox("Podemos promover seu perfil? *", ["Sim", "Não"], _permitePromover, (v) => setState(() => _permitePromover = v)),
+        _buildField("Bio (Opcional)", "Conte um pouco sobre sua trajetória...", controller: _bioController, maxLines: 4),
+        const SizedBox(height: 20),
+        _buildChoiceBox("Pode se comprometer com 14 sessões? *", ["Sim", "Não"], _compromisso14Sessoes, (v) => setState(() => _compromisso14Sessoes = v)),
       ],
     );
   }
 
-  Widget _buildAutocompleteState() {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text("Estado *", style: TextStyle(fontWeight: FontWeight.w600, fontSize: 14, color: textDark)),
-        const SizedBox(height: 8),
-        Autocomplete<String>(
-          optionsBuilder: (TextEditingValue val) {
-            if (val.text.isEmpty) return const Iterable<String>.empty();
-            String inputNormalized = _removeAcentos(val.text.toLowerCase());
-            return _estadosBrasil.where((s) {
-              String stateNormalized = _removeAcentos(s.toLowerCase());
-              return stateNormalized.contains(inputNormalized);
-            });
-          },
-          onSelected: (s) => setState(() => _estado = s),
-          fieldViewBuilder: (ctx, ctrl, node, onComplete) => TextFormField(
-            controller: ctrl, focusNode: node, onEditingComplete: onComplete,
-            decoration: _inputDecoration("Selecione um estado"),
-            style: TextStyle(fontSize: 15, color: textDark),
-            validator: (v) {
-              if (v == null || v.isEmpty) return "Obrigatório";
-              if (!_estadosBrasil.contains(v)) return "Selecione da lista";
-              return null;
-            },
+  Widget _buildField(String label, String hint, {TextEditingController? controller, bool isRequired = false, bool isNumber = false, bool obscure = false, int maxLines = 1, String? Function(String?)? validator}) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 8),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(label, style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 13, color: Colors.black87)),
+          const SizedBox(height: 8),
+          TextFormField(
+            controller: controller, maxLines: maxLines, obscureText: obscure ? !_senhaVisivel : false,
+            keyboardType: isNumber ? TextInputType.number : TextInputType.text,
+            decoration: _inputDecoration(hint).copyWith(
+              suffixIcon: obscure ? IconButton(icon: Icon(_senhaVisivel ? Icons.visibility : Icons.visibility_off, color: brandColor), onPressed: () => setState(() => _senhaVisivel = !_senhaVisivel)) : null,
+            ),
+            validator: validator ?? (isRequired ? (v) => (v == null || v.isEmpty) ? "Obrigatório" : null : null),
           ),
-        ),
-      ],
-    );
-  }
-
-  Widget _buildAutocompleteCity() {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text("Cidade *", style: TextStyle(fontWeight: FontWeight.w600, fontSize: 14, color: textDark)),
-        const SizedBox(height: 8),
-        Autocomplete<String>(
-          optionsBuilder: (TextEditingValue val) {
-            if (val.text.isEmpty) return const Iterable<String>.empty();
-            String inputNormalized = _removeAcentos(val.text.toLowerCase());
-            return _cidadesPrincipais.where((s) {
-              String cityNormalized = _removeAcentos(s.toLowerCase());
-              return cityNormalized.contains(inputNormalized);
-            });
-          },
-          onSelected: (s) => setState(() => _cidadeController.text = s),
-          fieldViewBuilder: (ctx, ctrl, node, onComplete) => TextFormField(
-            controller: ctrl, focusNode: node, onEditingComplete: onComplete,
-            decoration: _inputDecoration("Digite sua cidade"),
-            style: TextStyle(fontSize: 15, color: textDark),
-            validator: (v) => (v == null || v.isEmpty) ? "Obrigatório" : null,
-          ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 
@@ -448,20 +349,17 @@ class _MentorRegistrationPageState extends State<MentorRegistrationPage> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(label, style: TextStyle(fontWeight: FontWeight.w600, fontSize: 14, color: textDark)),
-        const SizedBox(height: 10),
+        Text(label, style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 13)),
+        const SizedBox(height: 12),
         Wrap(
-          spacing: 10,
+          spacing: 10, runSpacing: 10,
           children: options.map((opt) {
             bool isSelected = current == opt;
             return ChoiceChip(
-              label: Text(opt),
-              selected: isSelected,
-              onSelected: (v) => onSelect(opt),
-              selectedColor: petroleo.withOpacity(0.2),
-              backgroundColor: Colors.white,
+              label: Text(opt), selected: isSelected, onSelected: (v) => onSelect(opt),
+              selectedColor: petroleo.withOpacity(0.2), backgroundColor: Colors.white,
               labelStyle: TextStyle(color: isSelected ? petroleo : textDark, fontWeight: isSelected ? FontWeight.bold : FontWeight.normal),
-              shape: RoundedRectangleBorder(side: BorderSide(color: isSelected ? petroleo : greyBorder), borderRadius: BorderRadius.circular(10)),
+              shape: RoundedRectangleBorder(side: BorderSide(color: isSelected ? petroleo : greyBorder), borderRadius: BorderRadius.circular(12)),
             );
           }).toList(),
         ),
@@ -469,36 +367,77 @@ class _MentorRegistrationPageState extends State<MentorRegistrationPage> {
     );
   }
 
+  Widget _buildMultiSelect(List<String> options, List<String> target, {int? maxSelection}) {
+    return Wrap(
+      spacing: 10, runSpacing: 10,
+      children: options.map((o) {
+        bool sel = target.contains(o);
+        return FilterChip(
+          label: Text(o), selected: sel,
+          onSelected: (v) => setState(() { if (v) { if (maxSelection == null || target.length < maxSelection!) target.add(o); } else { target.remove(o); } }),
+          selectedColor: petroleo.withOpacity(0.2), backgroundColor: Colors.white,
+          checkmarkColor: petroleo, shape: RoundedRectangleBorder(side: BorderSide(color: sel ? petroleo : greyBorder), borderRadius: BorderRadius.circular(12)),
+        );
+      }).toList(),
+    );
+  }
+
   Widget _buildSectionTitle(String title) => Column(
     crossAxisAlignment: CrossAxisAlignment.start,
     children: [
-      Text(title, style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: brandColor)),
-      const SizedBox(height: 5),
-      Container(height: 2, width: 40, color: brandColor.withOpacity(0.3)),
-      const SizedBox(height: 20),
+      Text(title, style: TextStyle(fontSize: 17, fontWeight: FontWeight.bold, color: brandColor)),
+      Divider(height: 25, color: brandColor.withOpacity(0.3)),
     ],
   );
 
-  Widget _buildField(String label, String hint, {TextEditingController? controller, int maxLines = 1, bool isRequired = false, bool readOnly = false, bool isNumber = false, bool obscure = false, String? Function(String?)? validator}) => Column(
+  InputDecoration _inputDecoration(String hint) => InputDecoration(
+    hintText: hint, filled: true, fillColor: Colors.grey[50],
+    contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+    enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(12), borderSide: BorderSide(color: greyBorder)),
+    focusedBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(12), borderSide: BorderSide(color: brandColor, width: 2)),
+    errorBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(12), borderSide: const BorderSide(color: Colors.redAccent)),
+  );
+
+  Widget _buildRow(List<Widget> children) => Padding(
+    padding: const EdgeInsets.only(bottom: 10),
+    child: Row(children: children.map((e) => Expanded(child: Padding(padding: const EdgeInsets.symmetric(horizontal: 5), child: e))).toList()),
+  );
+
+  Widget _buildDropdown(String label, List<String> items, Function(String?) onChanged) => Column(
     crossAxisAlignment: CrossAxisAlignment.start,
     children: [
-      Text(label, style: TextStyle(fontWeight: FontWeight.w600, fontSize: 14, color: textDark)),
+      Text(label, style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 13)),
       const SizedBox(height: 8),
-      TextFormField(
-        controller: controller, maxLines: maxLines, readOnly: readOnly,
-        obscureText: obscure ? !_senhaVisivel : false,
-        keyboardType: isNumber ? TextInputType.number : TextInputType.text,
-        inputFormatters: isNumber ? [FilteringTextInputFormatter.digitsOnly] : [],
-        style: TextStyle(fontSize: 15, color: textDark),
-        decoration: _inputDecoration(hint).copyWith(
-          suffixIcon: obscure 
-            ? IconButton(
-                icon: Icon(_senhaVisivel ? Icons.visibility : Icons.visibility_off, color: brandColor),
-                onPressed: () => setState(() => _senhaVisivel = !_senhaVisivel),
-              )
-            : null,
-        ),
-        validator: validator ?? (isRequired ? (v) => (v == null || v.isEmpty) ? "Obrigatório" : null : null),
+      DropdownButtonFormField<String>(
+        decoration: _inputDecoration("Selecione"),
+        items: items.map((e) => DropdownMenuItem(value: e, child: Text(e))).toList(),
+        onChanged: onChanged, validator: (v) => v == null ? "Obrigatório" : null,
+      ),
+    ],
+  );
+
+  Widget _buildAutocompleteCity() => Column(
+    crossAxisAlignment: CrossAxisAlignment.start,
+    children: [
+      const Text("Cidade *", style: TextStyle(fontWeight: FontWeight.w600, fontSize: 13)),
+      const SizedBox(height: 8),
+      Autocomplete<String>(
+        optionsBuilder: (val) => _cidadesPrincipais.where((s) => _removeAcentos(s.toLowerCase()).contains(_removeAcentos(val.text.toLowerCase()))),
+        onSelected: (s) => setState(() => _cidadeController.text = s),
+        fieldViewBuilder: (ctx, ctrl, node, onComplete) => TextFormField(controller: ctx.findAncestorStateOfType<_MentorRegistrationPageState>()!._cidadeController, focusNode: node, decoration: _inputDecoration("Cidade"), validator: (v) => (v == null || v.isEmpty) ? "Obrigatório" : null),
+      ),
+    ],
+  );
+
+  Widget _buildAutocompleteState() => Column(
+    crossAxisAlignment: CrossAxisAlignment.start,
+    children: [
+      const Text("Estado *", style: TextStyle(fontWeight: FontWeight.w600, fontSize: 13)),
+      const SizedBox(height: 8),
+      Autocomplete<String>(
+        optionsBuilder: (val) => _estadosBrasil.where((s) => _removeAcentos(s.toLowerCase()).contains(_removeAcentos(val.text.toLowerCase()))),
+        onSelected: (s) => setState(() => _estado = s),
+        fieldViewBuilder: (ctx, ctrl, node, onComplete) => TextFormField(controller: ctrl, focusNode: node, decoration: _inputDecoration("Estado"), validator: (v) => (v == null || v.isEmpty) ? "Obrigatório" : null),
       ),
     ],
   );
@@ -506,77 +445,18 @@ class _MentorRegistrationPageState extends State<MentorRegistrationPage> {
   Widget _buildClickableField(String label, String hint, TextEditingController ctrl, VoidCallback onTap) => Column(
     crossAxisAlignment: CrossAxisAlignment.start,
     children: [
-      Text(label, style: TextStyle(fontWeight: FontWeight.w600, fontSize: 14, color: textDark)),
+      const Text("Nascimento *", style: TextStyle(fontWeight: FontWeight.w600, fontSize: 13)),
       const SizedBox(height: 8),
-      TextFormField(
-        controller: ctrl, readOnly: true, onTap: onTap,
-        style: TextStyle(fontSize: 15, color: textDark),
-        decoration: _inputDecoration(hint).copyWith(suffixIcon: Icon(Icons.calendar_today, size: 20, color: brandColor)),
-      ),
+      TextFormField(controller: ctrl, readOnly: true, onTap: onTap, decoration: _inputDecoration(hint).copyWith(suffixIcon: const Icon(Icons.calendar_today, size: 18))),
     ],
-  );
-
-  Widget _buildDropdown(String label, List<String> items, Function(String?) onChanged) => Column(
-    crossAxisAlignment: CrossAxisAlignment.start,
-    children: [
-      Text(label, style: TextStyle(fontWeight: FontWeight.w600, fontSize: 14, color: textDark)),
-      const SizedBox(height: 8),
-      DropdownButtonFormField<String>(
-        decoration: _inputDecoration("Selecione"),
-        icon: Icon(Icons.keyboard_arrow_down, color: brandColor),
-        dropdownColor: Colors.white,
-        items: items.map((e) => DropdownMenuItem(value: e, child: Text(e, style: const TextStyle(fontSize: 14)))).toList(),
-        onChanged: onChanged,
-        validator: (v) => v == null ? "Obrigatório" : null,
-      ),
-    ],
-  );
-
-  Widget _buildMultiSelect(List<String> options, List<String> target, {int? maxSelection}) => Wrap(
-    spacing: 10, runSpacing: 10,
-    children: options.map((o) {
-      bool sel = target.contains(o);
-      return FilterChip(
-        label: Text(o, style: TextStyle(fontSize: 12, color: sel ? petroleo : textDark)),
-        selected: sel, backgroundColor: Colors.white, selectedColor: Colors.white,
-        checkmarkColor: petroleo, side: BorderSide(color: sel ? petroleo : greyBorder),
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-        onSelected: (v) {
-          setState(() {
-            if (v) {
-              if (maxSelection == null || target.length < maxSelection) {
-                target.add(o);
-              }
-            } else {
-              target.remove(o);
-            }
-          });
-        },
-      );
-    }).toList(),
   );
 
   Widget _buildEmailSuggestions() => Padding(
     padding: const EdgeInsets.only(top: 8),
-    child: Wrap(
-      spacing: 8,
-      children: _emailDomains.map((d) => InkWell(
-        onTap: () => setState(() => _emailController.text = _emailController.text.contains("@") ? _emailController.text.substring(0, _emailController.text.indexOf("@")) + d : _emailController.text + d),
-        child: Container(
-          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
-          decoration: BoxDecoration(color: const Color(0xFFF0F4F8), borderRadius: BorderRadius.circular(6)),
-          child: Text(d, style: TextStyle(fontSize: 12, color: brandColor, fontWeight: FontWeight.w500)),
-        ),
-      )).toList(),
-    ),
-  );
-
-  InputDecoration _inputDecoration(String hint) => InputDecoration(
-    hintText: hint, filled: true, fillColor: Colors.white,
-    contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
-    enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(12), borderSide: BorderSide(color: greyBorder)),
-    focusedBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(12), borderSide: BorderSide(color: brandColor, width: 2)),
-    errorBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(12), borderSide: const BorderSide(color: Colors.redAccent)),
+    child: Wrap(spacing: 8, children: _emailDomains.map((d) => InkWell(
+      onTap: () => setState(() => _emailController.text = _emailController.text.contains("@") ? _emailController.text.substring(0, _emailController.text.indexOf("@")) + d : _emailController.text + d),
+      child: Container(padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6), decoration: BoxDecoration(color: brandColor.withOpacity(0.05), borderRadius: BorderRadius.circular(8)), child: Text(d, style: TextStyle(fontSize: 12, color: brandColor, fontWeight: FontWeight.bold))),
+    )).toList()),
   );
 
   Widget _buildSubmitButton() => SizedBox(
