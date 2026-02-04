@@ -350,7 +350,7 @@ class _MenteeDashboardPageState extends State<MenteeDashboardPage> {
                 onTap: () {
                   Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (context) => const ChatPage()),
+                    MaterialPageRoute(builder: (context) => ChatPage(otherId: "", actor: "mentee")),
                   );
                 },
                 child: Text(

@@ -3,6 +3,7 @@ import 'package:frontend/screens/home/mentee_dashboard_page.dart';
 import 'package:frontend/screens/mentora/dashboard.dart';
 import 'package:frontend/services/auth_service.dart';
 import 'package:frontend/widgets/mentorada_info.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'coordinator/coordinator_dashboard_page.dart';
 import 'administrativo/admin_dashboard_page.dart';
 import 'signup_page.dart';
@@ -205,6 +206,8 @@ class _LoginPageState extends State<LoginPage> {
                             print(response);
                             if (response.containsKey("userType")) {
                               final String userType = response["userType"];
+                              final SharedPreferences prefs = await SharedPreferences.getInstance();
+                              await prefs.setString("token", response["token"]);
                               print(userType);
                               late final Widget Function() page;
                               switch (userType) {
