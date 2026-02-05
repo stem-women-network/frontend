@@ -87,6 +87,7 @@ class AuthService {
     required List<String> languages,
     required List<String> skills,
     required List<String> hobbies,
+    required String availability,
     required String help,
     required String bio
   }) async {
@@ -120,6 +121,7 @@ class AuthService {
           "idiomas" : languages,
           "competencias" : skills,
           "hobbies" : hobbies,
+          "disponibilidade" : availability,
           "ajuda" : help,
           "bio" : bio
         }),
