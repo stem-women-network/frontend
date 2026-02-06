@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:frontend/screens/home/administrativo/recent_activities_page.dart';
 import 'university_list_page.dart';
-
-// Importação fictícia da página de histórico
-// import 'recent_activities_page.dart'; 
+import 'reports_page.dart';
 
 class AdminDashboardPage extends StatefulWidget {
   const AdminDashboardPage({super.key});
@@ -35,12 +33,10 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  // --- HEADER GLOBAL ---
                   _buildHeader(),
 
                   const SizedBox(height: 35),
 
-                  // --- MÉTRICAS DE IMPACTO GLOBAL ---
                   Row(
                     children: [
                       Expanded(
@@ -63,24 +59,13 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
 
                   const SizedBox(height: 30),
 
-                  // --- LAYOUT PRINCIPAL: INSIGHTS E GESTÃO ---
-                  if (isMobile) ...[
+                  if (isMobile) 
+                    _buildUniversitiesSection()
+                  else
                     _buildUniversitiesSection(),
-                    const SizedBox(height: 20),
-                    _buildInsightsSection(),
-                  ] else
-                    Row(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Expanded(flex: 3, child: _buildUniversitiesSection()),
-                        const SizedBox(width: 20),
-                        Expanded(flex: 2, child: _buildInsightsSection()),
-                      ],
-                    ),
 
                   const SizedBox(height: 30),
 
-                  // --- ATIVIDADES RECENTES COM "VER TUDO" ---
                   _buildSectionCard(
                     title: "Atividades Recentes",
                     headerAction: TextButton(
@@ -110,8 +95,6 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
       ),
     );
   }
-
-  // --- WIDGETS DE CONTEÚDO ---
 
   Widget _buildHeader() {
     return Row(
@@ -157,7 +140,9 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
           SizedBox(
             width: double.infinity,
             child: OutlinedButton.icon(
-              onPressed: () {},
+              onPressed: () {
+                Navigator.push(context, MaterialPageRoute(builder: (context) => const ReportsPage()));
+              },
               icon: const Icon(Icons.download, size: 18),
               label: const Text("Baixar Relatórios Consolidados (CSV)"),
               style: OutlinedButton.styleFrom(
@@ -170,26 +155,6 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
       ),
     );
   }
-
-  Widget _buildInsightsSection() {
-    return _buildSectionCard(
-      title: "Insights",
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          const Text("Engajamento nos 14 encontros", style: TextStyle(fontSize: 12, color: Colors.grey)),
-          const SizedBox(height: 20),
-          _buildProgressBar("Meta de Matches", 0.85, verde),
-          const SizedBox(height: 15),
-          _buildProgressBar("Taxa de Retenção", 0.96, petroleo),
-          const SizedBox(height: 15),
-          _buildProgressBar("Diários de Bordo", 0.62, laranja),
-        ],
-      ),
-    );
-  }
-
-  // --- COMPONENTES ATÔMICOS ---
 
   Widget _buildSectionCard({required String title, required Widget child, Widget? headerAction}) {
     return Container(
@@ -224,20 +189,6 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
           Text(title, style: TextStyle(fontSize: 10, color: Colors.grey.shade600), textAlign: TextAlign.center),
         ],
       ),
-    );
-  }
-
-  Widget _buildProgressBar(String label, double pct, Color color) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-          Text(label, style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w500)),
-          Text("${(pct * 100).toInt()}%", style: const TextStyle(fontSize: 12)),
-        ]),
-        const SizedBox(height: 8),
-        LinearProgressIndicator(value: pct, backgroundColor: Colors.grey.shade200, color: color, minHeight: 6),
-      ],
     );
   }
 

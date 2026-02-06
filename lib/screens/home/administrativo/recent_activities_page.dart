@@ -11,8 +11,54 @@ class _RecentActivitiesPageState extends State<RecentActivitiesPage> {
   final Color brandColor = const Color(0xFF3E84A2);
   final Color petroleo = const Color(0xFF0B6F8E);
 
+  String _selectedFilter = "Tudo";
+
+  final List<String> _filters = ["Tudo", "Matches", "Rescisões", "Relatórios", "Gestão"];
+
+  final List<Map<String, dynamic>> _allActivities = [
+    {
+      "icon": Icons.handshake,
+      "title": "Novo Match",
+      "desc": "Instituto Mauá: Ana C. → Maria S.",
+      "time": "Hoje, 10:30",
+      "category": "Matches"
+    },
+    {
+      "icon": Icons.file_download,
+      "title": "Relatório Gerado",
+      "desc": "USP exportou dados mensais consolidados.",
+      "time": "Hoje, 09:45",
+      "category": "Relatórios"
+    },
+    {
+      "icon": Icons.warning_amber_rounded,
+      "title": "Desistência",
+      "desc": "UFSC reportou rescisão Mentora #882.",
+      "time": "Hoje, 08:00",
+      "category": "Rescisões"
+    },
+    {
+      "icon": Icons.person_add,
+      "title": "Novo Coordenador",
+      "desc": "Prof. Ricardo adicionado ao IMT.",
+      "time": "Ontem, 16:20",
+      "category": "Gestão"
+    },
+    {
+      "icon": Icons.task_alt,
+      "title": "Mentoria Finalizada",
+      "desc": "USP: 14/14 encontros concluídos.",
+      "time": "14 Jan, 11:00",
+      "category": "Matches"
+    },
+  ];
+
   @override
   Widget build(BuildContext context) {
+    List<Map<String, dynamic>> filteredActivities = _selectedFilter == "Tudo"
+        ? _allActivities
+        : _allActivities.where((item) => item['category'] == _selectedFilter).toList();
+
     return Scaffold(
       backgroundColor: brandColor,
       appBar: AppBar(
@@ -33,12 +79,10 @@ class _RecentActivitiesPageState extends State<RecentActivitiesPage> {
             constraints: const BoxConstraints(maxWidth: 800),
             child: Column(
               children: [
-                // --- FILTROS DE HISTÓRICO ---
                 _buildFilters(),
                 
                 const SizedBox(height: 25),
 
-                // --- LISTA COMPLETA ---
                 Container(
                   padding: const EdgeInsets.all(24),
                   decoration: BoxDecoration(
@@ -46,19 +90,26 @@ class _RecentActivitiesPageState extends State<RecentActivitiesPage> {
                     borderRadius: BorderRadius.circular(24),
                     boxShadow: [BoxShadow(color: Colors.black.withOpacity(0.05), blurRadius: 20)],
                   ),
-                  child: Column(
-                    children: [
-                      _buildFullActivityItem(Icons.handshake, "Novo Match", "Instituto Mauá: Ana C. → Maria S.", "Hoje, 10:30"),
-                      const Divider(height: 32),
-                      _buildFullActivityItem(Icons.file_download, "Relatório Gerado", "USP exportou dados mensais consolidados.", "Hoje, 09:45"),
-                      const Divider(height: 32),
-                      _buildFullActivityItem(Icons.warning_amber_rounded, "Desistência", "UFSC reportou rescisão Mentora #882.", "Hoje, 08:00"),
-                      const Divider(height: 32),
-                      _buildFullActivityItem(Icons.person_add, "Novo Coordenador", "Prof. Ricardo adicionado ao IMT.", "Ontem, 16:20"),
-                      const Divider(height: 32),
-                      _buildFullActivityItem(Icons.task_alt, "Mentoria Finalizada", "USP: 14/14 encontros concluídos.", "14 Jan, 11:00"),
-                    ],
-                  ),
+                  child: filteredActivities.isEmpty 
+                  ? const Padding(
+                      padding: EdgeInsets.all(20.0),
+                      child: Text("Nenhuma atividade encontrada.", style: TextStyle(color: Colors.grey)),
+                    )
+                  : ListView.separated(
+                      shrinkWrap: true,
+                      physics: const NeverScrollableScrollPhysics(),
+                      itemCount: filteredActivities.length,
+                      separatorBuilder: (context, index) => const Divider(height: 32),
+                      itemBuilder: (context, index) {
+                        final item = filteredActivities[index];
+                        return _buildFullActivityItem(
+                          item['icon'],
+                          item['title'],
+                          item['desc'],
+                          item['time'],
+                        );
+                      },
+                    ),
                 ),
               ],
             ),
@@ -72,25 +123,26 @@ class _RecentActivitiesPageState extends State<RecentActivitiesPage> {
     return SingleChildScrollView(
       scrollDirection: Axis.horizontal,
       child: Row(
-        children: [
-          _buildFilterChip("Tudo", true),
-          const SizedBox(width: 10),
-          _buildFilterChip("Matches", false),
-          const SizedBox(width: 10),
-          _buildFilterChip("Rescisões", false),
-          const SizedBox(width: 10),
-          _buildFilterChip("Relatórios", false),
-        ],
+        children: _filters.map((filter) {
+          final isSelected = _selectedFilter == filter;
+          return Padding(
+            padding: const EdgeInsets.only(right: 10),
+            child: GestureDetector(
+              onTap: () {
+                setState(() {
+                  _selectedFilter = filter;
+                });
+              },
+              child: Chip(
+                label: Text(filter, style: TextStyle(color: isSelected ? Colors.white : brandColor, fontSize: 12, fontWeight: FontWeight.bold)),
+                backgroundColor: isSelected ? petroleo : Colors.white.withOpacity(0.2),
+                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                side: BorderSide(color: isSelected ? petroleo : Colors.white),
+              ),
+            ),
+          );
+        }).toList(),
       ),
-    );
-  }
-
-  Widget _buildFilterChip(String label, bool isSelected) {
-    return Chip(
-      label: Text(label, style: TextStyle(color: isSelected ? Colors.white : brandColor, fontSize: 12, fontWeight: FontWeight.bold)),
-      backgroundColor: isSelected ? petroleo : Colors.white.withOpacity(0.2),
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-      side: BorderSide(color: isSelected ? petroleo : Colors.white),
     );
   }
 
