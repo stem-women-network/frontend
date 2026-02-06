@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:frontend/screens/home/administrativo/recent_activities_page.dart';
 import 'university_list_page.dart';
 import 'reports_page.dart';
+import 'match_authorization_page.dart'; // Import da nova página
 
 class AdminDashboardPage extends StatefulWidget {
   const AdminDashboardPage({super.key});
@@ -56,6 +57,51 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
                       Expanded(child: _buildStatCard("Desistências", "4%", Icons.trending_down, coral)),
                     ],
                   ),
+
+                  const SizedBox(height: 30),
+
+                  // --- NOVO CARD DE APROVAÇÃO DE MATCHES ---
+                  Container(
+                    padding: const EdgeInsets.all(20),
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(16),
+                      border: Border.all(color: laranja.withOpacity(0.5), width: 1),
+                      boxShadow: [BoxShadow(color: laranja.withOpacity(0.1), blurRadius: 10, offset: const Offset(0, 4))],
+                    ),
+                    child: Row(
+                      children: [
+                        Container(
+                          padding: const EdgeInsets.all(12),
+                          decoration: BoxDecoration(color: laranja.withOpacity(0.1), shape: BoxShape.circle),
+                          child: Icon(Icons.notifications_active, color: laranja, size: 28),
+                        ),
+                        const SizedBox(width: 20),
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              const Text("Matches Sugeridos pelo Algoritmo", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
+                              const SizedBox(height: 4),
+                              Text("O sistema encontrou 5 novos pares com alta compatibilidade.", style: TextStyle(color: Colors.grey[700], fontSize: 13)),
+                            ],
+                          ),
+                        ),
+                        ElevatedButton.icon(
+                          onPressed: () => Navigator.push(context, MaterialPageRoute(builder: (context) => const MatchAuthorizationPage())),
+                          icon: const Icon(Icons.check_circle_outline, size: 18),
+                          label: const Text("REVISAR E APROVAR"),
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: laranja,
+                            foregroundColor: Colors.white,
+                            padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
+                            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                          ),
+                        )
+                      ],
+                    ),
+                  ),
+                  // ------------------------------------------
 
                   const SizedBox(height: 30),
 
