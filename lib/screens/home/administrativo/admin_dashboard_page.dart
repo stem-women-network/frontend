@@ -2,7 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:frontend/screens/home/administrativo/recent_activities_page.dart';
 import 'university_list_page.dart';
 import 'reports_page.dart';
-import 'match_authorization_page.dart'; // Import da nova página
+import 'match_authorization_page.dart'; 
+import 'mentor_approval_page.dart'; 
 
 class AdminDashboardPage extends StatefulWidget {
   const AdminDashboardPage({super.key});
@@ -17,6 +18,7 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
   final Color laranja = const Color(0xFFFE9F43);
   final Color coral = const Color(0xFFE4645B);
   final Color verde = const Color(0xFF43A047);
+  final Color roxo = const Color(0xFF6C63FF); 
 
   @override
   Widget build(BuildContext context) {
@@ -60,48 +62,30 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
 
                   const SizedBox(height: 30),
 
-                  // --- NOVO CARD DE APROVAÇÃO DE MATCHES ---
-                  Container(
-                    padding: const EdgeInsets.all(20),
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(16),
-                      border: Border.all(color: laranja.withOpacity(0.5), width: 1),
-                      boxShadow: [BoxShadow(color: laranja.withOpacity(0.1), blurRadius: 10, offset: const Offset(0, 4))],
-                    ),
-                    child: Row(
-                      children: [
-                        Container(
-                          padding: const EdgeInsets.all(12),
-                          decoration: BoxDecoration(color: laranja.withOpacity(0.1), shape: BoxShape.circle),
-                          child: Icon(Icons.notifications_active, color: laranja, size: 28),
-                        ),
-                        const SizedBox(width: 20),
-                        Expanded(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              const Text("Matches Sugeridos pelo Algoritmo", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
-                              const SizedBox(height: 4),
-                              Text("O sistema encontrou 5 novos pares com alta compatibilidade.", style: TextStyle(color: Colors.grey[700], fontSize: 13)),
-                            ],
-                          ),
-                        ),
-                        ElevatedButton.icon(
-                          onPressed: () => Navigator.push(context, MaterialPageRoute(builder: (context) => const MatchAuthorizationPage())),
-                          icon: const Icon(Icons.check_circle_outline, size: 18),
-                          label: const Text("REVISAR E APROVAR"),
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: laranja,
-                            foregroundColor: Colors.white,
-                            padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
-                            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-                          ),
-                        )
-                      ],
-                    ),
+                  const Text("Ações Pendentes", style: TextStyle(color: Colors.white, fontSize: 18, fontWeight: FontWeight.bold)),
+                  const SizedBox(height: 15),
+
+                  _buildAlertCard(
+                    color: laranja,
+                    icon: Icons.notifications_active,
+                    title: "Matches Sugeridos",
+                    subtitle: "O algoritmo encontrou 5 novos pares compatíveis.",
+                    buttonText: "REVISAR MATCHES",
+                    onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => const MatchAuthorizationPage())),
                   ),
-                  // ------------------------------------------
+
+                  const SizedBox(height: 15),
+
+                  _buildAlertCard(
+                    color: roxo,
+                    icon: Icons.person_add_alt_1,
+                    title: "Novas Mentoras Inscritas",
+                    subtitle: "8 perfis aguardando validação de LinkedIn e Experiência.",
+                    buttonText: "VALIDAR MENTORAS",
+                    onTap: () {
+                      Navigator.push(context, MaterialPageRoute(builder: (context) => const MentorApprovalPage()));
+                    },
+                  ),
 
                   const SizedBox(height: 30),
 
@@ -128,7 +112,7 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
                         const Divider(height: 24),
                         _buildActivityRow("Relatório Gerado", "USP exportou dados mensais consolidados.", "45 min atrás"),
                         const Divider(height: 24),
-                        _buildActivityRow("Alerta de Desistência", "UFSC reportou rescisão Mentora #882.", "2h atrás"),
+                        _buildActivityRow("Nova Mentora Cadastrada", "Beatriz L. aguardando validação.", "1h atrás"),
                       ],
                     ),
                   ),
@@ -138,6 +122,56 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
             ),
           ),
         ),
+      ),
+    );
+  }
+
+  Widget _buildAlertCard({
+    required Color color,
+    required IconData icon,
+    required String title,
+    required String subtitle,
+    required String buttonText,
+    required VoidCallback onTap,
+  }) {
+    return Container(
+      padding: const EdgeInsets.all(20),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(color: color.withOpacity(0.5), width: 1),
+        boxShadow: [BoxShadow(color: color.withOpacity(0.1), blurRadius: 10, offset: const Offset(0, 4))],
+      ),
+      child: Row(
+        children: [
+          Container(
+            padding: const EdgeInsets.all(12),
+            decoration: BoxDecoration(color: color.withOpacity(0.1), shape: BoxShape.circle),
+            child: Icon(icon, color: color, size: 28),
+          ),
+          const SizedBox(width: 20),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(title, style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
+                const SizedBox(height: 4),
+                Text(subtitle, style: TextStyle(color: Colors.grey[700], fontSize: 13)),
+              ],
+            ),
+          ),
+          ElevatedButton.icon(
+            onPressed: onTap,
+            icon: const Icon(Icons.check_circle_outline, size: 18),
+            label: Text(buttonText),
+            style: ElevatedButton.styleFrom(
+              backgroundColor: color,
+              foregroundColor: Colors.white,
+              padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+            ),
+          )
+        ],
       ),
     );
   }
