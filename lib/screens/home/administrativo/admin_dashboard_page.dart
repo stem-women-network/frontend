@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:frontend/screens/home/administrativo/mentee_approval_page.dart';
 import 'package:frontend/screens/home/administrativo/recent_activities_page.dart';
 import 'package:frontend/services/university_service.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -166,6 +167,23 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
                     },
                   ),
 
+                  const SizedBox(height: 15),
+                  _buildAlertCard(
+                    color: verde,
+                    icon: Icons.person_add_alt_1,
+                    title: "Novas Mentoradas Inscritas",
+                    subtitle:
+                        "8 perfis aguardando validação de LinkedIn e Experiência.",
+                    buttonText: "VALIDAR MENTORADAS",
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const MenteeApprovalPage(),
+                        ),
+                      );
+                    },
+                  ),
                   const SizedBox(height: 30),
 
                   if (isMobile)

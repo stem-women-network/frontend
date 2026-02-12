@@ -1,16 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:frontend/services/admin_service.dart';
-import 'package:frontend/services/mentor_service.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-class MentorApprovalPage extends StatefulWidget {
-  const MentorApprovalPage({super.key});
+class MenteeApprovalPage extends StatefulWidget {
+  const MenteeApprovalPage({super.key});
 
   @override
-  State<MentorApprovalPage> createState() => _MentorApprovalPageState();
+  State<MenteeApprovalPage> createState() => _MenteeApprovalPageState();
 }
 
-class _MentorApprovalPageState extends State<MentorApprovalPage> {
+class _MenteeApprovalPageState extends State<MenteeApprovalPage> {
   final AdminService _adminService = AdminService();
   final Color brandColor = const Color(0xFF3E84A2);
   final Color petroleo = const Color(0xFF0B6F8E);
@@ -25,10 +24,10 @@ class _MentorApprovalPageState extends State<MentorApprovalPage> {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     var token = prefs.getString("token");
     token ??= "";
-    return _adminService.getApprovals(token: token);
+    return _adminService.getApprovalsMentee(token: token);
   }
 
-  List<dynamic> _mentorasPendentes = [];
+  List<dynamic> _mentoradasPendentes = [];
 
   @override
   void initState() {
@@ -36,13 +35,13 @@ class _MentorApprovalPageState extends State<MentorApprovalPage> {
     super.initState();
   }
 
-  void _processarMentora(String mentorId, bool aprovada) async {
+  void _processarMentee(String menteeId, bool aprovada) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     var token = prefs.getString("token");
     token ??= "";
 
-    await _adminService.updateApproval(
-      mentorId: mentorId,
+    await _adminService.updateApprovalMentee(
+      menteeId: menteeId,
       token: token,
       approved: aprovada,
     );
@@ -61,8 +60,8 @@ class _MentorApprovalPageState extends State<MentorApprovalPage> {
             Expanded(
               child: Text(
                 aprovada
-                    ? "Mentora aprovada! E-mail de confirmação enviado."
-                    : "Mentora rejeitada.",
+                    ? "Mentee aprovada! E-mail de confirmação enviado."
+                    : "Mentee rejeitada.",
               ),
             ),
           ],
@@ -74,7 +73,7 @@ class _MentorApprovalPageState extends State<MentorApprovalPage> {
     );
   }
 
-  Future<void> _confirmarEnvioEmail(String mentorId, String nome) async {
+  Future<void> _confirmarEnvioEmail(String menteeId, String nome) async {
     return showDialog<void>(
       context: context,
       barrierDismissible: false,
@@ -93,7 +92,7 @@ class _MentorApprovalPageState extends State<MentorApprovalPage> {
           content: SingleChildScrollView(
             child: ListBody(
               children: <Widget>[
-                Text("Deseja aprovar a mentora $nome?"),
+                Text("Deseja aprovar a mentorada $nome?"),
                 const SizedBox(height: 10),
                 const Text(
                   "Um e-mail automático será enviado informando que ela foi aceita no programa.",
@@ -123,7 +122,7 @@ class _MentorApprovalPageState extends State<MentorApprovalPage> {
               child: const Text("Enviar E-mail e Aprovar"),
               onPressed: () {
                 Navigator.of(context).pop();
-                _processarMentora(mentorId, true);
+                _processarMentee(menteeId, true);
               },
             ),
           ],
@@ -145,7 +144,7 @@ class _MentorApprovalPageState extends State<MentorApprovalPage> {
           onPressed: () => Navigator.pop(context),
         ),
         title: const Text(
-          "Validação de Mentoras",
+          "Validação de Menteeas",
           style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
         ),
       ),
@@ -154,15 +153,15 @@ class _MentorApprovalPageState extends State<MentorApprovalPage> {
           future: _fetchData,
           builder: (context, asyncSnapshot) {
             if (asyncSnapshot.hasData) {
-              _mentorasPendentes = asyncSnapshot.data;
+              _mentoradasPendentes = asyncSnapshot.data;
               return ListView.builder(
                 padding: const EdgeInsets.symmetric(
                   horizontal: 40,
                   vertical: 20,
                 ),
-                itemCount: _mentorasPendentes.length,
+                itemCount: _mentoradasPendentes.length,
                 itemBuilder: (context, index) {
-                  return _buildMentorCard(_mentorasPendentes[index], index);
+                  return _buildMenteeCard(_mentoradasPendentes[index], index);
                 },
               );
             } else {
@@ -194,7 +193,7 @@ class _MentorApprovalPageState extends State<MentorApprovalPage> {
     );
   }
 
-  Widget _buildMentorCard(Map<String, dynamic> mentora, int index) {
+  Widget _buildMenteeCard(Map<String, dynamic> mentorada, int index) {
     return Container(
       margin: const EdgeInsets.only(bottom: 16),
       decoration: BoxDecoration(
@@ -217,7 +216,7 @@ class _MentorApprovalPageState extends State<MentorApprovalPage> {
             radius: 24,
             backgroundColor: roxo.withOpacity(0.1),
             child: Text(
-              mentora['foto'] ?? mentora['nome'][0],
+              mentorada['foto'] ?? mentorada['nome'][0],
               style: TextStyle(
                 color: roxo,
                 fontWeight: FontWeight.bold,
@@ -226,7 +225,7 @@ class _MentorApprovalPageState extends State<MentorApprovalPage> {
             ),
           ),
           title: Text(
-            mentora['nome'],
+            mentorada['nome'],
             style: TextStyle(
               color: petroleo,
               fontWeight: FontWeight.bold,
@@ -234,33 +233,20 @@ class _MentorApprovalPageState extends State<MentorApprovalPage> {
             ),
           ),
           subtitle: Text(
-            mentora['cargo'],
+            mentorada['curso'],
             style: const TextStyle(color: Colors.black54, fontSize: 13),
             maxLines: 1,
             overflow: TextOverflow.ellipsis,
           ),
           children: [
             const Divider(),
-            const SizedBox(height: 10),
-            Row(
-              children: [
-                Icon(Icons.school, size: 16, color: roxo),
-                const SizedBox(width: 8),
-                Expanded(
-                  child: Text(
-                    mentora['formacao'],
-                    style: const TextStyle(fontSize: 13, color: Colors.black87),
-                  ),
-                ),
-              ],
-            ),
             // const SizedBox(height: 8),
             // Row(
             //   children: [
             //     Icon(Icons.calendar_today, size: 16, color: roxo),
             //     const SizedBox(width: 8),
             //     Text(
-            //       "Inscrita: ${mentora['data_inscricao']}",
+            //       "Inscrita: ${mentorada['data_inscricao']}",
             //       style: const TextStyle(fontSize: 13, color: Colors.black87),
             //     ),
             //   ],
@@ -272,7 +258,7 @@ class _MentorApprovalPageState extends State<MentorApprovalPage> {
                 alignment: WrapAlignment.start,
                 spacing: 8,
                 runSpacing: 8,
-                children: (mentora['skills'] as List).map<Widget>((skill) {
+                children: (mentorada['skills'] as List).map<Widget>((skill) {
                   return Container(
                     padding: const EdgeInsets.symmetric(
                       horizontal: 10,
@@ -295,7 +281,7 @@ class _MentorApprovalPageState extends State<MentorApprovalPage> {
               width: double.infinity,
               child: OutlinedButton.icon(
                 onPressed: () {
-                  print(mentora['linkedin']);
+                  print(mentorada['linkedin']);
                 },
                 icon: const Icon(Icons.link, size: 18),
                 label: const Text("Ver LinkedIn"),
@@ -314,7 +300,7 @@ class _MentorApprovalPageState extends State<MentorApprovalPage> {
               children: [
                 Expanded(
                   child: TextButton(
-                    onPressed: () => _processarMentora(mentora['id'], false),
+                    onPressed: () => _processarMentee(mentorada['id'], false),
                     style: TextButton.styleFrom(
                       foregroundColor: coral,
                       padding: const EdgeInsets.symmetric(vertical: 14),
@@ -326,7 +312,7 @@ class _MentorApprovalPageState extends State<MentorApprovalPage> {
                 Expanded(
                   child: ElevatedButton(
                     onPressed: () =>
-                        _confirmarEnvioEmail(mentora['id'], mentora['nome']),
+                        _confirmarEnvioEmail(mentorada['id'], mentorada['nome']),
                     style: ElevatedButton.styleFrom(
                       backgroundColor: verde,
                       foregroundColor: Colors.white,
