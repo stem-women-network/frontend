@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:frontend/services/university_service.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'add_university_page.dart'; // Importe a nova página que criaremos abaixo
 
 class UniversityListPage extends StatefulWidget {
@@ -9,38 +11,49 @@ class UniversityListPage extends StatefulWidget {
 }
 
 class _UniversityListPageState extends State<UniversityListPage> {
+  final UniversityService _universityService = UniversityService();
+
   final Color brandColor = const Color(0xFF3E84A2);
   final Color petroleo = const Color(0xFF0B6F8E);
   final Color laranja = const Color(0xFFFE9F43);
 
-  // Lista simulada de dados
-  final List<Map<String, dynamic>> _allUniversities = [
-    {"name": "Instituto Mauá de Tecnologia", "coord": "Carlos Mendes", "matches": "32 Matches", "report": true},
-    {"name": "USP - São Paulo", "coord": "Ana Paula Serra", "matches": "85 Matches", "report": true},
-    {"name": "UNICAMP", "coord": "Marcos Silva", "matches": "64 Matches", "report": true},
-    {"name": "UFSC", "coord": "Juliana Pozzi", "matches": "12 Matches", "report": false},
-  ];
+  List<dynamic> _allUniversities = [];
 
   // Lista que será exibida e filtrada
-  List<Map<String, dynamic>> _foundUniversities = [];
+  List<dynamic> _foundUniversities = [];
   final TextEditingController _searchController = TextEditingController();
+
+  late Future _fetchData;
+  Future getUniversities() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    var token = prefs.getString("token");
+    token ??= "";
+    return _universityService.getUniversities(token: token);
+  }
 
   @override
   void initState() {
-    _foundUniversities = _allUniversities;
+    _fetchData = getUniversities();
+    _foundUniversities = [];
     super.initState();
   }
 
   // Lógica de pesquisa
   void _runFilter(String enteredKeyword) {
-    List<Map<String, dynamic>> results = [];
+    List<dynamic> results = [];
     if (enteredKeyword.isEmpty) {
       results = _allUniversities;
     } else {
       results = _allUniversities
-          .where((uni) =>
-              uni["name"].toLowerCase().contains(enteredKeyword.toLowerCase()) ||
-              uni["coord"].toLowerCase().contains(enteredKeyword.toLowerCase()))
+          .where(
+            (uni) =>
+                uni["name"].toLowerCase().contains(
+                  enteredKeyword.toLowerCase(),
+                ) ||
+                uni["coord"].toLowerCase().contains(
+                  enteredKeyword.toLowerCase(),
+                ),
+          )
           .toList();
     }
 
@@ -60,8 +73,14 @@ class _UniversityListPageState extends State<UniversityListPage> {
           icon: const Icon(Icons.arrow_back, color: Colors.white),
           onPressed: () => Navigator.pop(context),
         ),
-        title: const Text("Universidades Inscritas", 
-          style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 18)),
+        title: const Text(
+          "Universidades Inscritas",
+          style: TextStyle(
+            color: Colors.white,
+            fontWeight: FontWeight.bold,
+            fontSize: 18,
+          ),
+        ),
         centerTitle: true,
       ),
       body: Column(
@@ -71,7 +90,7 @@ class _UniversityListPageState extends State<UniversityListPage> {
             padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 10),
             child: _buildSearchBar(),
           ),
-          
+
           Expanded(
             child: SingleChildScrollView(
               padding: const EdgeInsets.fromLTRB(24.0, 10.0, 24.0, 40.0),
@@ -82,45 +101,67 @@ class _UniversityListPageState extends State<UniversityListPage> {
                     children: [
                       _buildSectionCard(
                         title: "Rede STEM Women Network",
-                        child: _foundUniversities.isNotEmpty 
-                          ? Column(
-                              children: _foundUniversities.map((uni) {
-                                return Column(
-                                  children: [
-                                    _buildUniversityListItem(
-                                      uni["name"], 
-                                      uni["coord"], 
-                                      uni["matches"], 
-                                      uni["report"]
-                                    ),
-                                    if (uni != _foundUniversities.last) const Divider(height: 32),
-                                  ],
-                                );
-                              }).toList(),
-                            )
-                          : const Padding(
-                              padding: EdgeInsets.symmetric(vertical: 20),
-                              child: Text("Nenhuma universidade encontrada.", style: TextStyle(color: Colors.grey)),
-                            ),
+                        child: FutureBuilder(
+                          future: _fetchData,
+                          builder: (context, asyncSnapshot) {
+                            if (asyncSnapshot.hasData) {
+                              _allUniversities = asyncSnapshot.data;
+                              if(_searchController.text == ""){
+                                _foundUniversities = _allUniversities;
+                              }
+                              return Column(
+                                children: _foundUniversities.map((uni) {
+                                  return Column(
+                                    children: [
+                                      _buildUniversityListItem(
+                                        uni["name"],
+                                        uni["coord"],
+                                        '${uni["matches"]} ${uni["matches"] == 1 ? "match" : "matches"}',
+                                        uni["report"] ?? false,
+                                      ),
+                                      if (uni != _foundUniversities.last)
+                                        const Divider(height: 32),
+                                    ],
+                                  );
+                                }).toList(),
+                              );
+                            } else {
+                              return const Padding(
+                                padding: EdgeInsets.symmetric(vertical: 20),
+                                child: Text(
+                                  "Nenhuma universidade encontrada.",
+                                  style: TextStyle(color: Colors.grey),
+                                ),
+                              );
+                            }
+                          },
+                        ),
                       ),
-                      
+
                       const SizedBox(height: 30),
-                      
+
                       // BOTÃO ADICIONAR FUNCIONAL
                       SizedBox(
                         width: double.infinity,
                         height: 55,
                         child: FilledButton.icon(
                           onPressed: () => Navigator.push(
-                            context, 
-                            MaterialPageRoute(builder: (context) => const AddUniversityPage())
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => const AddUniversityPage(),
+                            ),
                           ),
                           icon: const Icon(Icons.add_business),
-                          label: const Text("Cadastrar Nova Instituição", style: TextStyle(fontWeight: FontWeight.bold)),
+                          label: const Text(
+                            "Cadastrar Nova Instituição",
+                            style: TextStyle(fontWeight: FontWeight.bold),
+                          ),
                           style: FilledButton.styleFrom(
                             backgroundColor: Colors.white,
                             foregroundColor: brandColor,
-                            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(16),
+                            ),
                           ),
                         ),
                       ),
@@ -163,12 +204,21 @@ class _UniversityListPageState extends State<UniversityListPage> {
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(24),
-        boxShadow: [BoxShadow(color: Colors.black.withOpacity(0.06), blurRadius: 20, offset: const Offset(0, 8))],
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.06),
+            blurRadius: 20,
+            offset: const Offset(0, 8),
+          ),
+        ],
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(title, style: const TextStyle(fontSize: 17, fontWeight: FontWeight.bold)),
+          Text(
+            title,
+            style: const TextStyle(fontSize: 17, fontWeight: FontWeight.bold),
+          ),
           const SizedBox(height: 25),
           child,
         ],
@@ -176,12 +226,20 @@ class _UniversityListPageState extends State<UniversityListPage> {
     );
   }
 
-  Widget _buildUniversityListItem(String name, String coordinator, String stats, bool hasReport) {
+  Widget _buildUniversityListItem(
+    String name,
+    String coordinator,
+    String stats,
+    bool hasReport,
+  ) {
     return Row(
       children: [
         Container(
           padding: const EdgeInsets.all(12),
-          decoration: BoxDecoration(color: petroleo.withOpacity(0.1), borderRadius: BorderRadius.circular(12)),
+          decoration: BoxDecoration(
+            color: petroleo.withOpacity(0.1),
+            borderRadius: BorderRadius.circular(12),
+          ),
           child: Icon(Icons.account_balance, color: petroleo, size: 22),
         ),
         const SizedBox(width: 15),
@@ -189,18 +247,43 @@ class _UniversityListPageState extends State<UniversityListPage> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(name, style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 14)),
-              Text("Coord: $coordinator", style: const TextStyle(color: Colors.black54, fontSize: 12)),
+              Text(
+                name,
+                style: const TextStyle(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 14,
+                ),
+              ),
+              Text(
+                "Coord: $coordinator",
+                style: const TextStyle(color: Colors.black54, fontSize: 12),
+              ),
             ],
           ),
         ),
         Column(
           crossAxisAlignment: CrossAxisAlignment.end,
           children: [
-            Text(stats, style: TextStyle(color: laranja, fontWeight: FontWeight.bold, fontSize: 12)),
+            Text(
+              stats,
+              style: TextStyle(
+                color: laranja,
+                fontWeight: FontWeight.bold,
+                fontSize: 12,
+              ),
+            ),
             const SizedBox(height: 4),
-            Text(hasReport ? "Baixar PDF" : "Sem dados", 
-              style: TextStyle(color: hasReport ? petroleo : Colors.grey, fontSize: 11, fontWeight: FontWeight.bold, decoration: hasReport ? TextDecoration.underline : TextDecoration.none)),
+            Text(
+              hasReport ? "Baixar PDF" : "Sem dados",
+              style: TextStyle(
+                color: hasReport ? petroleo : Colors.grey,
+                fontSize: 11,
+                fontWeight: FontWeight.bold,
+                decoration: hasReport
+                    ? TextDecoration.underline
+                    : TextDecoration.none,
+              ),
+            ),
           ],
         ),
       ],
