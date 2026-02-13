@@ -57,9 +57,7 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   _buildHeader(),
-
                   const SizedBox(height: 35),
-
                   Row(
                     children: [
                       Expanded(
@@ -121,9 +119,7 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
                       ),
                     ],
                   ),
-
                   const SizedBox(height: 30),
-
                   const Text(
                     "Ações Pendentes",
                     style: TextStyle(
@@ -133,24 +129,6 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
                     ),
                   ),
                   const SizedBox(height: 15),
-
-                  _buildAlertCard(
-                    color: laranja,
-                    icon: Icons.notifications_active,
-                    title: "Matches Sugeridos",
-                    subtitle:
-                        "O algoritmo encontrou 5 novos pares compatíveis.",
-                    buttonText: "REVISAR MATCHES",
-                    onTap: () => Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => const MatchAuthorizationPage(),
-                      ),
-                    ),
-                  ),
-
-                  const SizedBox(height: 15),
-
                   _buildAlertCard(
                     color: roxo,
                     icon: Icons.person_add_alt_1,
@@ -167,7 +145,6 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
                       );
                     },
                   ),
-
                   const SizedBox(height: 15),
                   _buildAlertCard(
                     color: verde,
@@ -185,11 +162,9 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
                       );
                     },
                   ),
-                  
                   const SizedBox(height: 30),
-                  
                   const Text(
-                    "Gestão de Acessos",
+                    "Gestão e Acesso Rápido",
                     style: TextStyle(
                       color: Colors.white,
                       fontSize: 18,
@@ -197,81 +172,8 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
                     ),
                   ),
                   const SizedBox(height: 15),
-
-                  Container(
-                    width: double.infinity,
-                    padding: const EdgeInsets.all(24),
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(20),
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.black.withOpacity(0.1),
-                          blurRadius: 10,
-                          offset: const Offset(0, 4),
-                        ),
-                      ],
-                    ),
-                    child: Row(
-                      children: [
-                        Container(
-                          padding: const EdgeInsets.all(16),
-                          decoration: BoxDecoration(
-                            color: petroleo.withOpacity(0.1),
-                            shape: BoxShape.circle,
-                          ),
-                          child: Icon(Icons.manage_accounts, size: 32, color: petroleo),
-                        ),
-                        const SizedBox(width: 20),
-                        Expanded(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                "Central de Usuários",
-                                style: TextStyle(
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 18,
-                                  color: petroleo,
-                                ),
-                              ),
-                              const SizedBox(height: 4),
-                              Text(
-                                "Gerencie mentoras, mentoradas, coordenadores e administradores em um só lugar.",
-                                style: TextStyle(color: Colors.grey[700], fontSize: 14),
-                              ),
-                            ],
-                          ),
-                        ),
-                        const SizedBox(width: 10),
-                        ElevatedButton(
-                          onPressed: () {
-                            Navigator.push(
-                              context, 
-                              MaterialPageRoute(builder: (context) => const UserManagementHubPage())
-                            );
-                          },
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: petroleo,
-                            foregroundColor: Colors.white,
-                            padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 18),
-                            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-                          ),
-                          child: const Text("Gerenciar Usuários"),
-                        ),
-                      ],
-                    ),
-                  ),
-
+                  _buildQuickActionsGrid(isMobile),
                   const SizedBox(height: 30),
-
-                  if (isMobile)
-                    _buildUniversitiesSection()
-                  else
-                    _buildUniversitiesSection(),
-
-                  const SizedBox(height: 30),
-
                   _buildSectionCard(
                     title: "Atividades Recentes",
                     headerAction: TextButton(
@@ -321,6 +223,129 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
       ),
     );
   }
+
+  Widget _buildQuickActionsGrid(bool isMobile) {
+    return GridView.count(
+      shrinkWrap: true,
+      physics: const NeverScrollableScrollPhysics(),
+      crossAxisCount: isMobile ? 1 : 2,
+      crossAxisSpacing: 15,
+      mainAxisSpacing: 15,
+      childAspectRatio: 3.2,
+      children: [
+        _buildWideActionBtn(
+          Icons.manage_accounts,
+          "Gerenciar Usuários",
+          "Mentoras, Alunas e Admins",
+          petroleo,
+          onTap: () => Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => const UserManagementHubPage(),
+            ),
+          ),
+        ),
+        _buildWideActionBtn(
+          Icons.account_balance,
+          "Gerenciar Universidades",
+          "Parceiros e Coordenadores",
+          laranja,
+          onTap: () => Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => const UniversityListPage(),
+            ),
+          ),
+        ),
+        _buildWideActionBtn(
+          Icons.handshake,
+          "Gestão de Matches",
+          "Aprovação e Histórico",
+          verde,
+          onTap: () => Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => const MatchAuthorizationPage(),
+            ),
+          ),
+        ),
+        _buildWideActionBtn(
+          Icons.bar_chart,
+          "Relatórios e Dados",
+          "Métricas da Plataforma",
+          roxo,
+          onTap: () => Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => const ReportsPage()),
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildWideActionBtn(
+    IconData icon,
+    String label,
+    String subLabel,
+    Color color, {
+    VoidCallback? onTap,
+  }) {
+    return InkWell(
+      onTap: onTap,
+      borderRadius: BorderRadius.circular(20),
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 15),
+        decoration: _cardDecoration(),
+        child: Row(
+          children: [
+            Container(
+              height: 50,
+              width: 50,
+              decoration: BoxDecoration(
+                color: color.withOpacity(0.15),
+                borderRadius: BorderRadius.circular(12),
+              ),
+              child: Icon(icon, color: color, size: 26),
+            ),
+            const SizedBox(width: 15),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text(
+                    label,
+                    style: const TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 15,
+                      color: Colors.black87,
+                    ),
+                  ),
+                  Text(
+                    subLabel,
+                    style: const TextStyle(fontSize: 12, color: Colors.black45),
+                  ),
+                ],
+              ),
+            ),
+            Icon(Icons.arrow_forward_ios, color: Colors.grey[300], size: 16),
+          ],
+        ),
+      ),
+    );
+  }
+
+  BoxDecoration _cardDecoration() => BoxDecoration(
+    color: Colors.white,
+    borderRadius: BorderRadius.circular(20),
+    boxShadow: [
+      BoxShadow(
+        color: Colors.black.withOpacity(0.05),
+        blurRadius: 15,
+        offset: const Offset(0, 5),
+      ),
+    ],
+  );
 
   Widget _buildAlertCard({
     required Color color,
@@ -429,53 +454,6 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
           ],
         ),
       ],
-    );
-  }
-
-  Widget _buildUniversitiesSection() {
-    return _buildSectionCard(
-      title: "Universidades Parceiras",
-      child: Column(
-        children: [
-          _buildUniversityItem(
-            "Instituto Mauá de Tecnologia",
-            "Coordenador: Carlos Mendes",
-            "32 Matches",
-          ),
-          const Divider(),
-          _buildUniversityItem(
-            "USP - São Paulo",
-            "Coordenadora: Ana Paula",
-            "85 Matches",
-          ),
-          const Divider(),
-          _buildUniversityItem(
-            "UNICAMP",
-            "Coordenador: Marcos Silva",
-            "64 Matches",
-          ),
-          const SizedBox(height: 15),
-          SizedBox(
-            width: double.infinity,
-            child: OutlinedButton.icon(
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => const ReportsPage()),
-                );
-              },
-              icon: const Icon(Icons.download, size: 18),
-              label: const Text("Baixar Relatórios Consolidados (CSV)"),
-              style: OutlinedButton.styleFrom(
-                padding: const EdgeInsets.symmetric(vertical: 15),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(12),
-                ),
-              ),
-            ),
-          ),
-        ],
-      ),
     );
   }
 
