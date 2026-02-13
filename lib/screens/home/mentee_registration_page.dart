@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:frontend/screens/home/term_signing_page.dart';
 import 'package:frontend/services/auth_service.dart';
+import 'package:frontend/services/university_service.dart';
 
 class MenteeRegistrationPage extends StatefulWidget {
   const MenteeRegistrationPage({super.key});
@@ -46,15 +47,6 @@ class _MenteeRegistrationPageState extends State<MenteeRegistrationPage> {
   bool _canCommit = false;
   bool _authorized = false;
 
-  final List<String> _universidadesBanco = [
-    "FATEC Ipiranga",
-    "FATEC São Paulo",
-    "USP",
-    "UNESP",
-    "UNICAMP",
-    "Outra",
-  ];
-
   final List<String> _opcoesHobbies = [
     "Tecnologia",
     "Esportes",
@@ -97,6 +89,19 @@ class _MenteeRegistrationPageState extends State<MenteeRegistrationPage> {
     "Mentoria de Carreira",
     "Uso de Tecnologias Educacionais",
   ];
+
+  Future _getUniversities() async {
+    final UniversityService universityService = UniversityService();
+    return await universityService.getUniversitiesNames();
+  }
+
+  late Future _fetchData;
+
+  @override
+  void initState() {
+    _fetchData = _getUniversities();
+    super.initState();
+  }
 
   @override
   void dispose() {
@@ -184,7 +189,6 @@ class _MenteeRegistrationPageState extends State<MenteeRegistrationPage> {
       mentoringGoal: _focoPrincipal!,
       availability: _disponibilidade!,
     );
-    print(response);
     Navigator.push(
       context,
       MaterialPageRoute(builder: (context) => const TermSigningPage()),
@@ -575,19 +579,44 @@ class _MenteeRegistrationPageState extends State<MenteeRegistrationPage> {
           ),
         ),
         const SizedBox(height: 8),
-        Autocomplete<String>(
-          optionsBuilder: (textValue) => _universidadesBanco.where(
-            (opt) => opt.toLowerCase().contains(textValue.text.toLowerCase()),
-          ),
-          onSelected: (sel) => setState(() => _universidadeSelecionada = sel),
-          fieldViewBuilder: (ctx, ctrl, node, onComplete) => TextFormField(
-            controller: ctrl,
-            focusNode: node,
-            decoration: _inputDecoration("Selecione sua faculdade"),
-            validator: (v) => (_universidadeSelecionada == null || v!.isEmpty)
-                ? "Selecione da lista"
-                : null,
-          ),
+        FutureBuilder(
+          future: _fetchData,
+          builder: (context, asyncSnapshot) {
+            List<dynamic> _universidadesBanco = [];
+            if (asyncSnapshot.hasData) {
+              _universidadesBanco = asyncSnapshot.data;
+            }
+            return Autocomplete<String>(
+              optionsBuilder: (textValue) => _universidadesBanco.map((entry) {
+                if (entry['name'].toLowerCase().contains(
+                  textValue.text.toLowerCase(),
+                )) {
+                  return entry['name'];
+                } else {
+                  return '';
+                }
+              }),
+              onSelected: (sel) => setState(() {
+                var universityEntry = _universidadesBanco
+                    .where((entry) => entry['name'] == sel)
+                    .firstOrNull;
+                if (universityEntry != null) {
+                  _universidadeSelecionada = universityEntry['id'];
+                } else {
+                  _universidadeSelecionada = null;
+                }
+              }),
+              fieldViewBuilder: (ctx, ctrl, node, onComplete) => TextFormField(
+                controller: ctrl,
+                focusNode: node,
+                decoration: _inputDecoration("Selecione sua faculdade"),
+                validator: (v) =>
+                    (_universidadeSelecionada == null || v!.isEmpty)
+                    ? "Selecione da lista"
+                    : null,
+              ),
+            );
+          },
         ),
       ],
     );
