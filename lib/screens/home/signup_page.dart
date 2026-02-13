@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:frontend/screens/home/mentor_registration_page.dart';
 import 'mentee_registration_page.dart';
-import 'mentee_dashboard_page.dart';
-
 
 class SignUpPage extends StatefulWidget {
   const SignUpPage({super.key});
@@ -127,29 +125,6 @@ class _SignUpPageState extends State<SignUpPage> {
                               fontWeight: FontWeight.bold,
                               color: selectedOption == 0 ? Colors.black26 : Colors.white,
                             ),
-                          ),
-                        ),
-                      ),
-                      
-                      const SizedBox(height: 15),
-
-                      TextButton(
-                        onPressed: () {
-                          Navigator.push(
-                            context,
-                            // REMOVIDO O 'const' DAQUI PARA CORRIGIR O ERRO
-                            MaterialPageRoute(builder: (context) => MenteeDashboardPage()),
-                          );
-                        },
-                        style: TextButton.styleFrom(
-                          foregroundColor: brandColor,
-                        ),
-                        child: const Text(
-                          "Pular dashboard mentee",
-                          style: TextStyle(
-                            fontSize: 15,
-                            fontWeight: FontWeight.w600,
-                            decoration: TextDecoration.underline,
                           ),
                         ),
                       ),
