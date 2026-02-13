@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:frontend/screens/home/administrativo/mentee_approval_page.dart';
 import 'package:frontend/screens/home/administrativo/recent_activities_page.dart';
+import 'package:frontend/screens/home/administrativo/user_management_hub_page.dart';
 import 'package:frontend/services/university_service.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'university_list_page.dart';
@@ -184,6 +185,84 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
                       );
                     },
                   ),
+                  
+                  const SizedBox(height: 30),
+                  
+                  const Text(
+                    "Gestão de Acessos",
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  const SizedBox(height: 15),
+
+                  Container(
+                    width: double.infinity,
+                    padding: const EdgeInsets.all(24),
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(20),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black.withOpacity(0.1),
+                          blurRadius: 10,
+                          offset: const Offset(0, 4),
+                        ),
+                      ],
+                    ),
+                    child: Row(
+                      children: [
+                        Container(
+                          padding: const EdgeInsets.all(16),
+                          decoration: BoxDecoration(
+                            color: petroleo.withOpacity(0.1),
+                            shape: BoxShape.circle,
+                          ),
+                          child: Icon(Icons.manage_accounts, size: 32, color: petroleo),
+                        ),
+                        const SizedBox(width: 20),
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                "Central de Usuários",
+                                style: TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 18,
+                                  color: petroleo,
+                                ),
+                              ),
+                              const SizedBox(height: 4),
+                              Text(
+                                "Gerencie mentoras, mentoradas, coordenadores e administradores em um só lugar.",
+                                style: TextStyle(color: Colors.grey[700], fontSize: 14),
+                              ),
+                            ],
+                          ),
+                        ),
+                        const SizedBox(width: 10),
+                        ElevatedButton(
+                          onPressed: () {
+                            Navigator.push(
+                              context, 
+                              MaterialPageRoute(builder: (context) => const UserManagementHubPage())
+                            );
+                          },
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: petroleo,
+                            foregroundColor: Colors.white,
+                            padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 18),
+                            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                          ),
+                          child: const Text("Gerenciar Usuários"),
+                        ),
+                      ],
+                    ),
+                  ),
+
                   const SizedBox(height: 30),
 
                   if (isMobile)

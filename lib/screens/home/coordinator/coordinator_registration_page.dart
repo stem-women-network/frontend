@@ -12,7 +12,6 @@ class _CoordinatorRegistrationPageState extends State<CoordinatorRegistrationPag
   final Color brandColor = const Color(0xFF3E84A2);
   final _formKey = GlobalKey<FormState>();
   
-  // Controllers para capturar os dados
   final TextEditingController _nomeController = TextEditingController();
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _senhaController = TextEditingController();
@@ -23,7 +22,6 @@ class _CoordinatorRegistrationPageState extends State<CoordinatorRegistrationPag
 
   void _irParaTermos() {
     if (_formKey.currentState!.validate()) {
-      // Aqui você pode imprimir os dados ou salvar temporariamente
       print("Nome: ${_nomeController.text}");
       
       Navigator.push(
@@ -56,7 +54,7 @@ class _CoordinatorRegistrationPageState extends State<CoordinatorRegistrationPag
             child: SingleChildScrollView(
               padding: const EdgeInsets.symmetric(vertical: 80, horizontal: 20),
               child: ConstrainedBox(
-                constraints: const BoxConstraints(maxWidth: 600), // Card um pouco mais estreito que o de termos
+                constraints: const BoxConstraints(maxWidth: 600), 
                 child: Container(
                   padding: const EdgeInsets.all(40),
                   decoration: BoxDecoration(
@@ -85,7 +83,7 @@ class _CoordinatorRegistrationPageState extends State<CoordinatorRegistrationPag
                               const SizedBox(height: 8),
                               const Text(
                                 "Preencha seus dados para criar seu perfil profissional",
-                                textAlign: TextAlign.center, // Agora o Flutter entende o alinhamento
+                                textAlign: TextAlign.center, 
                                 style: TextStyle(color: Colors.black45),
                               ),
                             ],
@@ -142,8 +140,6 @@ class _CoordinatorRegistrationPageState extends State<CoordinatorRegistrationPag
       ),
     );
   }
-
-  // --- COMPONENTES VISUAIS AUXILIARES ---
 
   Widget _buildLabel(String text) {
     return Padding(
