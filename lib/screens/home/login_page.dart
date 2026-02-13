@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:frontend/screens/home/mentee_dashboard_page.dart';
 import 'package:frontend/screens/mentora/dashboard.dart';
 import 'package:frontend/services/auth_service.dart';
-import 'package:frontend/widgets/mentorada_info.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'coordinator/coordinator_dashboard_page.dart';
 import 'administrativo/admin_dashboard_page.dart';
@@ -23,7 +22,6 @@ class _LoginPageState extends State<LoginPage> {
   String _email = "";
   String _password = "";
 
-  // Modal de recuperação centralizado e consistente
   void _showForgotPasswordDialog(BuildContext context) {
     showDialog(
       context: context,
@@ -105,6 +103,57 @@ class _LoginPageState extends State<LoginPage> {
     );
   }
 
+  Future<void> _handleLogin() async {
+    _formKey.currentState?.save();
+    if (_formKey.currentState!.validate()) {
+      final response = await authService.login(
+        email: _email,
+        password: _password,
+      );
+
+      if (response.containsKey("userType")) {
+        final String userType = response["userType"];
+        final SharedPreferences prefs = await SharedPreferences.getInstance();
+        await prefs.setString("token", response["token"]);
+        
+        late final Widget Function() page;
+        switch (userType) {
+          case "mentora":
+            page = () => const MentoraDashboard();
+            break;
+          case "mentorada":
+            page = () => const MenteeDashboardPage();
+            break;
+          case "admin":
+            page = () => const AdminDashboardPage();
+            break;
+          case "coordenador":
+            page = () => const CoordinatorDashboardPage();
+            break;
+          default:
+            return;
+        }
+
+        if (mounted) {
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(builder: (context) => page()),
+          );
+        }
+      } else {
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text("E-mail ou senha incorretos."),
+              backgroundColor: Colors.redAccent,
+              behavior: SnackBarBehavior.floating,
+            ),
+          );
+        }
+      }
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -167,9 +216,11 @@ class _LoginPageState extends State<LoginPage> {
                     const SizedBox(height: 8),
                     TextFormField(
                       decoration: _inputDecoration("seuemail@stem.br"),
-                      onSaved: (value) => setState(() {
-                        _email = value!;
-                      }),
+                      textInputAction: TextInputAction.next,
+                      keyboardType: TextInputType.emailAddress,
+                      onFieldSubmitted: (_) => FocusScope.of(context).nextFocus(),
+                      validator: (value) => (value == null || value.isEmpty) ? "Campo obrigatório" : null,
+                      onSaved: (value) => _email = value ?? "",
                     ),
                     const SizedBox(height: 20),
                     _buildLabel("Senha"),
@@ -177,9 +228,10 @@ class _LoginPageState extends State<LoginPage> {
                     TextFormField(
                       obscureText: true,
                       decoration: _inputDecoration("*********"),
-                      onSaved: (value) => setState(() {
-                        _password = value!;
-                      }),
+                      textInputAction: TextInputAction.done,
+                      onFieldSubmitted: (_) => _handleLogin(),
+                      validator: (value) => (value == null || value.isEmpty) ? "Campo obrigatório" : null,
+                      onSaved: (value) => _password = value ?? "",
                     ),
                     Align(
                       alignment: Alignment.centerRight,
@@ -196,41 +248,7 @@ class _LoginPageState extends State<LoginPage> {
                       width: double.infinity,
                       height: 48,
                       child: FilledButton(
-                        onPressed: () async {
-                          _formKey.currentState?.save();
-                          if (_formKey.currentState!.validate()) {
-                            final response = await authService.login(
-                              email: _email,
-                              password: _password,
-                            );
-                            print(response);
-                            if (response.containsKey("userType")) {
-                              final String userType = response["userType"];
-                              final SharedPreferences prefs = await SharedPreferences.getInstance();
-                              await prefs.setString("token", response["token"]);
-                              print(userType);
-                              late final Widget Function() page;
-                              switch (userType) {
-                                case "mentora":
-                                  page = () => const MentoraDashboard();
-                                  break;
-                                case "mentorada":
-                                  page = () => const MenteeDashboardPage();
-                                  break;
-                                case "admin":
-                                  page = () => const AdminDashboardPage();
-                                  break;
-                                case "coordenador":
-                                  page = () => const CoordinatorDashboardPage();
-                                  break;
-                              }
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(builder: (context) => page()),
-                              );
-                            }
-                          }
-                        },
+                        onPressed: _handleLogin,
                         style: FilledButton.styleFrom(
                           backgroundColor: brandColor,
                           shape: RoundedRectangleBorder(
@@ -268,57 +286,6 @@ class _LoginPageState extends State<LoginPage> {
                         ),
                       ],
                     ),
-                    const SizedBox(height: 20),
-                    const Divider(),
-                    const SizedBox(height: 10),
-
-                    // ACESSO RÁPIDO COORDENADOR
-                    TextButton.icon(
-                      onPressed: () => Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) =>
-                              const CoordinatorDashboardPage(),
-                        ),
-                      ),
-                      icon: const Icon(
-                        Icons.admin_panel_settings,
-                        color: Colors.red,
-                      ),
-                      label: const Text(
-                        "Acesso Rápido Coordenador",
-                        style: TextStyle(color: Colors.red),
-                      ),
-                    ),
-
-                    // ACESSO RÁPIDO ADMINISTRATIVO
-                    TextButton.icon(
-                      onPressed: () => Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => const AdminDashboardPage(),
-                        ),
-                      ),
-                      icon: const Icon(Icons.security, color: Colors.indigo),
-                      label: const Text(
-                        "Acesso Rápido Administrativo",
-                        style: TextStyle(color: Colors.indigo),
-                      ),
-                    ),
-                    // ACESSO RÁPIDO MENTORA
-                    TextButton.icon(
-                      onPressed: () => Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => const MentoraDashboard(),
-                        ),
-                      ),
-                      icon: const Icon(Icons.person, color: Colors.green),
-                      label: const Text(
-                        "Acesso Rápido Mentora",
-                        style: TextStyle(color: Colors.green),
-                      ),
-                    ),
                   ],
                 ),
               ),
@@ -330,23 +297,23 @@ class _LoginPageState extends State<LoginPage> {
   }
 
   Widget _buildLabel(String text) => Align(
-    alignment: Alignment.centerLeft,
-    child: Text(
-      text,
-      style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 14),
-    ),
-  );
+        alignment: Alignment.centerLeft,
+        child: Text(
+          text,
+          style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 14),
+        ),
+      );
 
   InputDecoration _inputDecoration(String hint) => InputDecoration(
-    hintText: hint,
-    contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-    border: OutlineInputBorder(
-      borderRadius: BorderRadius.circular(8),
-      borderSide: const BorderSide(color: Colors.black12),
-    ),
-    focusedBorder: OutlineInputBorder(
-      borderRadius: BorderRadius.circular(8),
-      borderSide: BorderSide(color: brandColor, width: 1.5),
-    ),
-  );
+        hintText: hint,
+        contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(8),
+          borderSide: const BorderSide(color: Colors.black12),
+        ),
+        focusedBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(8),
+          borderSide: BorderSide(color: brandColor, width: 1.5),
+        ),
+      );
 }

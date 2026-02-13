@@ -22,12 +22,9 @@ class _MenteeApprovalPageState extends State<MenteeApprovalPage> {
 
   Future _getApprovals() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    var token = prefs.getString("token");
-    token ??= "";
+    var token = prefs.getString("token") ?? "";
     return _adminService.getApprovalsMentee(token: token);
   }
-
-  List<dynamic> _mentoradasPendentes = [];
 
   @override
   void initState() {
@@ -37,299 +34,225 @@ class _MenteeApprovalPageState extends State<MenteeApprovalPage> {
 
   void _processarMentee(String menteeId, bool aprovada) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    var token = prefs.getString("token");
-    token ??= "";
+    var token = prefs.getString("token") ?? "";
 
     await _adminService.updateApprovalMentee(
       menteeId: menteeId,
       token: token,
       approved: aprovada,
     );
+    
     setState(() {
-        _fetchData = _getApprovals();
+      _fetchData = _getApprovals();
     });
+
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
-        content: Row(
-          children: [
-            Icon(
-              aprovada ? Icons.mark_email_read : Icons.cancel,
-              color: Colors.white,
-            ),
-            const SizedBox(width: 10),
-            Expanded(
-              child: Text(
-                aprovada
-                    ? "Mentee aprovada! E-mail de confirmação enviado."
-                    : "Mentee rejeitada.",
-              ),
-            ),
-          ],
-        ),
-        backgroundColor: aprovada ? verde : coral,
+        content: Text(aprovada ? "Operação realizada com sucesso!" : "Decisão revertida."),
+        backgroundColor: aprovada ? verde : petroleo,
         behavior: SnackBarBehavior.floating,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+        margin: const EdgeInsets.all(20),
       ),
-    );
-  }
-
-  Future<void> _confirmarEnvioEmail(String menteeId, String nome) async {
-    return showDialog<void>(
-      context: context,
-      barrierDismissible: false,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(16),
-          ),
-          title: Row(
-            children: [
-              Icon(Icons.email, color: roxo),
-              const SizedBox(width: 10),
-              const Text("Confirmar Aprovação"),
-            ],
-          ),
-          content: SingleChildScrollView(
-            child: ListBody(
-              children: <Widget>[
-                Text("Deseja aprovar a mentorada $nome?"),
-                const SizedBox(height: 10),
-                const Text(
-                  "Um e-mail automático será enviado informando que ela foi aceita no programa.",
-                  style: TextStyle(fontSize: 13, color: Colors.black54),
-                ),
-              ],
-            ),
-          ),
-          actions: <Widget>[
-            TextButton(
-              child: const Text(
-                "Cancelar",
-                style: TextStyle(color: Colors.grey),
-              ),
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-            ),
-            ElevatedButton(
-              style: ElevatedButton.styleFrom(
-                backgroundColor: verde,
-                foregroundColor: Colors.white,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(8),
-                ),
-              ),
-              child: const Text("Enviar E-mail e Aprovar"),
-              onPressed: () {
-                Navigator.of(context).pop();
-                _processarMentee(menteeId, true);
-              },
-            ),
-          ],
-        );
-      },
     );
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: brandColor,
-      appBar: AppBar(
-        backgroundColor: Colors.transparent,
-        elevation: 0,
-        centerTitle: true,
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: Colors.white),
-          onPressed: () => Navigator.pop(context),
+    return DefaultTabController(
+      length: 2,
+      child: Scaffold(
+        backgroundColor: brandColor,
+        appBar: AppBar(
+          backgroundColor: Colors.transparent,
+          elevation: 0,
+          leading: IconButton(
+            icon: const Icon(Icons.arrow_back, color: Colors.white),
+            onPressed: () => Navigator.pop(context),
+          ),
+          title: const Text(
+            "Validação de Mentoradas", 
+            style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)
+          ),
+          centerTitle: true,
+          bottom: const TabBar(
+            indicatorColor: Colors.white,
+            labelColor: Colors.white,
+            unselectedLabelColor: Colors.white70,
+            tabs: [
+              Tab(text: "Pendentes", icon: Icon(Icons.pending_actions)),
+              Tab(text: "Histórico", icon: Icon(Icons.history)),
+            ],
+          ),
         ),
-        title: const Text(
-          "Validação de Menteeas",
-          style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
-        ),
-      ),
-      body: SafeArea(
-        child: FutureBuilder(
-          future: _fetchData,
-          builder: (context, asyncSnapshot) {
-            if (asyncSnapshot.hasData) {
-              _mentoradasPendentes = asyncSnapshot.data;
-              return ListView.builder(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 40,
-                  vertical: 20,
-                ),
-                itemCount: _mentoradasPendentes.length,
-                itemBuilder: (context, index) {
-                  return _buildMenteeCard(_mentoradasPendentes[index], index);
-                },
-              );
-            } else {
-              return Center(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Icon(
-                      Icons.check_circle_outline,
-                      size: 80,
-                      color: Colors.white.withOpacity(0.5),
-                    ),
-                    const SizedBox(height: 20),
-                    const Text(
-                      "Tudo limpo!",
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 22,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                  ],
-                ),
-              );
-            }
-          },
+        body: SafeArea(
+          child: Center(
+            child: ConstrainedBox(
+              constraints: const BoxConstraints(maxWidth: 800),
+              child: TabBarView(
+                children: [
+                  _buildListSection(isHistory: false),
+                  _buildListSection(isHistory: true),
+                ],
+              ),
+            ),
+          ),
         ),
       ),
     );
   }
 
-  Widget _buildMenteeCard(Map<String, dynamic> mentorada, int index) {
+  Widget _buildListSection({required bool isHistory}) {
+    return FutureBuilder(
+      future: _fetchData,
+      builder: (context, asyncSnapshot) {
+        if (asyncSnapshot.connectionState == ConnectionState.waiting) {
+          return const Center(child: CircularProgressIndicator(color: Colors.white));
+        }
+
+        if (asyncSnapshot.hasError) {
+          return const Center(
+            child: Text("Erro ao carregar dados", style: TextStyle(color: Colors.white)),
+          );
+        }
+
+        final List listaBruta = (asyncSnapshot.data as List? ?? []);
+        
+        var lista = listaBruta.where((m) {
+          final String status = (m['status']?.toString().toLowerCase() ?? 'pending');
+          if (isHistory) return status != 'pending';
+          return status == 'pending';
+        }).toList();
+
+        if (lista.isEmpty) {
+          return Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Icon(Icons.inbox, size: 60, color: Colors.white.withOpacity(0.5)),
+                const SizedBox(height: 16),
+                Text(
+                  isHistory ? "Nenhum histórico encontrado." : "Nenhuma pendência!",
+                  style: const TextStyle(color: Colors.white, fontSize: 18),
+                ),
+              ],
+            ),
+          );
+        }
+
+        return ListView.builder(
+          padding: const EdgeInsets.all(20),
+          itemCount: lista.length,
+          itemBuilder: (context, index) => _buildCard(lista[index], isHistory),
+        );
+      },
+    );
+  }
+
+  Widget _buildCard(Map<String, dynamic> mentee, bool isHistory) {
+    final String nome = mentee['nome']?.toString() ?? "Sem Nome";
+    final String curso = mentee['curso']?.toString() ?? "Estudante";
+    final String status = mentee['status']?.toString() ?? "pending";
+
     return Container(
       margin: const EdgeInsets.only(bottom: 16),
       decoration: BoxDecoration(
         color: Colors.white,
-        borderRadius: BorderRadius.circular(16),
+        borderRadius: BorderRadius.circular(20),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.1),
-            blurRadius: 10,
-            offset: const Offset(0, 4),
+            color: Colors.black.withOpacity(0.05), 
+            blurRadius: 10, 
+            offset: const Offset(0, 4)
+          )
+        ],
+      ),
+      child: ExpansionTile(
+        tilePadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
+        leading: CircleAvatar(
+          backgroundColor: roxo.withOpacity(0.1),
+          child: Text(
+            nome.isNotEmpty ? nome[0] : "?", 
+            style: TextStyle(color: roxo, fontWeight: FontWeight.bold)
+          ),
+        ),
+        title: Text(nome, style: TextStyle(color: petroleo, fontWeight: FontWeight.bold)),
+        subtitle: Text(curso),
+        trailing: isHistory 
+          ? _buildStatusBadge(status) 
+          : const Icon(Icons.expand_more),
+        children: [
+          const Divider(),
+          Padding(
+            padding: const EdgeInsets.all(20),
+            child: _buildActionButtons(mentee, isHistory),
           ),
         ],
       ),
-      child: Theme(
-        data: Theme.of(context).copyWith(dividerColor: Colors.transparent),
-        child: ExpansionTile(
-          tilePadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-          childrenPadding: const EdgeInsets.fromLTRB(16, 0, 16, 20),
-          leading: CircleAvatar(
-            radius: 24,
-            backgroundColor: roxo.withOpacity(0.1),
-            child: Text(
-              mentorada['foto'] ?? mentorada['nome'][0],
-              style: TextStyle(
-                color: roxo,
-                fontWeight: FontWeight.bold,
-                fontSize: 18,
-              ),
-            ),
-          ),
-          title: Text(
-            mentorada['nome'],
-            style: TextStyle(
-              color: petroleo,
-              fontWeight: FontWeight.bold,
-              fontSize: 16,
-            ),
-          ),
-          subtitle: Text(
-            mentorada['curso'],
-            style: const TextStyle(color: Colors.black54, fontSize: 13),
-            maxLines: 1,
-            overflow: TextOverflow.ellipsis,
-          ),
-          children: [
-            const Divider(),
-            // const SizedBox(height: 8),
-            // Row(
-            //   children: [
-            //     Icon(Icons.calendar_today, size: 16, color: roxo),
-            //     const SizedBox(width: 8),
-            //     Text(
-            //       "Inscrita: ${mentorada['data_inscricao']}",
-            //       style: const TextStyle(fontSize: 13, color: Colors.black87),
-            //     ),
-            //   ],
-            // ),
-            const SizedBox(height: 15),
-            SizedBox(
-              width: double.infinity,
-              child: Wrap(
-                alignment: WrapAlignment.start,
-                spacing: 8,
-                runSpacing: 8,
-                children: (mentorada['skills'] as List).map<Widget>((skill) {
-                  return Container(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 10,
-                      vertical: 4,
-                    ),
-                    decoration: BoxDecoration(
-                      color: greyBg,
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                    child: Text(
-                      skill,
-                      style: TextStyle(fontSize: 12, color: Colors.grey[800]),
-                    ),
-                  );
-                }).toList(),
-              ),
-            ),
-            const SizedBox(height: 20),
-            SizedBox(
-              width: double.infinity,
-              child: OutlinedButton.icon(
-                onPressed: () {
-                  print(mentorada['linkedin']);
-                },
-                icon: const Icon(Icons.link, size: 18),
-                label: const Text("Ver LinkedIn"),
-                style: OutlinedButton.styleFrom(
-                  foregroundColor: const Color(0xFF0077B5),
-                  side: const BorderSide(color: Color(0xFF0077B5)),
-                  padding: const EdgeInsets.symmetric(vertical: 12),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                ),
-              ),
-            ),
-            const SizedBox(height: 15),
-            Row(
-              children: [
-                Expanded(
-                  child: TextButton(
-                    onPressed: () => _processarMentee(mentorada['id'], false),
-                    style: TextButton.styleFrom(
-                      foregroundColor: coral,
-                      padding: const EdgeInsets.symmetric(vertical: 14),
-                    ),
-                    child: const Text("Rejeitar"),
-                  ),
-                ),
-                const SizedBox(width: 10),
-                Expanded(
-                  child: ElevatedButton(
-                    onPressed: () =>
-                        _confirmarEnvioEmail(mentorada['id'], mentorada['nome']),
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: verde,
-                      foregroundColor: Colors.white,
-                      padding: const EdgeInsets.symmetric(vertical: 14),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(8),
-                      ),
-                      elevation: 0,
-                    ),
-                    child: const Text("Aprovar"),
-                  ),
-                ),
-              ],
-            ),
-          ],
+    );
+  }
+
+  Widget _buildStatusBadge(String status) {
+    bool isApproved = status.toLowerCase() == 'approved' || status.toLowerCase() == 'ativa';
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+      decoration: BoxDecoration(
+        color: (isApproved ? verde : coral).withOpacity(0.1),
+        borderRadius: BorderRadius.circular(12),
+      ),
+      child: Text(
+        isApproved ? "Aprovado" : "Rejeitado",
+        style: TextStyle(
+          color: isApproved ? verde : coral, 
+          fontWeight: FontWeight.bold, 
+          fontSize: 12
         ),
       ),
+    );
+  }
+
+  Widget _buildActionButtons(Map<String, dynamic> mentee, bool isHistory) {
+    final String id = mentee['id']?.toString() ?? "";
+
+    if (isHistory) {
+      return SizedBox(
+        width: double.infinity,
+        child: OutlinedButton.icon(
+          onPressed: id.isEmpty ? null : () => _processarMentee(id, false),
+          icon: const Icon(Icons.undo, size: 18),
+          label: const Text("Reverter Decisão"),
+          style: OutlinedButton.styleFrom(
+            foregroundColor: petroleo, 
+            side: BorderSide(color: petroleo),
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10))
+          ),
+        ),
+      );
+    }
+
+    return Row(
+      children: [
+        Expanded(
+          child: TextButton(
+            onPressed: id.isEmpty ? null : () => _processarMentee(id, false),
+            child: Text("Rejeitar", style: TextStyle(color: coral, fontWeight: FontWeight.bold)),
+          ),
+        ),
+        const SizedBox(width: 10),
+        Expanded(
+          child: ElevatedButton(
+            onPressed: id.isEmpty ? null : () => _processarMentee(id, true),
+            style: ElevatedButton.styleFrom(
+              backgroundColor: verde, 
+              elevation: 0,
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10))
+            ),
+            child: const Text(
+              "Aprovar", 
+              style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)
+            ),
+          ),
+        ),
+      ],
     );
   }
 }
