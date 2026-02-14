@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:frontend/screens/home/coordinator/coordinator_registration_page.dart';
 import 'package:frontend/screens/home/mentor_registration_page.dart';
 import 'mentee_registration_page.dart';
 
@@ -10,7 +11,7 @@ class SignUpPage extends StatefulWidget {
 }
 
 class _SignUpPageState extends State<SignUpPage> {
-  int selectedOption = 0; 
+  int selectedOption = 0;
   final Color brandColor = const Color(0xFF3E84A2);
 
   @override
@@ -33,7 +34,10 @@ class _SignUpPageState extends State<SignUpPage> {
               child: ConstrainedBox(
                 constraints: const BoxConstraints(maxWidth: 850),
                 child: Container(
-                  padding: const EdgeInsets.symmetric(vertical: 50, horizontal: 30),
+                  padding: const EdgeInsets.symmetric(
+                    vertical: 50,
+                    horizontal: 30,
+                  ),
                   decoration: BoxDecoration(
                     color: Colors.white,
                     borderRadius: BorderRadius.circular(30),
@@ -51,7 +55,7 @@ class _SignUpPageState extends State<SignUpPage> {
                       const Text(
                         "Como você deseja participar?",
                         style: TextStyle(
-                          fontWeight: FontWeight.w800, 
+                          fontWeight: FontWeight.w800,
                           fontSize: 24,
                           color: Color(0xFF2D3436),
                         ),
@@ -64,7 +68,7 @@ class _SignUpPageState extends State<SignUpPage> {
                         textAlign: TextAlign.center,
                       ),
                       const SizedBox(height: 40),
-                      
+
                       Wrap(
                         spacing: 25,
                         runSpacing: 25,
@@ -73,42 +77,65 @@ class _SignUpPageState extends State<SignUpPage> {
                           _buildModernCard(
                             id: 1,
                             title: "Sou mentora",
-                            description: "Quero orientar estudantes e compartilhar minha experiência STEM.",
+                            description:
+                                "Quero orientar estudantes e compartilhar minha experiência STEM.",
                             cardColor: const Color(0xFFFE9F43),
                             icon: Icons.auto_awesome_outlined,
                           ),
                           _buildModernCard(
                             id: 2,
                             title: "Sou mentorada",
-                            description: "Busco aprender com profissionais e desenvolver minha carreira.",
+                            description:
+                                "Busco aprender com profissionais e desenvolver minha carreira.",
                             cardColor: const Color(0xFFEF4C56),
                             icon: Icons.rocket_launch_outlined,
                           ),
+                          _buildModernCard(
+                            id: 3,
+                            title: "Sou coordenador",
+                            description: "Recebi um convite para cadastrar a minha universidade.",
+                            cardColor: const Color(0xFFEEEE00),
+                            icon: Icons.fax_rounded,
+                          ),
                         ],
                       ),
-                      
+
                       const SizedBox(height: 50),
-                      
+
                       AnimatedContainer(
                         duration: const Duration(milliseconds: 300),
                         width: 240,
                         height: 54,
                         child: FilledButton(
-                          onPressed: selectedOption == 0 
-                            ? null 
-                            : () {
-                                if (selectedOption == 1) {
-                                  Navigator.push(
-                                    context,
-                                    MaterialPageRoute(builder: (context) => MentorRegistrationPage()),
-                                  );
-                                } else if (selectedOption == 2) {
-                                  Navigator.push(
-                                    context,
-                                    MaterialPageRoute(builder: (context) => MenteeRegistrationPage()),
-                                  );
-                                }
-                              },
+                          onPressed: selectedOption == 0
+                              ? null
+                              : () {
+                                  if (selectedOption == 1) {
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) =>
+                                            MentorRegistrationPage(),
+                                      ),
+                                    );
+                                  } else if (selectedOption == 2) {
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) =>
+                                            MenteeRegistrationPage(),
+                                      ),
+                                    );
+                                  } else if (selectedOption == 3) {
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) =>
+                                            CoordinatorRegistrationPage(),
+                                      ),
+                                    );
+                                  }
+                                },
                           style: FilledButton.styleFrom(
                             backgroundColor: brandColor,
                             disabledBackgroundColor: Colors.grey.shade100,
@@ -123,7 +150,9 @@ class _SignUpPageState extends State<SignUpPage> {
                             style: TextStyle(
                               fontSize: 17,
                               fontWeight: FontWeight.bold,
-                              color: selectedOption == 0 ? Colors.black26 : Colors.white,
+                              color: selectedOption == 0
+                                  ? Colors.black26
+                                  : Colors.white,
                             ),
                           ),
                         ),
@@ -166,9 +195,9 @@ class _SignUpPageState extends State<SignUpPage> {
             ),
             boxShadow: [
               BoxShadow(
-                color: isSelected 
-                  ? cardColor.withOpacity(0.6) 
-                  : Colors.black.withOpacity(0.1),
+                color: isSelected
+                    ? cardColor.withOpacity(0.6)
+                    : Colors.black.withOpacity(0.1),
                 blurRadius: isSelected ? 20 : 10,
                 offset: isSelected ? const Offset(0, 10) : const Offset(0, 5),
               ),
@@ -193,8 +222,8 @@ class _SignUpPageState extends State<SignUpPage> {
               Text(
                 description,
                 style: TextStyle(
-                  color: Colors.white.withOpacity(0.9), 
-                  fontSize: 13, 
+                  color: Colors.white.withOpacity(0.9),
+                  fontSize: 13,
                   height: 1.4,
                 ),
                 textAlign: TextAlign.center,

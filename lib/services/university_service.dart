@@ -55,8 +55,8 @@ class UniversityService {
     }
   }
 
-  Future getUniversitiesCount({required String token}) async{
-  final url = Uri.parse('$_baseUrl/universities/count');
+  Future getUniversitiesCount({required String token}) async {
+    final url = Uri.parse('$_baseUrl/universities/count');
     try {
       final response = await http.get(
         url,
@@ -101,9 +101,9 @@ class UniversityService {
       };
     }
   }
-  
-  Future getUniversitiesNames() async{
-  final url = Uri.parse('$_baseUrl/universities/names');
+
+  Future getUniversitiesNames() async {
+    final url = Uri.parse('$_baseUrl/universities/names');
     try {
       final response = await http.get(
         url,
@@ -115,6 +115,63 @@ class UniversityService {
         try {
           final responseBody = jsonDecode(response.body);
           return responseBody;
+        } catch (e) {
+          print(e);
+          return {"message": "Algo deu errado"};
+        }
+      } else {
+        try {
+          final responseBody = jsonDecode(response.body);
+          final errorMessage =
+              responseBody['detail'] ??
+              'Ocorreu um erro no servidor. Status: ${response.statusCode}.';
+          return {"error": true, "message": errorMessage};
+        } catch (_) {
+          return {
+            "error": true,
+            "message": "Erro no servidor. Status: ${response.statusCode}.",
+          };
+        }
+      }
+    } on SocketException {
+      return {
+        "error": true,
+        "message":
+            "Erro de conexão: Não foi possível alcançar o servidor em $_baseUrl.",
+      };
+    } catch (e) {
+      // Outros erros genéricos
+      return {
+        "error": true,
+        "message": "Erro inesperado durante a comunicação. ($e)",
+      };
+    }
+  }
+
+  Future createUniversity({
+    required String token,
+    required String email,
+    required String universityName,
+  }) async {
+    final url = Uri.parse('$_baseUrl/universities');
+    try {
+      final response = await http.post(
+        url,
+        headers: <String, String>{
+          'Content-Type': 'application/json; charset=UTF-8',
+          'Authorization': 'Bearer $token',
+        },
+        body: jsonEncode(<String, String?>{
+          "email": email,
+          "nome_instituicao": universityName,
+        }),
+      );
+
+      if (response.statusCode >= 200 && response.statusCode < 300) {
+        try {
+          final responseBody = jsonDecode(response.body);
+          print(responseBody);
+          return {};
         } catch (e) {
           print(e);
           return {"message": "Algo deu errado"};

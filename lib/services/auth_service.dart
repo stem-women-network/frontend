@@ -32,9 +32,7 @@ class AuthService {
           return {"token": token, "name": name, "userType": userType};
         } catch (e) {
           print(e);
-          return {
-            "message": "Algo deu errado",
-          };
+          return {"message": "Algo deu errado"};
         }
       } else {
         try {
@@ -89,7 +87,7 @@ class AuthService {
     required List<String> hobbies,
     required String availability,
     required String help,
-    required String bio
+    required String bio,
   }) async {
     final url = Uri.parse('$_baseUrl/auth/signup-mentor');
 
@@ -106,24 +104,24 @@ class AuthService {
           "cpf": cpf,
           "celular": phone,
           "data_nascimento": birthDate,
-          "genero" : gender,
+          "genero": gender,
           "linkedin": linkedin,
           "formacao": formacao,
           "cargo_atual": cargoAtual,
           "area_atuacao": areaAtuacao,
           "cidade": city,
           "estado": state,
-          "etnia" : race,
-          "foi_mentora" : wasMentor,
-          "foi_mentorada" : wasMentee,
-          "perfil_interesse" : menteeProfile,
-          "foco_mentoria" : mentoringGoal,
-          "idiomas" : languages,
-          "competencias" : skills,
-          "hobbies" : hobbies,
-          "disponibilidade" : availability,
-          "ajuda" : help,
-          "bio" : bio
+          "etnia": race,
+          "foi_mentora": wasMentor,
+          "foi_mentorada": wasMentee,
+          "perfil_interesse": menteeProfile,
+          "foco_mentoria": mentoringGoal,
+          "idiomas": languages,
+          "competencias": skills,
+          "hobbies": hobbies,
+          "disponibilidade": availability,
+          "ajuda": help,
+          "bio": bio,
         }),
       );
 
@@ -189,7 +187,7 @@ class AuthService {
     required List<String> skills,
     required List<String> hobbies,
     required List<String> languages,
-    required String availability
+    required String availability,
   }) async {
     final url = Uri.parse('$_baseUrl/auth/signup-mentee');
 
@@ -209,17 +207,17 @@ class AuthService {
           "linkedin": linkedin,
           "genero": gender,
           "etnia": race,
-          "universidade_instituicao" : university,
-          "area_stem" : stemArea,
+          "universidade_instituicao": university,
+          "area_stem": stemArea,
           "curso": course,
           "ano_curso": year,
           "semestre": semester,
-          "situacao_atual" : currentSituation,
-          "foco_mentoria" : mentoringGoal,
-          "idiomas" : languages,
+          "situacao_atual": currentSituation,
+          "foco_mentoria": mentoringGoal,
+          "idiomas": languages,
           "desenvolver_competencias": skills,
           "hobbies_interesses": hobbies,
-          "disponibilidade" : availability
+          "disponibilidade": availability,
         }),
       );
 
@@ -228,6 +226,73 @@ class AuthService {
           final responseBody = jsonDecode(response.body);
           final message = responseBody['message'] ?? "Registro bem-sucedido!";
 
+          return {"success": true, "message": message};
+        } catch (_) {
+          return {
+            "success": true,
+            "message": "Registro concluído com sucesso.",
+          };
+        }
+      } else {
+        try {
+          final responseBody = jsonDecode(response.body);
+          final errorMessage =
+              responseBody['message'] ??
+              responseBody['detail'] ??
+              'Ocorreu um erro no servidor. Status: ${response.statusCode}.';
+          return {"error": true, "message": errorMessage};
+        } catch (_) {
+          return {
+            "error": true,
+            "message": "Erro no servidor. Status: ${response.statusCode}.",
+          };
+        }
+      }
+    } on SocketException {
+      return {
+        "error": true,
+        "message":
+            "Erro de conexão: Não foi possível alcançar o servidor em $_baseUrl.",
+      };
+    } catch (e) {
+      // Outros erros genéricos
+      return {
+        "error": true,
+        "message": "Erro inesperado durante a comunicação. ($e)",
+      };
+    }
+  }
+
+  Future<Map<String, dynamic>> registerCoordinator({
+    required String email,
+    required String password,
+    required String tempPassword,
+    required String name,
+    required String cpf,
+    required String birthDate,
+  }) async {
+    final url = Uri.parse('$_baseUrl/auth/signup-coordinator');
+
+    try {
+      final response = await http.post(
+        url,
+        headers: <String, String>{
+          'Content-Type': 'application/json; charset=UTF-8',
+        },
+        body: jsonEncode(<String, Object?>{
+          "email": email,
+          "senha_temporaria": tempPassword,
+          "senha": password,
+          "nome_completo": name,
+          "cpf": cpf,
+          "data_nascimento": birthDate,
+        }),
+      );
+      print(response.body);
+      if (response.statusCode >= 200 && response.statusCode < 300) {
+        try {
+          final responseBody = jsonDecode(response.body);
+          final message = responseBody['detail'] ?? "Registro bem-sucedido!";
           return {"success": true, "message": message};
         } catch (_) {
           return {
