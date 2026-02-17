@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:typed_data';
 import 'package:http/http.dart' as http;
 import 'dart:io';
 
@@ -71,14 +72,14 @@ class MentoringService {
   Future<void> sendFile({
     required String token,
     required String title,
-    required List<int> file,
+    required Uint8List file,
     required String fileType,
     required String menteeId,
   }) async {
     final url = Uri.parse('$_baseUrl/mentoring/send-file');
     final request = http.MultipartRequest("POST", url);
     request.headers["authorization"] = "Bearer $token";
-    request.files.add(http.MultipartFile.fromBytes("file", file));
+    request.fields["file"] = base64Encode(file);
     request.fields["title"] = title;
     request.fields["file_type"] = fileType;
     request.fields["mentee_id"] = menteeId;
@@ -152,8 +153,8 @@ class MentoringService {
       ];
     }
   }
-
-  Future<String?> downloadFile({
+  
+  Future<Map<String,dynamic>?> downloadFile({
     required String token,
     required String fileId,
   }) async {
@@ -169,7 +170,10 @@ class MentoringService {
       if (response.statusCode >= 200 && response.statusCode < 300) {
         try {
           final responseBody = jsonDecode(response.body);
-          return responseBody;
+          return {
+            "file" : base64Decode(responseBody["file"]),
+            "type" : responseBody["type"]
+          };
         } catch (e) {
           print(e);
           return null;

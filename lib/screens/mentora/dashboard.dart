@@ -376,7 +376,7 @@ class _MentoraDashboardState extends State<MentoraDashboard> {
                       () => Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (context) => const SendMaterialsPage(),
+                          builder: (context) => SendMaterialsPage(menteeId: mentee["id"]),
                         ),
                       ),
                       isPrimary: true,
